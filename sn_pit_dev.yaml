@@ -1,0 +1,38 @@
+# Roman Supernova PIT Development Environment
+# 
+# Contact: Benjamin Rose, ben_rose@baylor.edu
+# History:
+#   - initial testing, Jul 24, 2024
+# Usage:
+#   - update
+#     - conda env update -f sn_pit_dev.yaml -p ./envs/sn-pit-dev --prune
+#   - install
+#     - conda env create -f sn_pit_dev.yaml -p ./envs/sn-pit-dev
+#
+
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - fitsio   # was not installing as an implied dependency
+  - scikit-image
+  - pip
+  - pyfftw #needed for sfft, and pip+arm does not work
+  - pip:
+    - dust_extinction
+    - jdaviz #roman-sci-platform
+    - pandeia.engine #roman-sci-platform
+    - rad #roman-sci-platform
+    - roman_datamodels #roman-sci-platform
+    - romancal #roman-sci-platform
+    - romanisim #roman-sci-platform
+    - skyCatalogs
+    - stips #roman-sci-platform
+    - webbpsf #roman-sci-platform
+    - bokeh #roman-sci-platform
+    - s3fs #roman-sci-platform
+    - xarray #roman-sci-platform
+    - stsynphot #roman-sci-platform
+    - "git+https://github.com/laldoroty/phrosty"
+    - "git+https://github.com/matroxel/roman_imsim"
+    - "git+https://github.com/laldoroty/sfft@pyswarp"
