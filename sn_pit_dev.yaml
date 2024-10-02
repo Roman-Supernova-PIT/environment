@@ -14,11 +14,14 @@ channels:
   - conda-forge
 dependencies:
   - python=3.11
+  - astromatic-source-extractor   # Only temporarily
+  - conda install conda-forge::astromatic-swarp    # only temporarily
   - fitsio   # was not installing as an implied dependency
-  - scikit-image
   - pip
-  - pyfftw #needed for sfft, and pip+arm does not work
   - pip:
+    - cupy-cuda12x
+    - pyfftw #needed for sfft, and pip+arm does not work
+    - scikit-image
     - dust_extinction
     - jdaviz #roman-sci-platform
     - pandeia.engine #roman-sci-platform
@@ -28,11 +31,11 @@ dependencies:
     - romanisim #roman-sci-platform
     - skyCatalogs
     - stips #roman-sci-platform
-    - webbpsf #roman-sci-platform
+    - webbpsf #roman-sci-platform    # might need to pin this to match the roman-sci-platforms version
     - bokeh #roman-sci-platform
     - s3fs #roman-sci-platform
     - xarray #roman-sci-platform
     - stsynphot #roman-sci-platform
-    - "git+https://github.com/laldoroty/phrosty"
+    - "git+https://github.com/Roman-Supernova-PIT/phrosty"
     - "git+https://github.com/matroxel/roman_imsim"
     - "git+https://github.com/laldoroty/sfft@pyswarp"

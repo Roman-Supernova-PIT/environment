@@ -1,3 +1,5 @@
+#! /usr/bin/env bash
+
 SHELL_NAME=$(echo $SHELL | sed "s/\/bin\///g")
 
 if [[ $(hostname -A) == *"duke"* ]]
@@ -61,10 +63,25 @@ then
     fi
     unset __conda_setup
     # <<< conda initialize <<<
+elif [[ $(hostname -A) == *"jupyter-"* ]] # should be on the Roman Science Platform
+then
+    export PIT_ROOT="/teams/orca"
+    # DIFFERENCE IMAGING
+    export SN_INFO_DIR="/teams/orca/object_tables" # Location of object/image tables.
+    export SIMS_DIR="s3://nasa-irsa-simulations/openuniverse2024/roman/preview" # Location of the Roman-DESC sims.
+    export SNANA_PQ_DIR="/teams/orca/PQ+ROMAN+LSST_LARGE" # Location of the SNANA parquet files.
+    export DIA_OUT_DIR="/teams/orca/dia_output" # Parent output folder for DIA pipeline.
 else
     echo "Unsure what machine you are on. Contact Ben Rose." >&2
+    exit 1
 fi
 
 
 
-conda activate $PIT_ROOT/conda_env/envs/sn-pit-dev
+
+if [[ $(hostname -A) == *"jupyter-"* ]]
+then
+    conda activate $PIT_ROOT/environment/envs/sn-pit-dev && ipython kernel install --user --name=sn-pit-dev
+else
+    conda activate $PIT_ROOT/conda_env/envs/sn-pit-dev
+fi
