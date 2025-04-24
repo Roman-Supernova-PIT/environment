@@ -90,8 +90,8 @@ ENV NVIDIA_REQUIRE_CUDA="cuda>=8.0"
 #   need, including enough cuda packages for runtime.  Clean up all apt
 #   cache afterwards for space reasons.
 
-# NOTE: even though you'd think cudart-dev should only
-#   be in the build image, it's needed by pycuda
+# NOTE: even though you'd think cudart-dev should only be in the build
+#   image, at least one file from it is needed by pycuda
 
 RUN apt-get update \
     && apt-get -y upgrade \
@@ -126,7 +126,9 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PATH=/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs
+# Have to have the /usr/lib/x86_64-linux-gnu first to stop things from
+#   finding the stub libcuda.so in /usr/local/cuda/lib64/stubs
+ENV LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs
 
 # Make sure the en_US.UTF8 locale is the default
 RUN cat /etc/locale.gen | perl -pe 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' > /etc/locale.gen.new \
