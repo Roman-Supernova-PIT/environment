@@ -1,0 +1,31 @@
+cupy-cuda12x==13.4.1
+dust_extinction==1.5
+fastremap==1.15.2
+fitsio==1.2.5
+numba==0.61.2
+pyfftw==0.15.0           #needed for sfft, and pip+arm does not work
+pytest==8.3.5
+scikit-image==0.25.2
+sep==1.4.1
+skyCatalogs==2.0.1
+
+# This is an nvidia thing that phrosty uses for profiling
+nvtx==0.2.11
+
+# roman-sci platform packages and preqrequisites
+s3fs==2025.3.2
+pandeia.engine==2025.3
+rad==0.24.0
+roman-datamodels==0.23.1
+romancal==0.18.0
+romanisim==0.8.0
+stips==2.2.2
+webbpsf==2.0.0
+xarray==2025.3.1
+stsynphot==1.4.0
+
+# The next few are GUI/interactive things, so perhaps don't belong
+# in the Dockerfile.  For now, they've been moved to be explicitly
+# listed in the pip section of sn_pit_dev.yaml
+# jdaviz==4.2.1
+# bokeh==3.7.2
