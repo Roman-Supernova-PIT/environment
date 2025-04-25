@@ -1,0 +1,148 @@
+# Docker Image for Roman SN PIT
+
+---
+
+## Overview
+
+The files in this directory are intended to be able to build docker images usable by all of the SN PIT.  These images, ideally, should work with `docker` on your local machine, with `podman-hpc` on perlmutter, with `apptainer` on other HPC clusters, and (somehow) on AWS (and probably other cloud providers).
+
+There are four final images.  There are CPU and CUDA based images.  The CPU images do not include any CUDA libaries, and are a couple of GB smaller as a result.  For both CPU and CUDA, there are runtime and dev images.  The dev images include compilers, development libraries for linking, and some debug tools.  As a result, they're a few GB larger than the the runtime libraries.
+
+Ideally, in production, we will use the runtime libraries, and you should test your code under the runtime libraries.  However, if you want to do any profiling, use the dev libraries.  If things aren't working with the runtime libraries, try the dev libraries, and then talk to Rob about what's necessary to change either in your code, or in the docker images, to make it all work.
+
+---
+
+## Using the Docker images
+
+Ideally, you will not need to build the docker images yourself, but can use ones already built and pushed by Rob.  Exactly where you use them depends on the machine where you're running.
+
+Note that if you're using `pycuda`, you may be stuck with using the full enormous `cuda-dev` image, as it seems not to work with just the `cuda` image.  Hopefully at some point Rob will figure out the minimum number of packages to move from the `cuda-dev` to the `cuda` image to make `pycuda` work without having to use the 10GB docker image.
+
+Warning: these images are built on an x86_64 Linux machine.  If you're on an ARM Linux box, on an x86_64 Mac, or, heaven forbid, an ARM Mac, it's possible you will have problems.  (This is especially true with the Cuda images.)  While the obvious solution is to just get an x86_64 Linux desktop or laptop, you may be able to get things to work by just rebuilding the images yourself with docker.  (It's possible that more work will be needed— you may need to reduild the devuan base image and edit the Dockerfile— and it's also possible that not all of the pip packages we use fully support ARM, so it may not work at all.)
+
+If you're on Windows, then your best bet is to reformat your hard drive and go to `https://liuxmint.com` (perhaps not in that order).  If you're on ChromeOS, then get a computer.  What you have right now is an oversize foldable phone that can't make calls.
+
+### On your local machine with Docker
+
+The latest version of the images that Rob has pushed can be found here:
+
+* `docker.io/rknop/roman-snpit-env:cpu`
+* `docker.io/rknop/roman-snpit-env:cpu-dev`
+* `docker.io/rknop/roman-snpit-env:cuda`
+* `docker.io/rknop/roman-snpit-env:cuda-dev`
+
+Get the image on your local machine with `docker pull <imagename>`.  You can then run it with Docker as usual.
+
+#### Running the Cuda image.
+
+Docker and Cuda are always complicated and fraught.  If you're not running Cuda 12.4 on your local machine, there may be problems.  More seriously, if you aren't on x86 Linux (i.e. if you're on a Mac, on ARM Linux, or, heaven forbid, an ARM Mac), it's possible it won't work at all.  In this case, you may need to rebuild the image yourself rather than use Rob's pushed image.
+
+Even then, however, things are complicated, because Cuda libraries inside the container need to talk to the Cuda environment outside the container.  On Perlmutter with podman, this is solved by injecting some libraries into the container so things match up.  If things don't work as is on your local machine, then **ROB FIGURE THIS OUT AND DOCUMENT IT.**
+
+### On perlmutter
+
+On perlmutter, you use the images with `podman-hpc`.  Podman is a container environment that feels much like Docker, and Podman-HPC is NERSC's version of Podman that tries to set things up so you don't need the kind of root access that you usually need in order to run Docker (even if it's only implicit and you never realize it).
+
+#### Images
+
+The latest version of the images that Rob has pushed can be found here:
+
+* `registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu`
+* `registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu-dev`
+* `registry.nersc.gov/m4385/rknop/roman-snpit-env:cuda`
+* `registry.nersc.gov/m4385/rknop/roman-snpit-env:cuda-dev`
+
+There may also be versions of the images with things like `-v0.0.1` appended to the end of the image, which you can use if you want a stable image and don't want to always be repulling the latest.  However, your code will eventually need to run with the same image that every other code does, so you're strongly recommended to work with the latest images.
+
+#### Making the image available to you
+
+On any node, run the following command:
+```
+podman-hpc pull <imagename>
+```
+**Important:** do *not* run `podman-hpc image pull...`  That will apper to work, but doesn't do everything necessary, and you will almost certainly later become confused.  (Rob lost at least a day to this a while back.)
+
+Once you've pulled the image, run
+```
+podman-hpc images
+```
+to verify that it's there.  If you've just pulled it, you should see the image listed *twice*.  Notice that the right-most column is "R/O"; this means "readonly".  When you pull an image with podman-hpc, it saves a image that is accessible only to the current node where you're running (that one has R/O `false`), but also saves one that will work on any perlmutter node (including compute nodes) (that one has R/O `true`).  Make sure the R/O `true` image is there.
+
+If you log into another login node, or into a compute node, and run `podman-hpc images`, you will *only* see the R/O `true` image.  This is fine; this is the one you need.
+
+You don't need to pull the image every time.  Only pull it if you don't have it yet, or if you want to update it with a newer versions that's been saved to the repository.
+
+#### Actually running
+
+You can run the image with
+```
+podman-hpc run -it registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu /bin/bash
+```
+that will start up a shell session running the CPU runtime image.  You can substitute other commands in place of `/bin/bash`; this is what you would do to write a slurm script.  (In that case, remove the `-it` from the command; those flags mean "interactive" and "terminal", and are what you need for a shell session.)   Almost certainly, however, you're going to need other arguments, in particular, `--mount` arguments that make the directories you want to read and write accessible inside the container.
+
+For the GPU, it's a little more complicated.  NERSC has it set up to inject some Cuda libraries into podman containers so they will play nice with the Cuda libraries on the host system.  However, by default, the docker container will not see these injected libraries, so you have to do some things to make it work.  First, though, make sure you're running the right version of the cuda toolkit on perlmutter.  Run
+```
+module list
+```
+In the list of modules, you should see `cudatoolkit/12.4`.  If you don't see that, then do
+```
+module load cudatoolkit/12.4
+```
+If you see a different version of `cudatoolkit`, then you need to unload that different version and load version 12.4.
+
+To run a container using the `cuda` or `cuda-dev` image, you need a couple of additional arguments to `podman-hpc` so that it will have access to the GPUs, and so that it will see the right libraries:
+```
+podman-hpc run \
+  --gpu \
+  --env LD_LIBRARY_PATH=/usr/lib64:/usr/lib/x86_64-linux-gnu:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs \
+  (...)
+  registry.nersc.gov/m4385/rknop/roman-snpit-env:cuda-dev \
+  <command>
+```
+(where, for an interactive shell session, `(...)` would include `-it` in addition to any needed mounts and other env vars you set, and `<command>` would be `/bin/bash`).
+
+For an example of using this Docker image, [phrosty example](https://github.com/Roman-Supernova-PIT/phrosty/tree/main/examples/perlmutter).
+
+
+### On other HPC systems with apptainer
+
+TODO
+
+---
+
+## Building the Docker image
+
+Hopefully you don't need to do this; see above.  If you do, read on.
+
+ROB WRITE MORE
+
+**One thing to look out for**: later, pip may install all the nvidia libraries itself!  You may need to do fancy things to get cuda-aware pip packages to use already-installed nvidia libraries.
+
+### About the base image
+
+Because I want to build the image for both cpu and gpu, and in a (perhaps futile) attempt to control the size of the Docker image, I don't build the image off of the nvidia/cuda images, but rather off of a base Linux distribution.
+
+The base image (in the first FROM statement) is the Daedalus release of Devuan.  Devuan is a close derivative of Debian that isn't based on systemd, so it's a very standard sort of Linux image.  I strongly suspect that the Dockerfile would build if we used the corresponding Debian base image.  [Here is a mapping of Deuvan versions to the associated Debian version](https://www.devuan.org/os/releases).
+
+This base devuan image should exist on docker.io, so things should "just work".  However, in the unlikely even that you you have to build it, you can do so on a Linux machine.
+
+1. Pull the image:
+   ```
+   sudo debootstrap --verbose --include=iputils-ping daedalus ./devuan-image http://pkgmaster.devuan.org/merged
+   ```
+
+2. chroot into the image, do any updates etc. that you want (as root!).  (For this image, I did basically nothing.)
+
+3. Make sure to do `apt clean` and `rm -rf /var/lib/apt/lists` to reduce image bloat
+
+4. Exit chroot
+
+5. Make Docker image:
+   ```
+   cd devuan-image
+   sudo tar cpf - . | docker import - <imagename>
+   ```
+   where `<imagename>` is where the image will live.  (I used `<imagename>=rknop/devuan-daedalus-rknop`, but you shouldn't use exactly that as you won't be able to push to my repo on docker.io.)
+
+6. Push the docker image as necessary.
+

@@ -2,7 +2,7 @@
 # 
 # Contact: Benjamin Rose, ben_rose@baylor.edu
 # History:
-#   - move most pip packages out to requirements.txt for compatibility
+#   - move most pip packages out to requirements-*.txt for compatibility
 #       with Dockerfile; rknop, 2025-04-24
 #   - initial testing, Jul 24, 2024
 # Usage:
@@ -21,7 +21,8 @@ dependencies:
   - fitsio   # was not installing as an implied dependency
   - pip
   - pip:
-      - -r requirements.txt
+      - -r requirements-cpu.txt
+      - -r requirements-cuda.txt
       - jdavis
       - bokeh
       - "git+https://github.com/Roman-Supernova-PIT/phrosty"

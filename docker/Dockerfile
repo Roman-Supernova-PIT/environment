@@ -14,57 +14,42 @@
 #
 # Build this in the top-level checkout of environment with
 #
-#  DOCKER_BUILDKIT=1 docker build --target snpit_env -t <tag> -f docker/Dockerfile .
+#   DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cpu" --target snpit_env -t <tag> -f docker/Dockerfile .
 #
-#  ( For NERSC, Rob uses registry.nersc.gov/m4385/rknop/roman-snpit-env:runtime )
+# * replace <tag> with the name of the Do0cker image.  ( For NERSC, Rob
+#    uses registry.nersc.gov/m4385/rknop/roman-snpit-env:runtime )
+#
+# * replace "IMAGE_TYPE=cpu" with "IMAGE_TYPE=cuda" to get an image that
+#   includes cuda libraries.
+
+ARG IMAGE_TYPE=cpu
+
+# As of this writing, here are the sizes of the various build stages:
+#
+# IMAGE_TYPE=cuda :
+#   cpu-base          879MB
+#   cpu-build-base    1.57GB
+#   pip-install-cpu   3.29GB
+#   compilations      3.29GB
+#   snpit_env         2.58GB   (all those pip packages bloat a lot even without the build deps)
+#   snpit_dev_env     3.27GB
+#
+# IMAGE_TYPE=cuda
+#   cpu-base           879MB
+#   cuda-base          3.5GB   (!!!) (inorite?)
+#   cuda-buiold-base   6.75GB  (!!!!!)
+#   pip-install-cpu    8.48GB
+#   pip-install-cuda   8.71GB
+#   compilations       8.71GB
+#   snpit_env          5.43GB
+#   snpit_dev_env      8.68GB
+
 
 # ======================================================================
-# This is the base target for building the image.  Rather than
-# use the nvidia images (which are huge), maye a (probably futile)
-# attempt to have smaller docker images by starting from
-# a base Linux distro and installing just the cuda packages we need.
-#
-# I'm still unhappy about how big this image is at the end.  A bunch
-# of it is unavoidable given the pip packages we install and how
-# big they are (nearly 2GB of stuff).
-#
-# One thing to look out for : later, pip may install all
-# the nvidia libraries itself!  You may need to do fancy
-# things to get cuda-aware pip packages to use already-installed
-# nvidia libraries.
+# This is the base target for CPU images (i.e. ones that don't include
+# cuda libraries).
 
-
-# The base image (in the first FROM statement) is the Daedalus release
-# of Devuan.  Devuan is a close derivative of Debian that isn't based on
-# systemd.  I strongly suspect that the Dockerfile would build if we
-# used the corresponding Debian base image.  To see the mapping of
-# Debian and Devuan versions, see: https://www.devuan.org/os/releases
-#
-# This base devuan image should exist on docker.io, so things should
-# "just work".  However, in the unlikely even that you you have to build
-# it, you can do so on a Linux machine.
-#
-#   1. Pull the image
-#        sudo debootstrap --verbose --include=iputils-ping daedalus ./devuan-image http://pkgmaster.devuan.org/merged
-#
-#   2. chroot into the image, do any updates etc. that you want (as root!)
-#        (For this image, I did basically nothing.)
-#
-#   3. Make sure to do `apt clean` and `rm -rf /var/lib/apt/lists` to reduce image bloat
-#
-#   4. Exit chroot
-#
-#   5. Make Docker image:
-#        cd devuan-image
-#        sudo tar cpf - . | docker import - <imagename>
-#      where <imagename> is where the image will live.  (I used
-#      <imagename>=rknop/devuan-daedalus-rknop, but you shouldn't use
-#      exactly that as you won't be able to push to my repo on
-#      docker.io.)
-#
-#   6. Push the docker image as necessary.
-
-FROM rknop/devuan-daedalus-rknop AS base
+FROM rknop/devuan-daedalus-rknop AS cpu-base
 
 LABEL maintainer="Rob Knop <raknop@lbl.gov>"
 
@@ -73,25 +58,9 @@ SHELL [ "/bin/bash", "-c" ]
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=UTC
 
-
-# Add the nvidia cuda apt archive
-RUN cat /etc/apt/sources.list | perl -pe 's/main$/main non-free contrib/' > /etc/apt/sources.list.new \
-   && mv /etc/apt/sources.list.new /etc/apt/sources.list
-COPY docker/cuda-archive-keyring.gpg /usr/share/keyrings/cuda-archive-keyring.gpg
-COPY docker/nvidia-container-toolkit-keyring.gpg /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
-COPY docker/cuda-debian12-x86_64.list /etc/apt/sources.list.d/cuda-debian12-x86_64.list
-COPY docker/nvidia-container.list /etc/apt/source.list.d/nvidia-container.list
-
-ENV NVIDIA_VISIBLE_DEVICES=all
-ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
-ENV NVIDIA_REQUIRE_CUDA="cuda>=8.0"
-
 # Make sure .debs are up to date, install additional things we globally
 #   need, including enough cuda packages for runtime.  Clean up all apt
 #   cache afterwards for space reasons.
-
-# NOTE: even though you'd think cudart-dev should only be in the build
-#   image, at least one file from it is needed by pycuda
 
 RUN apt-get update \
     && apt-get -y upgrade \
@@ -110,25 +79,9 @@ RUN apt-get update \
          unzip \
          vim-nox \
          wget \
-         cuda-cudart-12-4 \
-         cuda-cudart-dev-12-4 \
-         cuda-nvrtc-12-4 \
-         libcublas-12-4 \
-         libcudnn9-cuda-12 \
-         libcufft-12-4 \
-         libcurand-12-4 \
-         libcusolver-12-4 \
-         libcusparse-12-4 \
-         libnvidia-ml1 \
-         libnvjitlink-12-4 \
     && apt-get -y autoremove \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-
-ENV PATH=/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-# Have to have the /usr/lib/x86_64-linux-gnu first to stop things from
-#   finding the stub libcuda.so in /usr/local/cuda/lib64/stubs
-ENV LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs
 
 # Make sure the en_US.UTF8 locale is the default
 RUN cat /etc/locale.gen | perl -pe 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' > /etc/locale.gen.new \
@@ -146,13 +99,98 @@ RUN ln -s /usr/bin/source-extractor /usr/bin/sextractor
 # Some basic configs for sanity
 ENV LESS=-XLRi
 
+
+# ======================================================================
+# This is the base target for building cuda-based images.  It builds off
+# of the CPU base, so we don't have to repeat all the stuff that's done
+# there.
+
+FROM cpu-base AS cuda-base
+
+# Add the nvidia cuda apt archive
+RUN cat /etc/apt/sources.list | perl -pe 's/main$/main non-free contrib/' > /etc/apt/sources.list.new \
+   && mv /etc/apt/sources.list.new /etc/apt/sources.list
+COPY docker/cuda-archive-keyring.gpg /usr/share/keyrings/cuda-archive-keyring.gpg
+COPY docker/nvidia-container-toolkit-keyring.gpg /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+COPY docker/cuda-debian12-x86_64.list /etc/apt/sources.list.d/cuda-debian12-x86_64.list
+COPY docker/nvidia-container.list /etc/apt/source.list.d/nvidia-container.list
+
+# Set some nvidia-related environment variables
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
+ENV NVIDIA_REQUIRE_CUDA="cuda>=8.0"
+
+# Install some basic runtime Cuda packages.  This already bloats the
+# image more than I'd like, but by not including the full Cuda dev
+# environment, we save a couple of GB.  NOTE: even though you'd think
+# cudart-dev should only be in the build image, at least one file from
+# it is needed by pycuda
+
+RUN apt-get update \
+    && apt-get -y install \
+         cuda-cudart-12-4 \
+         cuda-cudart-dev-12-4 \
+         cuda-nvrtc-12-4 \
+         libcublas-12-4 \
+         libcudnn9-cuda-12 \
+         libcufft-12-4 \
+         libcurand-12-4 \
+         libcusolver-12-4 \
+         libcusparse-12-4 \
+         libnvidia-ml1 \
+         libnvjitlink-12-4 \
+    && apt-get -y autoremove \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Make sure that the cuda stuff is in the path
+ENV PATH=/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# LD_LIBRARY_PATH is very complicated; see the README.md file.
+# Have to have the /usr/lib/x86_64-linux-gnu first to stop things from
+#   finding the stub libcuda.so in /usr/local/cuda/lib64/stubs
+ENV LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs
+
+# ======================================================================
+# Install compilers and stuff that will be needed for building CPU stuff.
+
+FROM cpu-base AS cpu-build-base
+
+# EDITORS NOTE: make sure that the packages in the cuda-build-base stage
+#   below are a superset of the packages here.
+
+RUN apt-get update && \
+    apt-get -y install -y \
+       autoconf \
+       autotools-dev \
+       cmake \
+       cython3 \
+       g++ \
+       gdb \
+       gfortran \
+       git \
+       libbz2-dev \
+       libtool \
+       pkg-config \
+       python3-pip \
+       python3-venv \
+       valgrind \
+    && apt-get -y autoremove \
+    && apt-get clean
+
+
 # ======================================================================
 # Install compilers and stuff that will be needed for building,
-#   including cuda dev libraries.  This can also be used
-#   as a base for a "devel" image that has all this stuff included.
-# Including all this makes the docker image much bigger (+3.2GB)
+# including building Cuda stuff.  This has some redundancy with
+# cpu-build-base, but there's no clean way in multi-stage Docker builds
+# to do the kind of multiple inheritance necessary to accomplish what we
+# need here.
 
-FROM base AS buildbase
+FROM cuda-base AS cuda-build-base
+
+# EDITORS NOTE: Make sure that the packages below are a superset of the
+#   packges in the cpu-build-base stage above, and that the things here
+#   that aren't there are all cuda-related.
 
 RUN apt-get update && \
     apt-get -y install -y \
@@ -193,7 +231,7 @@ RUN apt-get update && \
 # with the usual pip multi-stage solution of not keeping all
 # the build dependencies.
 
-FROM buildbase AS pip-install
+FROM ${IMAGE_TYPE}-build-base AS pip-install-cpu
 
 RUN mkdir /usr/src/pip-install
 WORKDIR /usr/src/pip-install
@@ -204,18 +242,32 @@ RUN python3 -mvenv /venv
 
 # Copy in the requirements (which is the same file included by
 # sn_pit_dev.yaml.)
-COPY requirements.txt .
+COPY requirements-cpu.txt .
 
 # Install pip packages.
 RUN source /venv/bin/activate \
     && pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+    && pip install --no-cache-dir -r requirements-cpu.txt
+
+# ======================================================================
+# Add the pip packages needed for the cuda image
+
+FROM pip-install-cpu AS pip-install-cuda
+
+WORKDIR /usr/src/pip-install
+
+# Copy in the requirements (which is the same file included by
+# sn_pit_dev.yaml.)
+COPY requirements-cuda.txt .
+
+RUN source /venv/bin/activate \
+    && pip install --no-cache-dir -r requirements-cuda.txt
 
 
 # ======================================================================
 # Compile additional things
 
-FROM pip-install AS compilations
+FROM pip-install-${IMAGE_TYPE} AS compilations
 
 WORKDIR /usr/src
 
@@ -231,8 +283,9 @@ RUN git clone https://github.com/matroxel/roman_imsim.git \
   && cd .. \
   && rm -rf roman_imsim
 
+
 # ======================================================================
-FROM base AS snpit_env
+FROM ${IMAGE_TYPE}-base AS snpit_env
 
 # Copy the virtual environment from the pip-install stage
 COPY --from=compilations /venv /venv
@@ -244,8 +297,9 @@ ENV PATH="/venv/bin:$PATH"
 # Make sure roman_imsim is in the python path.
 ENV PYTHONPATH=/roman_imsim
 
+
 # ======================================================================
-FROM buildbase AS snpit_dev_env
+FROM ${IMAGE_TYPE}-build-base AS snpit_dev_env
 
 # Copy the virtual environment from the pip-install stage
 COPY --from=compilations /venv /venv
