@@ -11,10 +11,6 @@ sep==1.4.1
 setuptools_scm==8.3.1
 skyCatalogs==2.0.1
 tox==4.25.0
-pytest==8.3.5
-scikit-image==0.25.2
-sep==1.4.1
-skyCatalogs==2.0.1
 
 # This is an nvidia thing that phrosty uses for profiling
 nvtx==0.2.11
