@@ -68,6 +68,7 @@ RUN apt-get update \
          lsb-release \
          curl \
          emacs-nox \
+         git \
          less \
          libfftw3-bin \
          locales \
@@ -168,7 +169,6 @@ RUN apt-get update && \
        g++ \
        gdb \
        gfortran \
-       git \
        libbz2-dev \
        libtool \
        pkg-config \
@@ -203,7 +203,6 @@ RUN apt-get update && \
        g++ \
        gdb \
        gfortran \
-       git \
        libbz2-dev \
        libcublas-dev-12-4 \
        libcudnn9-dev-cuda-12 \
