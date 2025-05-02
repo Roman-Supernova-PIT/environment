@@ -16,8 +16,9 @@
 #
 #   DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cpu" --target snpit_env -t <tag> -f docker/Dockerfile .
 #
-# * replace <tag> with the name of the Do0cker image.  ( For NERSC, Rob
-#    uses registry.nersc.gov/m4385/rknop/roman-snpit-env:runtime )
+# * replace <tag> with the name of the Do0cker image.  (For NERSC, Rob uses:
+#       registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu
+#   replacing cpu with cpu-dev, cuda, or cuda-dev as appropriate.)
 #
 # * replace "IMAGE_TYPE=cpu" with "IMAGE_TYPE=cuda" to get an image that
 #   includes cuda libraries.
@@ -278,7 +279,7 @@ WORKDIR /usr/src
 RUN git clone https://github.com/matroxel/roman_imsim.git \
   && mkdir /roman_imsim \
   && cd roman_imsim \
-  && git archive 74a9053 | tar -x -C /roman_imsim  \
+  && git archive cb79efa | tar -x -C /roman_imsim  \
   && cd .. \
   && rm -rf roman_imsim
 
