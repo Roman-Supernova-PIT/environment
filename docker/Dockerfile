@@ -279,7 +279,7 @@ WORKDIR /usr/src
 RUN git clone https://github.com/matroxel/roman_imsim.git \
   && mkdir /roman_imsim \
   && cd roman_imsim \
-  && git archive cb79efa | tar -x -C /roman_imsim  \
+  && git archive 21ea15a | tar -x -C /roman_imsim  \
   && cd .. \
   && rm -rf roman_imsim
 
