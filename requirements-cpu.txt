@@ -27,6 +27,9 @@ stsynphot==1.4.0
 webbpsf==2.0.0
 xarray==2025.3.1
 
+# snpit packages
+snpit-utils==0.0.1
+
 # The next few are GUI/interactive things, so perhaps don't belong
 # in the Dockerfile.  For now, they've been moved to be explicitly
 # listed in the pip section of sn_pit_dev.yaml

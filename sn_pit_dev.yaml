@@ -2,6 +2,7 @@
 # 
 # Contact: Benjamin Rose, ben_rose@baylor.edu
 # History:
+#   - add snpit-utils to requirements-cpu.txt ; tag the version v0.0.1
 #   - move most pip packages out to requirements-*.txt for compatibility
 #       with Dockerfile; rknop, 2025-04-24
 #   - initial testing, Jul 24, 2024
@@ -25,6 +26,6 @@ dependencies:
       - -r requirements-cuda.txt
       - jdavis
       - bokeh
-      - "git+https://github.com/Roman-Supernova-PIT/phrosty"
       - "git+https://github.com/matroxel/roman_imsim"
-      - "git+https://github.com/laldoroty/sfft@pyswarp"
+      # - "git+https://github.com/Roman-Supernova-PIT/phrosty"
+      # - "git+https://github.com/laldoroty/sfft@pyswarp"

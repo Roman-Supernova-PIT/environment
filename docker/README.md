@@ -22,6 +22,12 @@ Warning: these images are built on an x86_64 Linux machine.  If you're on an ARM
 
 If you're on Windows, then your best bet is to reformat your hard drive and go to `https://liuxmint.com` (perhaps not in that order).  If you're on ChromeOS, then get a computer.  What you have right now is an oversize foldable phone that can't make calls.
 
+### Image versions
+
+The "latest version" (which really means whatever somebody happens to have uploaded most recently) of the images will always have tags `cpu`, `cpu-dev`, `cuda`, and `cuda-dev`.
+
+Specific release images, in case you want something stable, will have tags like `cpu-0.0.1`, `cuda-dev-0.0.1`, etc.  Browse either `hub.docker.com` or `registry.nersc.org` to see what versions are available.  Ideally, the specific-version images will correspond to the same tag in this github archive.
+
 ### On your local machine with Docker
 
 The latest version of the images that Rob has pushed can be found here:
@@ -114,7 +120,7 @@ TODO
 
 Hopefully you don't need to do this; see above.  If you do, read on.
 
-ROB WRITE MORE
+ROB WRITE MORE -- you can find some build instructions in the `Dockerfile` itself.
 
 **One thing to look out for**: later, pip may install all the nvidia libraries itself!  You may need to do fancy things to get cuda-aware pip packages to use already-installed nvidia libraries.
 
