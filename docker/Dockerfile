@@ -74,7 +74,9 @@ RUN apt-get update \
          libfftw3-bin \
          locales \
          python3 \
+         rlwrap \
          scamp \
+         socat \
          source-extractor \
          swarp \
          tzdata \

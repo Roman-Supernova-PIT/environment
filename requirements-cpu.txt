@@ -6,6 +6,7 @@ numba==0.61.2
 pyfftw==0.15.0           #needed for sfft, and pip+arm does not work
 pytest-doctestplus==1.4.0
 pytest==8.3.5
+remote-pdb==2.1.0
 scikit-image==0.25.2
 sep==1.4.1
 setuptools_scm==8.3.1
@@ -28,7 +29,7 @@ webbpsf==2.0.0
 xarray==2025.3.1
 
 # snpit packages
-snpit-utils==0.0.1
+snpit-utils==0.0.5
 
 # The next few are GUI/interactive things, so perhaps don't belong
 # in the Dockerfile.  For now, they've been moved to be explicitly
