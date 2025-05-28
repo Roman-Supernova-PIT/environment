@@ -74,7 +74,9 @@ RUN apt-get update \
          libfftw3-bin \
          locales \
          python3 \
+         rlwrap \
          scamp \
+         socat \
          source-extractor \
          swarp \
          tzdata \
@@ -141,8 +143,6 @@ RUN apt-get update \
          libcusparse-12-4 \
          libnvidia-ml1 \
          libnvjitlink-12-4 \
-         rlwrap \
-         socat \
     && apt-get -y autoremove \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
