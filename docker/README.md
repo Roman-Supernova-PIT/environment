@@ -64,10 +64,11 @@ There may also be versions of the images with things like `-v0.0.1` appended to 
 
 First, you need to make sure to log in to the nersc registry.  (It's possible that if you've done this before, you won't need to again, as a file may have been saved in your home directory caching your credentials.  If you skip this step, and get an authentication error on the next step, come back and do this step.)
 ```
-podmah-hpc login registry.nersc.gov
+podman-hpc login registry.nersc.gov
 ```
+It will prompt you for your username and password.  Use your regular nersc username and password; just use the password, do *not* append a OTP number the way you do when logging into a node.
 
-Actually pull the image on any node with the following command:
+Once you're authenticated on the registry, actually pull the image on any node with the following command:
 ```
 podman-hpc pull <imagename>
 ```
