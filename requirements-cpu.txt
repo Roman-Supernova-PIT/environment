@@ -1,9 +1,11 @@
 devpi_process==1.0.2
 dust_extinction==1.5
+fastparquet==2024.11.0
 fastremap==1.15.2
 fitsio==1.2.5
 h5py==3.13.0
 numba==0.61.2
+pyarrow==20.0.0
 pyfftw==0.15.0           #needed for sfft, and pip+arm does not work
 pytest-doctestplus==1.4.0
 pytest==8.3.5

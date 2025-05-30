@@ -24,7 +24,7 @@ dependencies:
   - pip:
       - -r requirements-cpu.txt
       - -r requirements-cuda.txt
-      - jdavis
+      - jdaviz
       - bokeh
       - "git+https://github.com/matroxel/roman_imsim"
       # - "git+https://github.com/Roman-Supernova-PIT/phrosty"
