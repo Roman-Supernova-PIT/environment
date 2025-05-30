@@ -1,2 +1,2 @@
 cupy-cuda12x==13.4.1
-sfft-romansnpit==1.6.4.dev4
+sfft-romansnpit==1.6.4.dev5

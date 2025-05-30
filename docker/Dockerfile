@@ -38,7 +38,7 @@ ARG IMAGE_TYPE=cpu
 # IMAGE_TYPE=cuda
 #   cpu-base           879MB
 #   cuda-base          3.5GB   (!!!) (inorite?)
-#   cuda-buiold-base   6.75GB  (!!!!!)
+#   cuda-build-base    6.75GB  (!!!!!)
 #   pip-install-cpu    8.48GB
 #   pip-install-cuda   8.71GB
 #   compilations       8.71GB
@@ -70,8 +70,10 @@ RUN apt-get update \
          curl \
          emacs-nox \
          git \
+         hdf5-tools \
          less \
          libfftw3-bin \
+         libhdf5-103-1 \
          locales \
          python3 \
          rlwrap \

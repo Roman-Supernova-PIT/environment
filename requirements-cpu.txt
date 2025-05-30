@@ -2,6 +2,7 @@ devpi_process==1.0.2
 dust_extinction==1.5
 fastremap==1.15.2
 fitsio==1.2.5
+h5py==3.13.0
 numba==0.61.2
 pyfftw==0.15.0           #needed for sfft, and pip+arm does not work
 pytest-doctestplus==1.4.0
@@ -29,7 +30,8 @@ webbpsf==2.0.0
 xarray==2025.3.1
 
 # snpit packages
-snpit-utils==0.0.5
+snpit-utils==0.0.6
+roman-snpit-snappl==0.3.0
 
 # The next few are GUI/interactive things, so perhaps don't belong
 # in the Dockerfile.  For now, they've been moved to be explicitly
