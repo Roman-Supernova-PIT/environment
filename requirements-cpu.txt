@@ -4,6 +4,7 @@ fastparquet==2024.11.0
 fastremap==1.15.2
 fitsio==1.2.5
 h5py==3.13.0
+ipykernel==6.29.5
 numba==0.61.2
 pyarrow==20.0.0
 pyfftw==0.15.0           #needed for sfft, and pip+arm does not work
@@ -32,7 +33,7 @@ webbpsf==2.0.0
 xarray==2025.3.1
 
 # snpit packages
-snpit-utils==0.0.6
+snpit-utils==0.0.7
 roman-snpit-snappl==0.4.0
 
 # The next few are GUI/interactive things, so perhaps don't belong
