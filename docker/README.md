@@ -18,7 +18,7 @@ Ideally, you will not need to build the docker images yourself, but can use ones
 
 Note that if you're using `pycuda`, you may be stuck with using the full enormous `cuda-dev` image, as it seems not to work with just the `cuda` image.  Hopefully at some point Rob will figure out the minimum number of packages to move from the `cuda-dev` to the `cuda` image to make `pycuda` work without having to use the 10GB docker image.
 
-Warning: these images are built on an x86_64 Linux machine.  If you're on an ARM Linux box, on an x86_64 Mac, or, heaven forbid, an ARM Mac, it's possible you will have problems.  (This is especially true with the Cuda images.)  While the obvious solution is to just get an x86_64 Linux desktop or laptop, you may be able to get things to work by just rebuilding the images yourself with docker.  (It's possible that more work will be needed— you may need to reduild the devuan base image and edit the Dockerfile— and it's also possible that not all of the pip packages we use fully support ARM, so it may not work at all.)
+Warning: these images are built on an x86_64 Linux machine.  If you're on an ARM Linux box, on an x86_64 Mac, or, heaven forbid, an ARM Mac, it's possible you will have problems.  (This is especially true with the Cuda images.)  While the obvious solution is to just get an x86_64 Linux desktop or laptop, you may be able to get things to work by just rebuilding the images yourself with docker.
 
 If you're on Windows, then your best bet is to reformat your hard drive and go to `https://liuxmint.com` (perhaps not in that order).  If you're on ChromeOS, then get a computer.  What you have right now is an oversize foldable phone that can't make calls.
 
@@ -129,32 +129,3 @@ Hopefully you don't need to do this; see above.  If you do, read on.
 ROB WRITE MORE -- you can find some build instructions in the `Dockerfile` itself.
 
 **One thing to look out for**: later, pip may install all the nvidia libraries itself!  You may need to do fancy things to get cuda-aware pip packages to use already-installed nvidia libraries.
-
-### About the base image
-
-Because I want to build the image for both cpu and gpu, and in a (perhaps futile) attempt to control the size of the Docker image, I don't build the image off of the nvidia/cuda images, but rather off of a base Linux distribution.
-
-The base image (in the first FROM statement) is the Daedalus release of Devuan.  Devuan is a close derivative of Debian that isn't based on systemd, so it's a very standard sort of Linux image.  I strongly suspect that the Dockerfile would build if we used the corresponding Debian base image.  [Here is a mapping of Deuvan versions to the associated Debian version](https://www.devuan.org/os/releases).
-
-This base devuan image should exist on docker.io, so things should "just work".  However, in the unlikely even that you you have to build it, you can do so on a Linux machine.
-
-1. Pull the image:
-   ```
-   sudo debootstrap --verbose --include=iputils-ping daedalus ./devuan-image http://pkgmaster.devuan.org/merged
-   ```
-
-2. chroot into the image, do any updates etc. that you want (as root!).  (For this image, I did basically nothing.)
-
-3. Make sure to do `apt clean` and `rm -rf /var/lib/apt/lists` to reduce image bloat
-
-4. Exit chroot
-
-5. Make Docker image:
-   ```
-   cd devuan-image
-   sudo tar cpf - . | docker import - <imagename>
-   ```
-   where `<imagename>` is where the image will live.  (I used `<imagename>=rknop/devuan-daedalus-rknop`, but you shouldn't use exactly that as you won't be able to push to my repo on docker.io.)
-
-6. Push the docker image as necessary.
-

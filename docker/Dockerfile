@@ -25,33 +25,33 @@
 
 ARG IMAGE_TYPE=cpu
 
-# As of this writing (2025-05-30, corresponding to version 0.0.5 of the
+# As of this writing (2025-08-11, corresponding to version 0.0.12 of the
 # environent), here are the sizes of the various build stages:
 #
-# IMAGE_TYPE=cuda :
-#   cpu-base          976MB
-#   cpu-build-base    1.61GB
-#   pip-install-cpu   3.44GB
-#   compilations      3.44GB
-#   snpit_env         2.77GB   (all those pip packages bloat a lot even without the build deps)
-#   snpit_dev_env     3.40GB
+# IMAGE_TYPE=cpu :
+#   cpu-base          865MB
+#   cpu-build-base    1.44GB
+#   pip-install-cpu   3.33GB
+#   compilations      3.33GB
+#   snpit_env         2.72GB   (all those pip packages bloat a lot even without the build deps)
+#   snpit_dev_env     3.29GB
 #
 # IMAGE_TYPE=cuda
-#   cpu-base           879MB
-#   cuda-base          3.66GB   (!!!) (inorite?)
-#   cuda-build-base    6.80GB   (!!!!!)
-#   pip-install-cpu    8.63GB
-#   pip-install-cuda   8.86GB
-#   compilations       8.86GB
-#   snpit_env          5.62GB
-#   snpit_dev_env      8.82GB
+#   cpu-base           865MB
+#   cuda-base          3.30GB   (!!!) (inorite?)
+#   cuda-build-base    6.43GB   (!!!!!)
+#   pip-install-cpu    8.33GB
+#   pip-install-cuda   8.56GB
+#   compilations       8.56GB
+#   snpit_env          5.39GB
+#   snpit_dev_env      8.52GB
 
 
 # ======================================================================
 # This is the base target for CPU images (i.e. ones that don't include
 # cuda libraries).
 
-FROM rknop/devuan-daedalus-rknop AS cpu-base
+FROM debian:bookworm AS cpu-base
 
 LABEL maintainer="Rob Knop <raknop@lbl.gov>"
 
@@ -76,12 +76,14 @@ RUN apt-get update \
          libfftw3-bin \
          libhdf5-103-1 \
          locales \
+         procps \
          python3 \
          rlwrap \
          scamp \
          socat \
          source-extractor \
          swarp \
+         tmux \
          tzdata \
          unzip \
          vim-nox \
@@ -216,7 +218,6 @@ RUN apt-get update && \
        libcurand-dev-12-4 \
        libcusolver-dev-12-4 \
        libcusparse-dev-12-4 \
-       libnvidia-ml-dev \
        libtool \
        pkg-config \
        python3-pip \
