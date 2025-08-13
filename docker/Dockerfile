@@ -148,6 +148,7 @@ RUN apt-get update \
          libcusparse-12-4 \
          libnvidia-ml1 \
          libnvjitlink-12-4 \
+         nvidia-smi \
     && apt-get -y autoremove \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
