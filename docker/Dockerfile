@@ -76,6 +76,7 @@ RUN apt-get update \
          libfftw3-bin \
          libhdf5-103-1 \
          locales \
+         postgresql-client \
          procps \
          python3 \
          rlwrap \

@@ -6,6 +6,7 @@ fitsio==1.2.5
 h5py==3.13.0
 ipykernel==6.29.5
 numba==0.61.2
+psycopg==3.2.9
 pyarrow==20.0.0
 pyfftw==0.15.0           #needed for sfft, and pip+arm does not work
 pytest-doctestplus==1.4.0
