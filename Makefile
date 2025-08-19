@@ -29,15 +29,15 @@ docker-images:
 		docker.io/rknop/roman-snpit-env:cpu
 	docker tag registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu-dev-$(VER) \
 		docker.io/rknop/roman-snpit-env:cpu-dev-$(VER)
-	docker tag registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu-$(VER) \
+	docker tag registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu-dev-$(VER) \
 		docker.io/rknop/roman-snpit-env:cpu-dev
 	docker tag registry.nersc.gov/m4385/rknop/roman-snpit-env:cuda-$(VER) \
 		docker.io/rknop/roman-snpit-env:cuda-$(VER)
-	docker tag registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu-$(VER) \
+	docker tag registry.nersc.gov/m4385/rknop/roman-snpit-env:cuda-$(VER) \
 		docker.io/rknop/roman-snpit-env:cuda
 	docker tag registry.nersc.gov/m4385/rknop/roman-snpit-env:cuda-dev-$(VER) \
 		docker.io/rknop/roman-snpit-env:cuda-dev-$(VER)
-	docker tag registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu-dev-$(VER) \
+	docker tag registry.nersc.gov/m4385/rknop/roman-snpit-env:cuda-dev-$(VER) \
 		docker.io/rknop/roman-snpit-env:cuda-dev
 
 push-docker-images:
