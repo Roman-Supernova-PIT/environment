@@ -29,22 +29,22 @@ ARG IMAGE_TYPE=cpu
 # environent), here are the sizes of the various build stages:
 #
 # IMAGE_TYPE=cpu :
-#   cpu-base          865MB
+#   cpu-base          873MB
 #   cpu-build-base    1.44GB
-#   pip-install-cpu   3.33GB
-#   compilations      3.33GB
-#   snpit_env         2.72GB   (all those pip packages bloat a lot even without the build deps)
-#   snpit_dev_env     3.29GB
+#   pip-install-cpu   3.34GB
+#   compilations      3.34GB
+#   snpit_env         2.73GB   (all those pip packages bloat a lot even without the build deps)
+#   snpit_dev_env     3.30GB
 #
 # IMAGE_TYPE=cuda
-#   cpu-base           865MB
-#   cuda-base          3.30GB   (!!!) (inorite?)
-#   cuda-build-base    6.43GB   (!!!!!)
-#   pip-install-cpu    8.33GB
-#   pip-install-cuda   8.56GB
-#   compilations       8.56GB
-#   snpit_env          5.39GB
-#   snpit_dev_env      8.52GB
+#   cpu-base           873MB
+#   cuda-base          4.39GB   (!!!) (inorite?)
+#   cuda-build-base    9.73GB   (!!!!!)
+#   pip-install-cpu    11.6GB
+#   pip-install-cuda   11.9GB
+#   compilations       11.9GB
+#   snpit_env          6.48GB
+#   snpit_dev_env      11.9GB
 
 
 # ======================================================================
@@ -149,7 +149,7 @@ RUN apt-get update \
          libcusparse-12-4 \
          libnvidia-ml1 \
          libnvjitlink-12-4 \
-         nvidia-smi \
+         nvidia-driver-cuda \
     && apt-get -y autoremove \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -221,6 +221,8 @@ RUN apt-get update && \
        libcusolver-dev-12-4 \
        libcusparse-dev-12-4 \
        libtool \
+       nsight-systems-2025.3.2 \
+       nsight-compute-2025.3.0 \
        pkg-config \
        python3-pip \
        python3-venv \

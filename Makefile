@@ -57,3 +57,35 @@ push-docker-images:
 	docker push docker.io/rknop/roman-snpit-env:cuda
 	docker push docker.io/rknop/roman-snpit-env:cuda-dev-$(VER)
 	docker push docker.io/rknop/roman-snpit-env:cuda-dev
+
+# This next one creates an image for every build stage, in case you want
+#   to diagnose how big each build stage is.  Just run "make mess".
+mess:
+	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cpu" --target cpu-base \
+		-t roman-snpit-env:cpu-base -f docker/Dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cpu" --target cpu-build-base \
+		-t roman-snpit-env:cpu-build-base -f docker/Dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cpu" --target pip-install-cpu \
+		-t roman-snpit-env:pip-install-cpu -f docker/Dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cpu" --target compilations  \
+		-t roman-snpit-env:compilations -f docker/Dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cpu" --target snpit_env \
+		-t roman-snpit-env:spit_env -f docker/Dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cpu" --target snpit_dev_env \
+		-t roman-snpit-env:spit_dev_env -f docker/Dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cuda" --target cpu-base \
+		-t roman-snpit-env:cuda_cpu-base -f docker/Dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cuda" --target cuda-base \
+		-t roman-snpit-env:cuda_cuda-base -f docker/Dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cuda" --target cuda-build-base \
+		-t roman-snpit-env:cuda_cuda-build-base -f docker/Dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cuda" --target pip-install-cpu \
+		-t roman-snpit-env:cuda_pip-install-cpu -f docker/Dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cuda" --target pip-install-cuda \
+		-t roman-snpit-env:cuda_pip-install-cuda -f docker/Dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cuda" --target compilations \
+		-t roman-snpit-env:cuda_compilations -f docker/Dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cuda" --target snpit_env \
+		-t roman-snpit-env:cuda_snpit_env -f docker/Dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cuda" --target snpit_dev_env \
+		-t roman-snpit-env:cuda_snpit_dev_env -f docker/Dockerfile .
