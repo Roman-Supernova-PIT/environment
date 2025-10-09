@@ -2,11 +2,7 @@ devpi_process==1.0.2
 dust_extinction==1.5
 fastparquet==2024.11.0
 fastremap==1.15.2
-fitsio==1.2.5
-h5py==3.13.0
 ipykernel==6.29.5
-numba==0.61.2
-psycopg==3.2.9
 pyarrow==20.0.0
 pyfftw==0.15.0           #needed for sfft, and pip+arm does not work
 pytest-doctestplus==1.4.0
@@ -24,10 +20,8 @@ nvtx==0.2.11
 
 # roman-sci platform packages and preqrequisites
 pandeia.engine==2025.3
-rad==0.24.0
-roman-datamodels==0.23.1
-romancal==0.18.0
-romanisim==0.8.0
+romancal==0.20.2
+romanisim==0.10.0
 s3fs==2025.3.2
 stips==2.2.2
 stsynphot==1.4.0
@@ -35,8 +29,9 @@ webbpsf==2.0.0
 xarray==2025.3.1
 
 # snpit packages
-snpit-utils==0.0.11
-roman-snpit-snappl==0.14.0
+# (Preqreqs of these will pull in other standard things like numpy, scipy, roman-datamodels.)
+snpit-utils==0.0.12
+roman-snpit-snappl==0.15.0
 
 # The next few are GUI/interactive things, so perhaps don't belong
 # in the Dockerfile.  For now, they've been moved to be explicitly

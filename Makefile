@@ -58,6 +58,24 @@ push-docker-images:
 	docker push docker.io/rknop/roman-snpit-env:cuda-dev-$(VER)
 	docker push docker.io/rknop/roman-snpit-env:cuda-dev
 
+pull-docker-images:
+	docker pull registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu-$(VER)
+	docker pull registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu
+	docker pull registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu-dev-$(VER)
+	docker pull registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu-dev
+	docker pull registry.nersc.gov/m4385/rknop/roman-snpit-env:cuda-$(VER)
+	docker pull registry.nersc.gov/m4385/rknop/roman-snpit-env:cuda
+	docker pull registry.nersc.gov/m4385/rknop/roman-snpit-env:cuda-dev-$(VER)
+	docker pull registry.nersc.gov/m4385/rknop/roman-snpit-env:cuda-dev
+	docker pull docker.io/rknop/roman-snpit-env:cpu-$(VER)
+	docker pull docker.io/rknop/roman-snpit-env:cpu
+	docker pull docker.io/rknop/roman-snpit-env:cpu-dev-$(VER)
+	docker pull docker.io/rknop/roman-snpit-env:cpu-dev
+	docker pull docker.io/rknop/roman-snpit-env:cuda-$(VER)
+	docker pull docker.io/rknop/roman-snpit-env:cuda
+	docker pull docker.io/rknop/roman-snpit-env:cuda-dev-$(VER)
+	docker pull docker.io/rknop/roman-snpit-env:cuda-dev
+
 # This next one creates an image for every build stage, in case you want
 #   to diagnose how big each build stage is.  Just run "make mess".
 mess:
