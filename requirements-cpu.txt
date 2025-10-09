@@ -14,6 +14,7 @@ sep==1.4.1
 setuptools_scm==8.3.1
 skyCatalogs==2.0.1
 tox==4.25.0
+zope.event==5.1     #dependency hell: latest zope.event (from gevent) wants setuptools>=75.8.2, galsim wants <72
 
 # This is an nvidia thing that phrosty uses for profiling
 nvtx==0.2.11
