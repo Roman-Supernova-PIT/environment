@@ -2,33 +2,115 @@
 # run locally, or on github CI.  It has a backend database and database
 # web server running, based on the current main of roman-snpit-db
 #
-# Call the directory where you checked out the environment git repo the
-# "base" directory.
+# HOW TO USE THIS ENVIRONMENT
+#  * Pick a directory to work, and call it your "base" directory.
 #
-# FOR THIS TO WORK:
-#  * You must have checked out the environment repo in the base directory
+#  * Check out the following repos in your base directory:
+#    (You may want to check out the "git@github.com:" instead of
+#    "https://github.com" versions if you know what you're doing.)
 #
-#  * the following docker images must exist in the expected docker repositories:
-#       snpit-db-postgres:{version}
-#       snpit-db-webserver-test:{version}
-#    where {version} is *either* the defaults in the image: fields below,
-#    or the env var DOCKER_COMPOSE when you run the docker compose.
-#    The "expected docker repositories" is by default
-#    ghcr.io/roman-supernova-pit, but you can change that with the env var DOCKER_ARCHIVE.
+#     - REQUIRED : the environment repo
+#         https://github.com/Roman-Supernova-PIT/environment
 #
-#  * Then, in base/environment/test-docker-environment just run
-#      docker compose up -d webserver shell.
+#     - REQUIRED : photometry_test_data
+#       If you need it, check out:
+#         https://github.com/Roman-Supernova-PIT/photometry_test_data.git
+#       Otherwise, just make an empty directory photometry_test_data
+#       underneath base.  (Even if you aren't going to use it,
+#       this docker compose file requires the directory to exist.)
 #
-# It mounts the base to /home, so if you need to have
-# other subdirectories for your test, check them out in base directory and make sure to use
-# /home/<whatever> inside the container.  For instance, if you're running snpit_utils
-# tests, make sure to checkout the version you want of snpit_utils
-# and then inside the container use /home/snpit_utils
+#     - Other repos you want to work with, like snpit_utils, snappl,
+#       phrosty, campari, sidecar, etc.
 #
-# It will pull the roman-snpit-env environment from
-#    ${ENV_DOCKER_ARCHIVE}/roman-snpit-env:${WHICHENV}
-# ENV_DOCKER_ARCHIVE defaults to registry.nersc.gov/m4385/rknop
-# WHICHENV defaults to cpu, and will usually be one of cpu, cpu-dev, cuda, or cuda-dev
+#  * OPTIONALLY : modify this docker-compose.yaml file to add
+#    additional bind-mounts to the "shell" container below.
+#    This requires knowing what you're doing.  DO NOT CHECK THESE
+#    CHANGES BACK INTO THE ENVIRONMENT REPO; they are for your
+#    own personal use.  You will need to do this if, e.g., you
+#    want to write things to $SCRATCH on perlmutter.  Talk to
+#    Rob about doing this if you don't know how yet.
+#
+#  * Figure out the database docker images.
+#     - Set DB_DOCKER_ARCHIVE env var to the repository where they're
+#       found, if necessary.
+#
+#     - Set DB_DOCKER_VERSION env var to the version of the database docker
+#       images, if necessary.
+#
+#       The repo where the database docker images are found will be one
+#       of the following.  The default is the first on the list; if you
+#       can read from that, then you can just use that and don't
+#       actually need to set DB_DOCKER_ARCHIVE.  If you can't read from
+#       that, then try one of the other two.  You will need to log in
+#       to the nersc repo, but the "rknop" repo (which is on dockerhub)
+#       should be public.  Rob will strive to keep updated images in
+#       all three places.
+#         * ghcr.io/roman-supernova-pit
+#         * rknop
+#         * registry.nersc.gov/m4385
+#
+#       For the version of the database docker images, you can probably
+#       just use the default, which means you don't need to set the
+#       variable.  However, you might want to know what it is so you can
+#       pull the docker images rather than have to build them.  Search
+#       for the word "image:" below; at the end of the line, you'll
+#       see the default version, which is something like "test20250819"
+#       (only the date might increment later).  If know what you're
+#       doing and want to use a different version, then you need to
+#       set the env var DB_DOCKER_VERSION.
+#  
+#  * Pull the database docker images.  This is done with docker below,
+#    but on nersc you might do it with "podman-hpc pull".
+#       * docker pull ${DB_DOCKER_ARCHIVE}/snpit-db-postgres:${DB_DOCKER_VERSION}
+#       * docker pull ${DB_DOCKER_ARCHIVE}/snpit-db-webserver-test:${DB_DOCKER_VERSION}
+#    (You can substitute the literals in place of the env vars, of
+#    course.)
+#
+#  * Figure out where you are going to get the Roman SNPIT environment
+#    docker image from.  You can choose either of:
+#       * registry.nersc.gov/m4385/rknop
+#       * rknop
+#    To use the first one, you will need to "docker login" or
+#    "podman-hpc login" to registry.nersc.gov.
+#
+#    Set the env var ENV_DOCKER_ARCHIVE to rknop if you aren't using the
+#    nersc registry.
+#
+#  * Figure out which Roman SNPIT environment variant you want.  There
+#    are four:
+#      - cpu
+#      - cpu-dev
+#      - cuda
+#      - cuda-dev
+#    Usually you want to use "cpu".  If you're dealing with phrosty or
+#    sidecar, you probably need "cuda-dev" (which is much, much huger).
+#
+#    Set the env var WHICHENV to the variant you want.
+#
+#  * Pull the Roman SNPIT environment, replacing "docker" with
+#   "podman-hpc" if you're on NERSC:
+#      docker pull ${ENV_DOCKER_ARCHIVE}/roman-snpit-env:${WHICHENV}
+#
+#  * Start the environment.  Under your base directory:
+#      cd environment/test-docker-environment
+#      docker compose up -d webserver shell
+#
+#  At this point, if all is well, you should see a bunch of green lines
+#  saying that images are started and running.  If there are any errors,
+#  then you need to diagonose them.  You can use "docker logs" to look
+#  at the output of failed containers (and others) to try to figure out
+#  what happened.
+#
+#  You can get a shell to do things in with
+#
+#    docker compose exec -it shell /bin/bash
+#
+#  Inside the container, your base directory is mounted at /home.
+#
+#  When you're done, run
+#
+#    docker compose down -v
+
 
 services:
   mailhog:
@@ -37,7 +119,7 @@ services:
         - "8025:8025"
 
   postgres:
-    image: ${DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-postgres:${DOCKER_VERSION:-test20250819}
+    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-postgres:${DB_DOCKER_VERSION:-test20250819}
     build:
       context: ../../roman-snpit-db/docker/postgres
       target: postgres
@@ -59,7 +141,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    image: ${DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DOCKER_VERSION:-test20250819}
+    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20250819}
     build:
       context: ../../roman-snpit-db/
       dockerfile: docker/webserver/Dockerfile
@@ -82,7 +164,7 @@ services:
       interval: 5s
       timeout: 10s
       retries: 5
-    image: ${DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DOCKER_VERSION:-test20250819}
+    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20250819}
     build:
       context: ../../roman-snpit-db/
       dockerfile: docker/webserver/Dockerfile
@@ -95,7 +177,7 @@ services:
       
 
   shell:
-    image: ${ENV_DOCKER_ARCHIVE:-registry.nersc.gov/m4385/rknop}/roman-snpit-env:${WHICHENV:-cpu}
+    image: ${ENV_DOCKER_ARCHIVE:-rknop}/roman-snpit-env:${WHICHENV:-cpu}
     volumes:
       - type: bind
         source: secrets
@@ -104,9 +186,11 @@ services:
       - type: bind
         source: ../../
         target: /home
+      - type: bind
+        source: ../../
+        target: /photometry_test_data
     working_dir: /home
     command: tail -f /etc/issue
-
 
 volumes:
   postgres_data:
