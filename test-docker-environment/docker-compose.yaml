@@ -187,7 +187,7 @@ services:
         source: ../../
         target: /home
       - type: bind
-        source: ../../
+        source: ../../photometry_test_data
         target: /photometry_test_data
     working_dir: /home
     command: tail -f /etc/issue
