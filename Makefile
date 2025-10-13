@@ -39,6 +39,22 @@ docker-images:
 		docker.io/rknop/roman-snpit-env:cuda-dev-$(VER)
 	docker tag registry.nersc.gov/m4385/rknop/roman-snpit-env:cuda-dev-$(VER) \
 		docker.io/rknop/roman-snpit-env:cuda-dev
+	docker tag registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu-$(VER) \
+		ghcr.io/roman-supernova-pit/roman-snpit-env:cpu-$(VER)
+	docker tag registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu-$(VER) \
+		ghcr.io/roman-supernova-pit/roman-snpit-env:cpu
+	docker tag registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu-dev-$(VER) \
+		ghcr.io/roman-supernova-pit/roman-snpit-env:cpu-dev-$(VER)
+	docker tag registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu-dev-$(VER) \
+		ghcr.io/roman-supernova-pit/roman-snpit-env:cpu-dev
+	docker tag registry.nersc.gov/m4385/rknop/roman-snpit-env:cuda-$(VER) \
+		ghcr.io/roman-supernova-pit/roman-snpit-env:cuda-$(VER)
+	docker tag registry.nersc.gov/m4385/rknop/roman-snpit-env:cuda-$(VER) \
+		ghcr.io/roman-supernova-pit/roman-snpit-env:cuda
+	docker tag registry.nersc.gov/m4385/rknop/roman-snpit-env:cuda-dev-$(VER) \
+		ghcr.io/roman-supernova-pit/roman-snpit-env:cuda-dev-$(VER)
+	docker tag registry.nersc.gov/m4385/rknop/roman-snpit-env:cuda-dev-$(VER) \
+		ghcr.io/roman-supernova-pit/roman-snpit-env:cuda-dev
 
 push-docker-images:
 	docker push registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu-$(VER)
@@ -57,6 +73,14 @@ push-docker-images:
 	docker push docker.io/rknop/roman-snpit-env:cuda
 	docker push docker.io/rknop/roman-snpit-env:cuda-dev-$(VER)
 	docker push docker.io/rknop/roman-snpit-env:cuda-dev
+	docker push ghcr.io/roman-supernova-pit/roman-snpit-env:cpu-$(VER)
+	docker push ghcr.io/roman-supernova-pit/roman-snpit-env:cpu
+	docker push ghcr.io/roman-supernova-pit/roman-snpit-env:cpu-dev-$(VER)
+	docker push ghcr.io/roman-supernova-pit/roman-snpit-env:cpu-dev
+	docker push ghcr.io/roman-supernova-pit/roman-snpit-env:cuda-$(VER)
+	docker push ghcr.io/roman-supernova-pit/roman-snpit-env:cuda
+	docker push ghcr.io/roman-supernova-pit/roman-snpit-env:cuda-dev-$(VER)
+	docker push ghcr.io/roman-supernova-pit/roman-snpit-env:cuda-dev
 
 pull-docker-images:
 	docker pull registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu-$(VER)
@@ -75,6 +99,14 @@ pull-docker-images:
 	docker pull docker.io/rknop/roman-snpit-env:cuda
 	docker pull docker.io/rknop/roman-snpit-env:cuda-dev-$(VER)
 	docker pull docker.io/rknop/roman-snpit-env:cuda-dev
+	docker pull ghcr.io/roman-supernova-pit/roman-snpit-env:cpu-$(VER)
+	docker pull ghcr.io/roman-supernova-pit/roman-snpit-env:cpu
+	docker pull ghcr.io/roman-supernova-pit/roman-snpit-env:cpu-dev-$(VER)
+	docker pull ghcr.io/roman-supernova-pit/roman-snpit-env:cpu-dev
+	docker pull ghcr.io/roman-supernova-pit/roman-snpit-env:cuda-$(VER)
+	docker pull ghcr.io/roman-supernova-pit/roman-snpit-env:cuda
+	docker pull ghcr.io/roman-supernova-pit/roman-snpit-env:cuda-dev-$(VER)
+	docker pull ghcr.io/roman-supernova-pit/roman-snpit-env:cuda-dev
 
 # This next one creates an image for every build stage, in case you want
 #   to diagnose how big each build stage is.  Just run "make mess".

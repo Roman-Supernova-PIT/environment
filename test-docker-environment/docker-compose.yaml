@@ -70,7 +70,8 @@
 #    course.)
 #
 #  * Figure out where you are going to get the Roman SNPIT environment
-#    docker image from.  You can choose either of:
+#    docker image from.  You can choose one of:
+#       * ghcr.io/roman-supernova-pit
 #       * registry.nersc.gov/m4385/rknop
 #       * rknop
 #    To use the first one, you will need to "docker login" or
@@ -180,7 +181,7 @@ services:
       
 
   shell:
-    image: ${ENV_DOCKER_ARCHIVE:-rknop}/roman-snpit-env:${WHICHENV:-cpu}
+    image: ${ENV_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/roman-snpit-env:${WHICHENV:-cpu}
     volumes:
       - type: bind
         source: secrets
