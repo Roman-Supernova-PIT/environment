@@ -193,7 +193,7 @@ services:
         source: ../../photometry_test_data
         target: /photometry_test_data
     working_dir: /home
-    command: >
+    command: |
       bash -c "ln -s /home/environment/test-docker-environment/default_test_config.yaml /default_test_config.yaml
                tail -f /etc/issue"
 
