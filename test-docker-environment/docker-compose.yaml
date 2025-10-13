@@ -13,14 +13,17 @@
 #         https://github.com/Roman-Supernova-PIT/environment
 #
 #     - REQUIRED : photometry_test_data
-#       If you need it, check out:
+#       If what you're going to test really needs it, check out:
 #         https://github.com/Roman-Supernova-PIT/photometry_test_data.git
 #       Otherwise, just make an empty directory photometry_test_data
 #       underneath base.  (Even if you aren't going to use it,
 #       this docker compose file requires the directory to exist.)
 #
-#     - Other repos you want to work with, like snpit_utils, snappl,
-#       phrosty, campari, sidecar, etc.
+#     - REQUIRED : snappl
+#         https://githum.com/Roman-Supernova-PIT/snappl
+#
+#     - Other repos you want to work with, like phrosty, campari,
+#       sidecar, etc.
 #
 #  * OPTIONALLY : modify this docker-compose.yaml file to add
 #    additional bind-mounts to the "shell" container below.
@@ -121,7 +124,7 @@ services:
   postgres:
     image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-postgres:${DB_DOCKER_VERSION:-test20250819}
     build:
-      context: ../../roman-snpit-db/docker/postgres
+      context: ../../snappl/docker/postgres
       target: postgres
     volumes:
       - type: volume
@@ -143,7 +146,7 @@ services:
         condition: service_healthy
     image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20250819}
     build:
-      context: ../../roman-snpit-db/
+      context: ../../snappl/
       dockerfile: docker/webserver/Dockerfile
       target: test
     environment:
@@ -151,7 +154,7 @@ services:
     entrypoint:
       - python
       - -c
-      - "import roman_snpit_db.migrations.apply_migrations as a; a.apply_migrations()"
+      - "import snappl.db.migrations.apply_migrations as a; a.apply_migrations()"
     
   webserver:
     depends_on:
@@ -166,7 +169,7 @@ services:
       retries: 5
     image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20250819}
     build:
-      context: ../../roman-snpit-db/
+      context: ../../snappl/
       dockerfile: docker/webserver/Dockerfile
       target: test
     environment:
@@ -190,7 +193,9 @@ services:
         source: ../../photometry_test_data
         target: /photometry_test_data
     working_dir: /home
-    command: tail -f /etc/issue
+    command: >
+      bash -c "ln -s /home/environment/test-docker-environment/default_test_config.yaml /default_test_config.yaml
+               tail -f /etc/issue"
 
 volumes:
   postgres_data:

@@ -31,7 +31,6 @@ xarray==2025.3.1
 
 # snpit packages
 # (Preqreqs of these will pull in other standard things like numpy, scipy, roman-datamodels.)
-snpit-utils==0.0.12
 roman-snpit-snappl==0.15.0
 
 # The next few are GUI/interactive things, so perhaps don't belong
