@@ -109,7 +109,6 @@ RUN ln -s /usr/bin/source-extractor /usr/bin/sextractor
 # Some basic configs for sanity
 ENV LESS=-XLRi
 
-
 # ======================================================================
 # This is the base target for building cuda-based images.  It builds off
 # of the CPU base, so we don't have to repeat all the stuff that's done
@@ -307,6 +306,9 @@ ENV PATH="/venv/bin:$PATH"
 # Make sure roman_imsim is in the python path.
 ENV PYTHONPATH=/roman_imsim
 
+# Copy the default SNPIT configs
+COPY default_snpit_config.yaml /default_snpit_config.yaml
+COPY snpit_system_config.yaml /snpit_system_config.yaml
 
 # ======================================================================
 FROM ${IMAGE_TYPE}-build-base AS snpit_dev_env
@@ -320,3 +322,7 @@ ENV PATH="/venv/bin:$PATH"
 
 # Make sure roman_imsim is in the python path.
 ENV PYTHONPATH=/roman_imsim
+
+# Copy the default SNPIT configs
+COPY default_snpit_config.yaml /default_snpit_config.yaml
+COPY snpit_system_config.yaml /snpit_system_config.yaml
