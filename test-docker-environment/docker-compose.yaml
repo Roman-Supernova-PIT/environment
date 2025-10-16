@@ -5,6 +5,40 @@
 # HOW TO USE THIS ENVIRONMENT
 #  * Pick a directory to work, and call it your "base" directory.
 #
+#  * NERSC CHEAT SHEET
+#    If you're on nersc, the following commands may do everything
+#    you need.  If it doesn't, read on below.
+#
+#    First, you need to have a venv going, and you have to
+#      pip install podman-compose
+#    in that venv.  Then:
+#
+#        export DB_DOCKER_ARCHIVE=registry.nersc.gov/m4385/rknop
+#        export DB_DOCKER_VERSION=test20250819           # WARNING, this will change, so if you write a script, think!
+#        export ENV_DOCKER_ARCHVIE=registry.nersc.gov/m4385/rknop
+#        export WHICHENV=cpu    # or cuda-dev if you're doing phrosty
+#
+#        cd directory_where_you_want_to_work
+#        git clone git@github.com:Roman-Supernova-PIT/environment                # if you haven't before
+#        git clone git@github.com:Roman-Supernova-PIT/snappl.git                 # if you haven't before
+#        git clone git@github.com:Roman-Supernova-PIT/photometry_test_data.git   # if you haven't before
+#
+#        # (Note : you may need to use https://github.com/ in place of git@github.com: above)
+#
+#        # cd into each of those repos and `git pull -a --no-rebase` and maybe `git checkout main`
+#
+#        cd environment/test-docker-environment
+#        podman-hpc login registry.nersc.gov
+#        podman-hpc pull ${DB_DOCKER_ARCHIVE}/snpit-db-postgres:${DB_DOCKER_VERSION}
+#        podman-hpc pull ${DB_DOCKER_ARCHIVE}/snpit-db-webserver-test:${DB_DOCKER_VERSION}
+#        podman-hpc pull ${ENV_DOCKER_ARCHIVE}/roman-snpit-env:${WHICHENV}
+#
+#        podman-hpc compose up webserver shell
+#
+#    THIS DOESN'T WORK
+#
+#   
+#
 #  * Check out the following repos in your base directory:
 #    (You may want to check out the "git@github.com:" instead of
 #    "https://github.com" versions if you know what you're doing.)
