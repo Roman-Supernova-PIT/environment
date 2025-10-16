@@ -3,6 +3,23 @@
 # web server running, based on the current main of roman-snpit-db
 #
 # HOW TO USE THIS ENVIRONMENT
+#  * CHECKLIST.  When you've done everything necessary, you will have:
+#     - checked out environment
+#     - checked out photometry_test_data, or made an empty directory
+#     - checked out snappl
+#     - optionally checked out other things
+#     - maybe set DB_DOCKER_ARCHIVE
+#     - pulled database images
+#     - maybe set ENV_DOCKER_ARCHIVE
+#     - set WHICHENV
+#     - pulled the snpit environment
+#     - started the test environment with docker compose up
+#
+#    Yes, this sounds like a lot.  A bunch of it only needs to be done
+#    once, and then it will be fast thereafter (you'll only need to
+#    do the last step, except when images change).  Read on for
+#    how to do all this.
+#
 #  * Pick a directory to work, and call it your "base" directory.
 #
 #  * NERSC CHEAT SHEET
@@ -68,6 +85,11 @@
 #    Rob about doing this if you don't know how yet.
 #
 #  * Figure out the database docker images.
+#
+#     - Quick solution: set env var DB_DOCKER_ARCHIVE to rknop
+#       However, there may be a more efficient solution; read on
+#       if you have time.
+#
 #     - Set DB_DOCKER_ARCHIVE env var to the repository where they're
 #       found, if necessary.
 #
@@ -75,44 +97,45 @@
 #       images, if necessary.
 #
 #       The repo where the database docker images are found will be one
-#       of the following.  The default is the first on the list; if you
-#       can read from that, then you can just use that and don't
-#       actually need to set DB_DOCKER_ARCHIVE.  If you can't read from
-#       that, then try one of the other two.  You will need to log in
-#       to the nersc repo, but the "rknop" repo (which is on dockerhub)
-#       should be public.  Rob will strive to keep updated images in
-#       all three places.
+#       of the following.  For the first two on the list, you can run
+#           docker login ghcr.io
+#       or
+#           podman-hpc login registry.nersc.gov
+#       to see if you have access.
+#
+#       The default is the first on the list; if you can read from that,
+#       then you can just use that and don't actually need to set
+#       DB_DOCKER_ARCHIVE.  If you can't read from that, then try one of
+#       the other two.  You will need to log in to the nersc repo, but
+#       the "rknop" repo (which is on dockerhub) should be public.  Rob
+#       will strive to keep updated images in all three places.
 #         * ghcr.io/roman-supernova-pit
-#         * rknop
 #         * registry.nersc.gov/m4385
+#         * rknop
 #
 #       For the version of the database docker images, you can probably
 #       just use the default, which means you don't need to set the
 #       variable.  However, you might want to know what it is so you can
 #       pull the docker images rather than have to build them.  Search
 #       for the word "image:" below; at the end of the line, you'll
-#       see the default version, which is something like "test20250819"
+#       see the default version, which is something like "test20251016"
 #       (only the date might increment later).  If know what you're
 #       doing and want to use a different version, then you need to
 #       set the env var DB_DOCKER_VERSION.
 #  
-#  * Pull the database docker images.  This is done with docker below,
-#    but on nersc you might do it with "podman-hpc pull".
-#       * docker pull ${DB_DOCKER_ARCHIVE}/snpit-db-postgres:${DB_DOCKER_VERSION}
-#       * docker pull ${DB_DOCKER_ARCHIVE}/snpit-db-webserver-test:${DB_DOCKER_VERSION}
-#    (You can substitute the literals in place of the env vars, of
-#    course.)
+#  * Pull the database docker images.
+#       * docker compose pull postgres webserver
 #
 #  * Figure out where you are going to get the Roman SNPIT environment
 #    docker image from.  You can choose one of:
 #       * ghcr.io/roman-supernova-pit
 #       * registry.nersc.gov/m4385/rknop
 #       * rknop
-#    To use the first one, you will need to "docker login" or
-#    "podman-hpc login" to registry.nersc.gov.
+#    You may need to 'docker login' or 'podman-hpc login' to either of
+#    the first two.
 #
-#    Set the env var ENV_DOCKER_ARCHIVE to rknop if you aren't using the
-#    nersc registry.
+#    Set the env var ENV_DOCKER_ARCHIVE to the place you're getting
+#    the environment from if it's not ghcr.io/roman-supernova-pit
 #
 #  * Figure out which Roman SNPIT environment variant you want.  There
 #    are four:
@@ -145,6 +168,10 @@
 #
 #  Inside the container, your base directory is mounted at /home.
 #
+#  Remeber to "pip install -e ." (or "pip install -e .[test]") in
+#  /home/snappl if you're developing snappl, and also in any
+#  directories for other stuff you're working on.
+#
 #  When you're done, run
 #
 #    docker compose down -v
@@ -157,7 +184,7 @@ services:
         - "8025:8025"
 
   postgres:
-    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-postgres:${DB_DOCKER_VERSION:-test20250819}
+    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-postgres:${DB_DOCKER_VERSION:-test20251016}
     build:
       context: ../../snappl/docker/postgres
       target: postgres
@@ -179,7 +206,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20250819}
+    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20251016}
     build:
       context: ../../snappl/
       dockerfile: docker/webserver/Dockerfile
@@ -202,7 +229,7 @@ services:
       interval: 5s
       timeout: 10s
       retries: 5
-    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20250819}
+    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20251016}
     build:
       context: ../../snappl/
       dockerfile: docker/webserver/Dockerfile
