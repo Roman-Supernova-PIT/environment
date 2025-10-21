@@ -13,7 +13,7 @@ system:
     #   password in a secure location.  Put the
     #   location of that file in password_file.
     password: test_password
-    password_file: null
+    passwordfile: null
 
   # Paths on your system.  Most of these will need
   # to be changed when running somewhere else.

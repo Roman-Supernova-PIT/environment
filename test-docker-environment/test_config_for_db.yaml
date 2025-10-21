@@ -11,7 +11,7 @@ system:
     postgres_database: roman_snpit
     postgres_username: postgres
     postgres_password: null
-    postgres_password_file: /secrets/pgpasswd
+    postgres_password_file: /secrets/roman_snpit_test_env_pgpasswd
     # These next two are for debugging purposes and should always be false in production
     echoqueries: true
     alwaysexplain: false

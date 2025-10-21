@@ -188,6 +188,9 @@ services:
     build:
       context: ../../snappl/docker/postgres
       target: postgres
+    environment:
+      PGPASSWDFILE: /secrets/roman_snpit_test_env_pgpasswd
+      PGPASSWDFILE_RO: /secrets/roman_snpit_test_env_pgpasswd_ro
     volumes:
       - type: volume
         source: postgres_data
