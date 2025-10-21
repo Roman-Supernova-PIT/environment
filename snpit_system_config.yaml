@@ -24,6 +24,18 @@ system:
     # Paths used by snappl library modules
     snappl:
       A25ePSF_path: /home/snappl/snappl/tests/testdata/A25ePSF
+
+    campari:
+      paths:
+        sims_sed_library: /home/rubin_sim_data/sims_sed_library
+        campari_test_data: /campari_test_data
+        sed_path: /campari_sed_dir
+        output_dir: /campari_out_dir
+        debug_dir: /campari_debug_dir
+
+      # OMG
+      galsim:
+        tds_file: /campari/examples/perlmutter/tds.yaml
     
     # Paths used by phrosty
     phrosty:
