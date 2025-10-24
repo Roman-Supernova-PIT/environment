@@ -18,13 +18,17 @@ system:
   # Paths on your system.  Most of these will need
   # to be changed when running somewhere else.
   paths:
+    # Base directory where all lightcurvers saved to the database are
+    # stored
+    lightcurves: /lightcurves
+
     # For basic temp usage
     temp_dir: /tmp
 
     # Paths used by snappl library modules
     snappl:
       A25ePSF_path: /home/snappl/snappl/tests/testdata/A25ePSF
-    
+
     # Paths used by phrosty
     phrosty:
       scratch_dir: /phrosty_temp
@@ -38,12 +42,12 @@ system:
 
     tds_base: /photometry_test_data/ou2024
     config_file: /photometry_test_data/ou2024/tds.yaml
-  
+
     sn_truth_dir: /photometry_test_data/ou2024/snana_truth
     # sn_truth_dir: /snana_pq_dir
-  
+
     images: /photometry_test_data/ou2024/images/simple_model
-  
+
     sims_sed_library: /photometry_test_data/ou2024/sims_sed_library
     # Comment from Cole & Rob: This is a path to the SEDs that were used to generate the
     # OU24 simulations.  Only a subset of the files are stored in
