@@ -18,6 +18,9 @@ system:
   # Paths on your system.  Most of these will need
   # to be changed when running somewhere else.
   paths:
+    # Base directory where all lightcurves saved to the database are stored
+    lightcurves: /lightcurves
+    
     # For basic temp usage
     temp_dir: /tmp
 
