@@ -3,7 +3,7 @@
 #   will need to modify it, because they won't be able to
 #   write to Rob's directory on dockerhub.
 
-VER=test20250124_1
+VER=test20250129
 
 docker-images:
 	DB_DOCKER_VERSION=${VER} docker compose build
