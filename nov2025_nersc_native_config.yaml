@@ -1,0 +1,51 @@
+# This the config for the NOV2025 SNPIT pipeline run if you're running
+# on NERSC *not* inside a container.  You will need to be in an
+# environment where you can
+#
+#   pip install roman-snpit-snappl
+#
+# Make yourself a temp directory:
+#
+#   mkdir $SCRATCH/snpit_temp
+#
+# Save this file somewhere.  Edit it, replacing two things below:
+#   Replace YOUR_HOME_DIR with your home directory
+#     (do *not* just use $HOME, use what it resolves to)
+#   Replace YOUR_SCRATCH_DIR with the location of your scratch directory
+#     (do *not* just use $SCRATCH, use what it resolves to)
+#
+# Set the environment variable SNPIT_CONFIG to point at where you saved
+# this file.
+#
+#
+# (Eventually we want all the PIT software to run in containers, so keep
+# that in mind for the future.)
+
+# Note that if you know what you're doing, you can include this .yaml
+# file in another .yaml file with your configuration using by putting
+# this file's name in the replaceable_preloads list.
+
+system:
+  db:
+    url: https://c3-sn.lbl.gov/roman_snpit_nov2025
+    username: ou2024nov
+    password: null
+    passwordfile: YOUR_HOME_DIR/secrets/roman_snpit_ou2024_nov_ou2024nov
+
+  paths:
+    lightcurves: /pscratch/sd/m/masao/roman_snpit/database_dirs/lightcurves
+    segmaps: /pscratch/sd/m/masao/roman_snpit/database_dirs/segmaps
+    images: /pscratch/sd/m/masao/roman_snpit/database_dirs/l2images
+
+    temp_dir: YOUR_SCRATCH_DIR/snpit_temp
+
+    snappl:
+      A25ePSF_path: /dvs_ro/cfs/cdirs/m4385/calib_data/A25ePSF
+
+  ou24:
+    simdex_server: https://roman-desc-simdex.rknop.net
+    tds_base: /dvs_ro/cfs/cdirs/lsst/shared/external/roman-desc-sims/Roman_data/RomanTDS
+    config_file: /dvs_ro/cfs/cdirs/lsst/shared/external/roman-desc-sims/Roman_data/RomanTDS/tds.yaml
+    sn_truth_dir: /dvs_ro/cfs/cdirs/lsst/www/DESC_TD_PUBLIC/Roman+DESC/PQ+HDF5_ROMAN+LSST_LARGE
+    images: /dvs_ro/cfs/cdirs/lsst/shared/external/roman-desc-sims/Roman_data/RomanTDS/images/simple_model
+    sims_sed_library: /dvs_ro/cfs/cdirs/lsst/www/DESC_TD_PUBLIC/Roman+DESC/sims_sed_library

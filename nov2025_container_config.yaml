@@ -1,0 +1,84 @@
+# This the config for the NOV2025 SNPIT pipeline run if you're running
+# in a contaner.  It assumes you've mounted several directories at
+# specific places.
+#
+# USING THIS ON NERSC
+#
+# First, you need to make a secrets directory and put the databse
+# password in it:
+#
+#   cd $HOME
+#   mkdir secrets
+#   chown 710 secrets
+#   setfacl -Rdm g::x,o::- secrets
+#   cat > secrets/roman_snpit_ou2024_nov_ou2024nov
+#   <paste the password you got from Rob here>
+#
+# hit ENTER and then CTRL-D.
+#
+# Next, make yourself a temp directory:
+#
+#   mkdir $SCRATCH/snpit_temp
+#
+# Next, download the container image:
+#
+#    podman-hpc pull registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu
+#
+# you only need to do this once but you will need to redo it when the
+# image is updated (which happens fairly frequently right now).  NOTE:
+# if you're going to run phrosty or sidecar, replace ":cpu" at the end
+# with ":cuda-dev"
+#
+# Next, put this file and the script interactive-podman-nov2025.sh in a directory
+# somewhere.
+#
+# IF YOU NEED TO RUN phrosty or sidecar : edit interactive-podman-sh so
+# that the image referenced ends in ":cuda-dev" instead of ":cpu".
+# Also, add "--gpu" after "podman-hpc run"
+#
+# Thereafter, in that directory, run
+#
+#    bash interactive_podman-nov2025.sh
+#
+# to get inside a container.
+#
+# Once you are inside the container, you can find the current directory
+# at /home — so, if you need to check out other things and pip install
+# -e . them, you can do that outisde of the container, and the inside
+# the container cd to /home/<directory> and ppip install -e . there.
+# You will have to redo this every time you start the container.
+#
+# USING THIS SOMEWHERE OTHER THAN NERSC
+#
+# You will need to figure out how to run containers there.  Make
+# sure not to exposue the password.
+
+
+# Note that if you know what you're doing, you can include this .yaml
+# file in another .yaml file with your configuration using by putting
+# this file's name in the replaceable_preloads list.
+
+system:
+  db:
+    url: https://c3-sn.lbl.gov/roman_snpit_nov2025
+    username: ou2024nov
+    password: null
+    passwordfile: /secrets/roman_snpit_ou2024_nov_ou2024nov
+
+  paths:
+    lightcurves: /data/lightcurves
+    segmaps: /data/segmaps
+    images: /data/l2images
+
+    temp_dir: /snpit_temp
+
+    snappl:
+      A25ePSF_path: /a25epsf
+
+  ou24:
+    simdex_server: https://roman-desc-simdex.rknop.net
+    tds_base: /ou2024/RomanTDS
+    config_file: /ou2024/RomanTDS/tds.yaml
+    sn_truth_dir: /ou2024_snana
+    images: /ou2024/RomanTDS/images/simple_model
+    sims_sed_library: /ou2024_sims_sed_library
