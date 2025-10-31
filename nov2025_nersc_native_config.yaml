@@ -35,7 +35,7 @@ system:
   paths:
     lightcurves: /pscratch/sd/m/masao/roman_snpit/database_dirs/lightcurves
     segmaps: /pscratch/sd/m/masao/roman_snpit/database_dirs/segmaps
-    images: /pscratch/sd/m/masao/roman_snpit/database_dirs/l2images
+    images: /pscratch/sd/m/masao/roman_snpit/database_dirs/images
 
     temp_dir: YOUR_SCRATCH_DIR/snpit_temp
 

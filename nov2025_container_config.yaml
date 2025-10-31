@@ -68,7 +68,7 @@ system:
   paths:
     lightcurves: /data/lightcurves
     segmaps: /data/segmaps
-    images: /data/l2images
+    images: /data/images
 
     temp_dir: /snpit_temp
 
