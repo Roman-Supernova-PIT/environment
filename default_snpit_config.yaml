@@ -9,7 +9,7 @@
 # different system, with *only* things under system having changed, will
 # yield the same output.
 
-preloads:
+replaceable_preloads:
   - snpit_system_config.yaml
 
 
