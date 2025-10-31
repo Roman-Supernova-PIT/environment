@@ -31,7 +31,7 @@
 #    in that venv.  Then:
 #
 #        export DB_DOCKER_ARCHIVE=registry.nersc.gov/m4385/rknop
-#        export DB_DOCKER_VERSION=test20250131_2           # WARNING, this will change, so if you write a script, think!
+#        export DB_DOCKER_VERSION=test20251031_2           # WARNING, this will change, so if you write a script, think!
 #        export ENV_DOCKER_ARCHVIE=registry.nersc.gov/m4385/rknop
 #        export WHICHENV=cpu    # or cuda-dev if you're doing phrosty
 #
@@ -118,7 +118,7 @@
 #       variable.  However, you might want to know what it is so you can
 #       pull the docker images rather than have to build them.  Search
 #       for the word "image:" below; at the end of the line, you'll
-#       see the default version, which is something like "test20250131_2"
+#       see the default version, which is something like "test20251031_2"
 #       (only the date might increment later).  If know what you're
 #       doing and want to use a different version, then you need to
 #       set the env var DB_DOCKER_VERSION.
@@ -184,7 +184,7 @@ services:
         - "8025:8025"
 
   postgres:
-    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-postgres:${DB_DOCKER_VERSION:-test20250131_2}
+    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-postgres:${DB_DOCKER_VERSION:-test20251031_2}
     build:
       context: ../../snappl/docker/postgres
       target: postgres
@@ -209,7 +209,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20250131_2}
+    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20251031_2}
     build:
       context: ../../snappl/
       dockerfile: docker/webserver/Dockerfile
@@ -232,7 +232,7 @@ services:
       interval: 5s
       timeout: 10s
       retries: 5
-    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20250131_2}
+    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20251031_2}
     build:
       context: ../../snappl/
       dockerfile: docker/webserver/Dockerfile
