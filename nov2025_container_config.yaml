@@ -9,7 +9,7 @@
 #
 #   cd $HOME
 #   mkdir secrets
-#   chown 710 secrets
+#   chmod 710 secrets
 #   setfacl -Rdm g::x,o::- secrets
 #   cat > secrets/roman_snpit_ou2024_nov_ou2024nov
 #   <paste the password you got from Rob here>

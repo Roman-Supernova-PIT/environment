@@ -4,7 +4,19 @@
 #
 #   pip install roman-snpit-snappl
 #
-# Make yourself a temp directory:
+# First, you need to make a secrets directory and put the databse
+# password in it:
+#
+#   cd $HOME
+#   mkdir secrets
+#   chmod 710 secrets
+#   setfacl -Rdm g::x,o::- secrets
+#   cat > secrets/roman_snpit_ou2024_nov_ou2024nov
+#   <paste the password you got from Rob here>
+#
+# hit ENTER and then CTRL-D.
+#
+# Next, make yourself a temp directory:
 #
 #   mkdir $SCRATCH/snpit_temp
 #
