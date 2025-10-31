@@ -106,6 +106,9 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 RUN ln -s /usr/bin/SWarp /usr/bin/swarp
 RUN ln -s /usr/bin/source-extractor /usr/bin/sextractor
 
+# Try to make PyPi really think fftw3 is installed
+RUN ln -s /usr/lib/x86_64-linux-gnu/libfftw3.so.3 /usr/lib/libfftw3.so
+
 # Some basic configs for sanity
 ENV LESS=-XLRi
 
