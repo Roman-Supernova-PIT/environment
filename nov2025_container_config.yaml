@@ -80,7 +80,7 @@ system:
   ou24:
     simdex_server: https://roman-desc-simdex.rknop.net
     tds_base: /ou2024/RomanTDS
-    config_file: /ou2024/RomanTDS/tds.yaml
+    config_file: /home/environment/ou2024_tds.yaml
     sn_truth_dir: /ou2024_snana
     images: /ou2024/RomanTDS/images/simple_model
     sims_sed_library: /ou2024_sims_sed_library
