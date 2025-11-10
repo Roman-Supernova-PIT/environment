@@ -41,6 +41,7 @@ system:
   db:
     url: https://c3-sn.lbl.gov/roman_snpit_nov2025
     username: ou2024nov
+    # LEAVE PASSWORD AS null.  Do NOT edit this field to put in a password!  Just use passwordfile
     password: null
     passwordfile: YOUR_HOME_DIR/secrets/roman_snpit_ou2024_nov_ou2024nov
 
