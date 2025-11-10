@@ -45,6 +45,7 @@ system:
     passwordfile: YOUR_HOME_DIR/secrets/roman_snpit_ou2024_nov_ou2024nov
 
   paths:
+    spectra1d: /pscratch/sd/m/masao/roman_snpit/database_dirs/spectra1d
     lightcurves: /pscratch/sd/m/masao/roman_snpit/database_dirs/lightcurves
     segmaps: /pscratch/sd/m/masao/roman_snpit/database_dirs/segmaps
     images: /pscratch/sd/m/masao/roman_snpit/database_dirs/images
