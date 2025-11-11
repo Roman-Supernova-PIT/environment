@@ -9,12 +9,12 @@
 #     images:
 #
 #     * mailhog/mailhog:latest
-#     * registry.nersc.gov/m4385/rknop/snpit-db-postgres:test20251031_2
-#     * registry.nersc.gov/m4385/rknop/snpit-db-postgres:snpit-db-webserver-test:test20251031_2
+#     * registry.nersc.gov/m4385/rknop/snpit-db-postgres:test20251111
+#     * registry.nersc.gov/m4385/rknop/snpit-db-webserver-test:test20251111
 #     * registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu
 #
 #     NOTES
-#        * the "test20251031_2" will get updated regularly as things change!  Make sure you read
+#        * the "test20251111" will get updated regularly as things change!  Make sure you read
 #          this file a lot and re-pull things as necessary.
 #
 #        * If instead of the cpu image you want the cuda-dev image, pull that.  Then, below,
@@ -83,7 +83,7 @@ podman-hpc run -d \
   --volume roman-snpit-postgres-data:/var/lib/postgresql/data \
   --env PGPASSWDFILE=/secrets/roman_snpit_test_env_pgpasswd \
   --env PGPASSWDIFILE_RO=/secrets/roman_snpit_test_env_pgpasswd_ro \
-  registry.nersc.gov/m4385/rknop/snpit-db-postgres:test20251031_2
+  registry.nersc.gov/m4385/rknop/snpit-db-postgres:test20251111
 
 echo "Sleeping 5s in hopes that that's enough for postgres to be going"
 sleep 5
@@ -94,7 +94,7 @@ podman-hpc run -d \
   --name=createdb \
   --network=podman \
   --entrypoint python \
-  registry.nersc.gov/m4385/rknop/snpit-db-webserver-test:test20251031_2 \
+  registry.nersc.gov/m4385/rknop/snpit-db-webserver-test:test20251111 \
   -c "import snappl.db.migrations.apply_migrations as a; a.apply_migrations()"
 
 echo "Starting webserver."
@@ -103,7 +103,7 @@ podman-hpc run -d \
   --name=webserver \
   --network=podman \
   --env SNPIT_CONFIG=/roman-snpit-db/config-test.yaml \
-  registry.nersc.gov/m4385/rknop/snpit-db-webserver-test:test20251031_2
+  registry.nersc.gov/m4385/rknop/snpit-db-webserver-test:test20251111
 
 echo "Starting shell."
 
