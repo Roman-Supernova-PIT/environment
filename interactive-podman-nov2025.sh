@@ -2,10 +2,13 @@
 
 # See comments in nov2025_container_config.yaml for instructions
 
+export PODMANHPC_ADDITIONAL_STORES=/global/cfs/cdirs/m4385/podman_images
+
 podman-hpc run \
     --mount type=bind,source=$PWD,target=/home \
     --mount type=bind,source=$HOME/secrets,target=/secrets \
     --mount type=bind,source=$PSCRATCH/snpit_temp,target=/snpit_temp \
+    --mount type=bind,source=/dvs_ro/cfs/cdirs/m4385/env,target=/snpit_env \
     --mount type=bind,source=/pscratch/sd/m/masao/roman_snpit/database_dirs,target=/data \
     --mount type=bind,source=/dvs_ro/cfs/cdirs/lsst/shared/external/roman-desc-sims/Roman_data,target=/ou2024 \
     --mount type=bind,source=/dvs_ro/cfs/cdirs/lsst/www/DESC_TD_PUBLIC/Roman+DESC/PQ+HDF5_ROMAN+LSST_LARGE,target=/ou2024_snana \
@@ -20,7 +23,7 @@ podman-hpc run \
     --env OMP_NUM_THREADS=1 \
     --env VECLIB_MAXIMUM_THREADS=1 \
     --env TERM=xterm \
-    --env SNPIT_CONFIG=/home/nov2025_container_config.yaml \
+    --env SNPIT_CONFIG=/snpit_env/configs/nov2025_container_config.yaml \
     --annotation run.oci.keep_original_groups=1 \
     -it \
     registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu \

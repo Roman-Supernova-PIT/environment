@@ -1,11 +1,18 @@
 # This the config for the NOV2025 SNPIT pipeline run if you're running
-# on NERSC *not* inside a container.  You will need to be in an
-# environment where you can
+# on NERSC *not* inside a container.
 #
-#   pip install roman-snpit-snappl
+# This is for use with the environment on NERSC you can activate with:
 #
-# First, you need to make a secrets directory and put the databse
-# password in it:
+#   source /global/cfs/cdirs/m4385/env/setup_roman_snpit.sh
+#
+# NEEDED SETUP
+#
+# First, make yourself a temporary directory:
+#
+#    mkdir $SCRATCH/snpit_temp#
+#
+# Next, you will need to create a secrets directory under your
+# home directory and put the database password
 #
 #   cd $HOME
 #   mkdir secrets
@@ -14,28 +21,17 @@
 #   cat > secrets/roman_snpit_ou2024_nov_ou2024nov
 #   <paste the password you got from Rob here>
 #
-# hit ENTER and then CTRL-D.
+# After you've done that, hit CTRL-D and you should be back at the shell
+# prompt.
 #
-# Next, make yourself a temp directory:
+# IF YOU HAVE YOUR OWN CONFIG FILE
 #
-#   mkdir $SCRATCH/snpit_temp
+# If you have additional configuration variables you need set, then
+# create your own config file.  Set the env var SNPIT_CONFIG to
+# point to that file.  At the top of that file, add:
 #
-# Save this file somewhere.  Edit it, replacing two things below:
-#   Replace YOUR_HOME_DIR with your home directory
-#     (do *not* just use $HOME, use what it resolves to)
-#   Replace YOUR_SCRATCH_DIR with the location of your scratch directory
-#     (do *not* just use $SCRATCH, use what it resolves to)
-#
-# Set the environment variable SNPIT_CONFIG to point at where you saved
-# this file.
-#
-#
-# (Eventually we want all the PIT software to run in containers, so keep
-# that in mind for the future.)
-
-# Note that if you know what you're doing, you can include this .yaml
-# file in another .yaml file with your configuration using by putting
-# this file's name in the replaceable_preloads list.
+#   preloads:
+#     - /dvs_ro/cfs/cdirs/m4385/env/configs/nov2025_nersc_native_config.yaml
 
 system:
   db:
@@ -43,7 +39,7 @@ system:
     username: ou2024nov
     # LEAVE PASSWORD AS null.  Do NOT edit this field to put in a password!  Just use passwordfile
     password: null
-    passwordfile: YOUR_HOME_DIR/secrets/roman_snpit_ou2024_nov_ou2024nov
+    passwordfile: ${HOME}/secrets/roman_snpit_ou2024_nov_ou2024nov
 
   paths:
     spectra1d: /pscratch/sd/m/masao/roman_snpit/database_dirs/spectra1d
@@ -51,7 +47,7 @@ system:
     segmaps: /pscratch/sd/m/masao/roman_snpit/database_dirs/segmaps
     images: /pscratch/sd/m/masao/roman_snpit/database_dirs/images
 
-    temp_dir: YOUR_SCRATCH_DIR/snpit_temp
+    temp_dir: ${SCRATCH}/snpit_temp
 
     snappl:
       A25ePSF_path: /dvs_ro/cfs/cdirs/m4385/calib_data/A25ePSF
