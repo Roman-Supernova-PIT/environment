@@ -4,6 +4,7 @@ SHELL_NAME=$(echo $SHELL | sed "s/\/bin\///g")
 
 if [[ $(hostname -A) == *"duke"* ]]
 then
+    echo "WARNING, THIS IS PROBABLY NOT UP TO DATE AND NEEDS EDITING."
     module load Anaconda3/2024.02
     module load gsl
     module load ROOT
@@ -36,35 +37,34 @@ then
     # <<< conda initialize <<<
 elif [[ $(hostname -A) == *"nersc"* ]]
 then
-    module load conda/Mambaforge-23.1.0-1
+    module load conda
+
+    conda activate /global/cfs/cdirs/m4385/env/sn-pit-dev
     
     export PIT_ROOT=/global/cfs/cdirs/m4385/
-    # DIFFERENCE IMAGING
-    export SN_INFO_DIR="/pscratch/sd/l/laldorot/object_tables" # Location of object/image tables.
-    export SIMS_DIR="/global/cfs/cdirs/lsst/shared/external/roman-desc-sims/Roman_data" # Location of the Roman-DESC sims.
-    export SNANA_PQ_DIR="/global/cfs/cdirs/lsst/www/DESC_TD_PUBLIC/Roman+DESC/PQ+HDF5_ROMAN+LSST_LARGE" # Location of the SNANA parquet files.
-    export DIA_OUT_DIR="/pscratch/sd/l/laldorot/dia_out" # Parent output folder for DIA pipeline.
-    export NVCC="/opt/nvidia/hpc_sdk/Linux_x86_64/23.9/cuda/12.2/bin/nvcc" # `whereis nvcc` path
-    # SNANA+Pippin
     export ROMAN_SNPIT="/global/cfs/cdirs/m4385"
     export SNANA_ROMAN_ROOT="$ROMAN_SNPIT/snana_roman_root"
+    # Default config file for the default dev database.
+    export SNPIT_CONFIG="/global/dvs_ro/cdirs/m4385/env/configs/snpit_config_nov2025.yaml"
     
-    # >>> conda initialize >>>
-    # !! Contents within this block are managed by 'conda init' !!
-    __conda_setup="$('/global/common/software/nersc/pe/conda/23.6.0/Mambaforge-23.1.0-1/bin/conda' 'shell.$SHELL_NAME' 'hook' 2> /dev/null)"
-    if [ $? -eq 0 ]; then
-        eval "$__conda_setup"
-    else
-        if [ -f "/global/common/software/nersc/pe/conda/23.6.0/Mambaforge-23.1.0-1/etc/profile.d/conda.sh" ]; then
-            . "/global/common/software/nersc/pe/conda/23.6.0/Mambaforge-23.1.0-1/etc/profile.d/conda.sh"
-        else
-            export PATH="/global/common/software/nersc/pe/conda/23.6.0/Mambaforge-23.1.0-1/bin:$PATH"
-        fi
-    fi
-    unset __conda_setup
-    # <<< conda initialize <<<
+    # # >>> conda initialize >>>
+    # # !! Contents within this block are managed by 'conda init' !!
+    # __conda_setup="$('/global/common/software/nersc/pe/conda/23.6.0/Mambaforge-23.1.0-1/bin/conda' 'shell.$SHELL_NAME' 'hook' 2> /dev/null)"
+    # if [ $? -eq 0 ]; then
+    #     eval "$__conda_setup"
+    # else
+    #     if [ -f "/global/common/software/nersc/pe/conda/23.6.0/Mambaforge-23.1.0-1/etc/profile.d/conda.sh" ]; then
+    #         . "/global/common/software/nersc/pe/conda/23.6.0/Mambaforge-23.1.0-1/etc/profile.d/conda.sh"
+    #     else
+    #         export PATH="/global/common/software/nersc/pe/conda/23.6.0/Mambaforge-23.1.0-1/bin:$PATH"
+    #     fi
+    # fi
+    # unset __conda_setup
+    # # <<< conda initialize <<<
+
 elif [[ $(hostname -A) == *"jupyter-"* ]] # should be on the Roman Science Platform
 then
+    echo "WARNING, THIS IS PROBABLY NOT UP TO DATE AND NEEDS EDITING."
     export PIT_ROOT="/teams/orca"
     # DIFFERENCE IMAGING
     export SN_INFO_DIR="/teams/orca/object_tables" # Location of object/image tables.
