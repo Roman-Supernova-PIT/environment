@@ -159,6 +159,8 @@ where ``<version>`` is the right thing.  If you're just building this locally fo
 
 If you're making docker images you intend to upload to share with the rest of the PIT, see publishing-docker-image_.
 
+If, for some reason, you want to manually build a docker image individually yourself, look at the comments in ``Dockerfile``.
+
 Pitfalls and Gotchas
 --------------------
 
@@ -214,7 +216,5 @@ If you're going to publish the docker image for everybody, then you need to be a
     make push-docker-images
 
   This will only push the images to ``ghcr.io`` and ``registry.nersc.gov``, it will *not* push the images to ``docker.io/rknop``.  The reason for this is that only Rob can push the latter version.  If you are Rob, you can run ``make push-rknop-docker-images`` to also push those.
-
-If, for some reason, you want to manually build a docker image individually yourself, look at the comments in ``Dockerfile``.
 
 
