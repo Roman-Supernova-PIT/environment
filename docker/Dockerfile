@@ -1,16 +1,8 @@
-# BUILDING
+# See README.rst in the docker subdirectory of the git repo
+#   for documentation on building the docker images.
 #
-# You need the nvidia runtime to build.  That is extremely annoying,
-#   because as far as I can tell, there's no way to specify that at run
-#   time, but you have to change the system default.  This is what Rob
-#   has to do on his desktop to make this happen:
-#   * Edit /etc/docker/daemon.json
-#   * Add a just after the last thing inside the outermost {}
-#   * On the line before the last } (but after the comman you just added), add:
-#       "default-runtime": "Nvidia"
-#   * Stop and restart the docker dameon with /etc/init.d/docker restart
-#   * Remember later after you're done building to undo the damage
-#     you just did to your system.
+#
+# MANUALLY BUILDING
 #
 # Build this in the top-level checkout of environment with
 #
@@ -25,33 +17,33 @@
 
 ARG IMAGE_TYPE=cpu
 
-# As of this writing (2025-08-11, corresponding to version 0.0.12 of the
+# As of this writing (2026-10-14, corresponding to version 0.X.X of the
 # environent), here are the sizes of the various build stages:
 #
 # IMAGE_TYPE=cpu :
-#   cpu-base          873MB
-#   cpu-build-base    1.44GB
-#   pip-install-cpu   3.34GB
-#   compilations      3.34GB
-#   snpit_env         2.73GB   (all those pip packages bloat a lot even without the build deps)
-#   snpit_dev_env     3.30GB
+#   cpu-base          0.88GB
+#   cpu-build-base    1.43GB
+#   pip-install-cpu   3.17GB
+#   compilations      3.17GB
+#   snpit_env         2.59GB   (all those pip packages bloat a lot even without the build deps)
+#   snpit_dev_env     3.14GB
 #
 # IMAGE_TYPE=cuda
-#   cpu-base           873MB
-#   cuda-base          4.39GB   (!!!) (inorite?)
-#   cuda-build-base    9.73GB   (!!!!!)
-#   pip-install-cpu    11.6GB
-#   pip-install-cuda   11.9GB
-#   compilations       11.9GB
-#   snpit_env          6.48GB
-#   snpit_dev_env      11.9GB
+#   cpu-base            0.88GB
+#   cuda-base           4.52GB   (!!!) (inorite?)
+#   cuda-build-base    10.0 GB   (!!!!!)
+#   pip-install-cpu    11.8 GB
+#   pip-install-cuda   12.2 GB
+#   compilations       12.2 GB
+#   snpit_env           6.66GB
+#   snpit_dev_env      12.2 GB
 
 
 # ======================================================================
 # This is the base target for CPU images (i.e. ones that don't include
 # cuda libraries).
 
-FROM debian:bookworm AS cpu-base
+FROM debian:trixie-20260112 AS cpu-base
 
 LABEL maintainer="Rob Knop <raknop@lbl.gov>"
 
@@ -74,7 +66,7 @@ RUN apt-get update \
          hdf5-tools \
          less \
          libfftw3-bin \
-         libhdf5-103-1 \
+         libhdf5-310 \
          locales \
          postgresql-client \
          procps \
