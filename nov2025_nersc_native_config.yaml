@@ -1,35 +1,16 @@
 # This the config for the NOV2025 SNPIT pipeline run if you're running
-# on NERSC *not* inside a container.  You will need to be in an
-# environment where you can
+# on NERSC *not* inside a container.
 #
-#   pip install roman-snpit-snappl
+# This is for use with the environment on NERSC you can activate with:
 #
-# First, you need to make a secrets directory and put the databse
-# password in it:
+#   source /global/cfs/cdirs/m4385/env/setup_roman_snpit.sh
 #
-#   cd $HOME
-#   mkdir secrets
-#   chmod 710 secrets
-#   setfacl -Rdm g::x,o::- secrets
-#   cat > secrets/roman_snpit_ou2024_nov_ou2024nov
-#   <paste the password you got from Rob here>
+# To use this, you must first set up a secrets file with the database
+# password, and a temp directory.  See the README file at
 #
-# hit ENTER and then CTRL-D.
+#   https://github.com/Roman-Supernova-PIT/environment
 #
-# Next, make yourself a temp directory:
-#
-#   mkdir $SCRATCH/snpit_temp
-#
-# Save this file somewhere.  Set the environment variable SNPIT_CONFIG to point at where you saved
-# this file.
-#
-#
-# (Eventually we want all the PIT software to run in containers, so keep
-# that in mind for the future.)
-
-# Note that if you know what you're doing, you can include this .yaml
-# file in another .yaml file with your configuration using by putting
-# this file's name in the replaceable_preloads list.
+# for instructions (go to section "On NERSC").
 
 system:
   db:
@@ -47,7 +28,6 @@ system:
     lightcurves: ${system.paths.data_dir}/lightcurves
     segmaps: ${system.paths.data_dir}/segmaps
     images: ${system.paths.data_dir}/images
-
 
     snappl:
       A25ePSF_path: /dvs_ro/cfs/cdirs/m4385/calib_data/A25ePSF

@@ -2,10 +2,14 @@
 # in a contaner.  It assumes you've mounted several directories at
 # specific places.
 #
-# USING THIS ON NERSC
+# NEEDED SETUP
 #
-# First, you need to make a secrets directory and put the databse
-# password in it:
+# First, make yourself a temporary directory:
+#
+#    mkdir $SCRATCH/snpit_temp#
+#
+# Next, you will need to create a secrets directory under your
+# home directory and put the database password
 #
 #   cd $HOME
 #   mkdir secrets
@@ -14,49 +18,28 @@
 #   cat > secrets/roman_snpit_ou2024_nov_ou2024nov
 #   <paste the password you got from Rob here>
 #
-# hit ENTER and then CTRL-D.
+# After you've done that, hit CTRL-D and you should be back at the shell
+# prompt.
 #
-# Next, make yourself a temp directory:
+# RUNNING THE CONTAINER
 #
-#   mkdir $SCRATCH/snpit_temp
+# cd to a directory where you want to work.  There, check out the repos
+# you want to work with.
 #
-# Next, download the container image:
+# In that directory, run
 #
-#    podman-hpc pull registry.nersc.gov/m4385/rknop/roman-snpit-env:cpu
+#   bash /global/cfs/cdirs/
 #
-# you only need to do this once but you will need to redo it when the
-# image is updated (which happens fairly frequently right now).  NOTE:
-# if you're going to run phrosty or sidecar, replace ":cpu" at the end
-# with ":cuda-dev"
+# IF YOU HAVE YOUR OWN CONFIG
 #
-# Next, put this file and the script interactive-podman-nov2025.sh in a directory
-# somewhere.
+# If you have your own config options you need to set, put them in a
+# .yaml file.  At the top of that .yaml file, add:
 #
-# IF YOU NEED TO RUN phrosty or sidecar : edit interactive-podman-sh so
-# that the image referenced ends in ":cuda-dev" instead of ":cpu".
-# Also, add "--gpu" after "podman-hpc run"
+#   preloads
+#    - /config/nov2025_container_config.yaml
 #
-# Thereafter, in that directory, run
-#
-#    bash interactive_podman-nov2025.sh
-#
-# to get inside a container.
-#
-# Once you are inside the container, you can find the current directory
-# at /home — so, if you need to check out other things and pip install
-# -e . them, you can do that outisde of the container, and the inside
-# the container cd to /home/<directory> and ppip install -e . there.
-# You will have to redo this every time you start the container.
-#
-# USING THIS SOMEWHERE OTHER THAN NERSC
-#
-# You will need to figure out how to run containers there.  Make
-# sure not to exposue the password.
-
-
-# Note that if you know what you're doing, you can include this .yaml
-# file in another .yaml file with your configuration using by putting
-# this file's name in the replaceable_preloads list.
+# Then set the env var SNPIT_CONFIG (inside the container) to point to
+# your .yaml file.
 
 system:
   db:
