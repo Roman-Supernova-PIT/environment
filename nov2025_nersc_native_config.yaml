@@ -20,13 +20,7 @@
 #
 #   mkdir $SCRATCH/snpit_temp
 #
-# Save this file somewhere.  Edit it, replacing two things below:
-#   Replace YOUR_HOME_DIR with your home directory
-#     (do *not* just use $HOME, use what it resolves to)
-#   Replace YOUR_SCRATCH_DIR with the location of your scratch directory
-#     (do *not* just use $SCRATCH, use what it resolves to)
-#
-# Set the environment variable SNPIT_CONFIG to point at where you saved
+# Save this file somewhere.  Set the environment variable SNPIT_CONFIG to point at where you saved
 # this file.
 #
 #
@@ -43,15 +37,17 @@ system:
     username: ou2024nov
     # LEAVE PASSWORD AS null.  Do NOT edit this field to put in a password!  Just use passwordfile
     password: null
-    passwordfile: YOUR_HOME_DIR/secrets/roman_snpit_ou2024_nov_ou2024nov
+    passwordfile: ${HOME}/secrets/roman_snpit_ou2024_nov_ou2024nov
 
   paths:
-    spectra1d: /pscratch/sd/m/masao/roman_snpit/database_dirs/spectra1d
-    lightcurves: /pscratch/sd/m/masao/roman_snpit/database_dirs/lightcurves
-    segmaps: /pscratch/sd/m/masao/roman_snpit/database_dirs/segmaps
-    images: /pscratch/sd/m/masao/roman_snpit/database_dirs/images
+    data_dir: /pscratch/sd/m/masao/roman_snpit/database_dirs
+    temp_dir: ${SCRATCH}/snpit_temp
 
-    temp_dir: YOUR_SCRATCH_DIR/snpit_temp
+    spectra1d: ${system.paths.data_dir}/spectra1d
+    lightcurves: ${system.paths.data_dir}/lightcurves
+    segmaps: ${system.paths.data_dir}/segmaps
+    images: ${system.paths.data_dir}/images
+
 
     snappl:
       A25ePSF_path: /dvs_ro/cfs/cdirs/m4385/calib_data/A25ePSF

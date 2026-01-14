@@ -197,7 +197,7 @@ If you're going to publish the docker image for everybody, then you need to be a
 
 * Make sure that the docker images are all right and work by building them locally and testing them.  Once you're happy, do the rest of this list.
 
-  * As part of this, make sure that ``requirements-cpu.txt`` is pointing to the right version of ``roman-snpit-snappl``.  Right now, most of the time I (Rob) release new environemnts is because ``snappl`` has been updated.
+  * As part of this, make sure that ``requirements-cpu.txt`` is pointing to the right version of ``roman-snpit-snappl``.  Right now, most of the time I (Rob) release new environemnts is because ``snappl`` has been updated.  (Also, make sure that ``requirements-cuda.txt`` has the right version of ``sfft-romansnpit``.)
 
 * First, make sure you're in a fully committed and pushed checkout of the environment git repo, and that you're on the branch you mean to be on.  (``git status`` should show no outstanding changes.)
 
