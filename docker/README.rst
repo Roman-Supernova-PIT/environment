@@ -199,7 +199,7 @@ If you're going to publish the docker image for everybody, then you need to be a
 
 * First, make sure you're in a fully committed and pushed checkout of the environment git repo, and that you're on the branch you mean to be on.  (``git status`` should show no outstanding changes.)
 
-* Run ``git tag`` to see what earlier versions are there.  They don't sort the way you'd want, alas, so you have to pay attention.  Figure out what the latest version is.  (Make sure you ``git pull`` *a lot* in your ``environment`` checkout so you get tags that anybody else has defined!)
+* Run ``git tag`` to see what earlier versions are there.  They don't sort the way you'd want, alas, so you have to pay attention.  Figure out what the latest version is.  (Make sure you ``git pull -a`` *a lot* in your ``environment`` checkout so you get tags that anybody else has defined!)
 
 * Create a new tag with ``git tag <major>.<minor>.<stepping>``, where *probably* ``<major>`` and ``<minor>`` are the same numbers as the latest existing git tag, and ``<stepping>`` is just incremented by one.  However, you should do `semantic versioning <https://semver.org/>`_ right.
 
