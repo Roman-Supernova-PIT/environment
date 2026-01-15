@@ -301,6 +301,10 @@ ENV PATH="/venv/bin:$PATH"
 # Make sure roman_imsim is in the python path.
 ENV PYTHONPATH=/roman_imsim
 
+# This next symbolic link is needed by our tests.  Most of the
+#   time it will just be a broken link that we can ignore.
+RUN ln -s /home/photometry_test_data /photometry_test_data
+
 # Config files
 #   snpit_pipeline_config.yaml has default config for all pipeline processes,
 #     but no system info (paths, database)
@@ -324,6 +328,10 @@ ENV PATH="/venv/bin:$PATH"
 
 # Make sure roman_imsim is in the python path.
 ENV PYTHONPATH=/roman_imsim
+
+# This next symbolic link is needed by our tests.  Most of the
+#   time it will just be a broken link that we can ignore.
+RUN ln -s /home/photometry_test_data /photometry_test_data
 
 # Copy the default SNPIT config, plus two used by tests
 COPY default_snpit_pipeline_config.yaml /default_snpit_pipeline_config.yaml
