@@ -76,6 +76,26 @@ Containerized
 
 **Note 2**: Every time you restart the container, it's a fresh environment.  Any ``pip install -e .`` (which you may have done in the thing you're developing— e.g. ``snappl`` or something else) will have to be redone.  When you exited the old container, all of that went away.
 
+Example: querying the database
+""""""""""""""""""""""""""""""
+
+The most basic example to test if you've got everything set up right.  Start the environment::
+
+  bash /global/cfs/cdirs/m4385/env/interactive-podman.sh
+
+Run an interactive python session and try to search the database.  Run the two python commands in what's below, and the output you see should be something like this.  In particular, the list of objects you get back should have length 1::
+
+  root@ec8d17a2bc76:/# python
+  Python 3.13.5 (main, Jun 25 2025, 18:55:22) [GCC 14.2.0] on linux
+  Type "help", "copyright", "credits" or "license" for more information.
+  >>> from snappl.diaobject import DiaObject
+  >>> objs = DiaObject.find_objects( provenance_tag='ou2024_truth', process='load_ou2024_diaobject', name='20172782' )
+  [2026-01-15 18:24:32 - DEBUG] - Loading config file /snpit_env/environment/nov2025_container_config.yaml
+  [2026-01-15 18:24:32 - DEBUG] - No substitutions performed.
+  >>> print(len(objs))
+  1
+
+
 Example: developing and testing snappl
 """"""""""""""""""""""""""""""""""""""
 
@@ -106,9 +126,17 @@ Now that you're set up, start the environment with::
 
   bash /global/cfs/cdirs/m4385/env/interactive_podman.sh
 
-That will put you inside the container.  Go to the snappl tests directory with::
+That will put you inside the container.  Go to the snappl directory with::
 
-  cd /home/snappl/snappl/tests
+  cd /home/snappl
+
+Set yourself up so you both have the prerequisites to actually run tests, and so that the version of snappl checked out will be run instead of the one baked into the docker image::
+
+  pip install -e .[test]
+
+Go into the test subdirectory::
+
+  cd snappl/tests
 
 Try running some snappl tests.  For some fast and basic tests, try::
 
@@ -118,7 +146,15 @@ For something more serious, try::
 
   pytest -v test_image.py
 
-Try some of the others.  Some will fail because of the missing database and web servers, but lots should succeed.
+Note that the test ``test_get_and_find_image`` will fail because you don't have a test database or webserver running, but the rest of the tests in ``test_image.py`` (as of this writing) should pass.
+
+Try other tests as you wish.  Some will pass, but lots will fail because of the missing test database and web servers.
+
+When you're done, just ``exit`` to leave the container.  You may also want to do::
+
+  podman-hpc system prune
+
+to clean up after yourself.  (Otherwise, information about completed containers remain sitting around on disk somewhere.)
 
 Running on the queue
 ^^^^^^^^^^^^^^^^^^^^
