@@ -5,12 +5,6 @@
 Roman SN Pit Enviroment
 =======================
 
-Provides a conda environment (in ``sn_pit_dev.yaml``) and a docker environment (defined in ``docker/Dockerfile``).
-
-For more information about the Docker images (including building them and publishing them for the PIT as a whole), see the README in the ``docker`` directory.
-
-----
-
 Environment Varieties
 =====================
 
@@ -43,7 +37,7 @@ See above re: the recommendation that you move towards a containerized environme
 Native on NERSC
 ^^^^^^^^^^^^^^^
 
-**Note:** If you run this way, you can get things going pretty quickly.  However, with the default setup, you will not be able to ``pip install -e`` your own software, because you're using a shared environment.  (As such, we don't want you changing the environment for other people.)  You can always just run your own stuff, and you can try adding directories to your ``PYTHONPATH`` to get your own libraries in, if you're able to work that way.  It *is* possible to set up your own copy of the native NERSC environment; if there is enough demand, we will document that.  However, we strongly recommend instead that you move towards using a `containerized <containerized-nersc>`_ environment.
+**Note:** If you run this way, you can get things going pretty quickly.  However, with the default setup, you will not be able to ``pip install -e`` your own software, because you're using a shared environment.  (We don't want you changing the environment for other people.)  You can always just run your own stuff, and you can try adding directories to your ``PYTHONPATH`` to get your own libraries in, if you're able to work that way.  It *is* possible to set up your own copy of the native NERSC environment; if there is enough demand, we will document that.  However, we strongly recommend instead that you move towards using a `containerized <containerized-nersc>`_ environment.
 
 Make sure that you have set up the `secrets and temp directories <directory-setup>`_.  For the default config of that environment, the file in the secrets directory with the database password is, as of this writing::
 
@@ -64,11 +58,15 @@ Containerized
 
 * Make sure you've set up your `secrets and temp directories <directory-setup>`_.
 
+* Make sure you have the right database password in the right file in your ``~/secrets`` directory.  As of this writing, the file you need to create in that directory with the password that Rob can give you is::
+
+    roman_snpit_ou2024_nov_ou2024nov
+
 * You are probably developing something, and want to have that thing accessible you inside the container.   Go to the *parent* directory of the directory you want avilable.  (I.e., go to the directory you were in when you ran ``git clone ...``.)  You can check out multiple different archives here, and put other things (like config files) here, and they'll all be avilable inside the container.
 
 * Start the environment with::
 
-  bash /global/cfs/cdirs/m4385/env/interactive-podman.sh
+    bash /global/cfs/cdirs/m4385/env/interactive-podman.sh
 
 * Inside the environment do ``cd /home``.  Here, you will find the subdirectories and files you want to work with.
 
@@ -83,7 +81,9 @@ Example: developing and testing snappl
 
 Suppose you're developing and testing snappl, and want to do this on NERSC.
 
-First, make yourself a working directory in the PIT space if you haven't already::
+Make sure you've set up your `secrets and temp directories <directory-setup>`_.
+
+Make yourself a working directory in the PIT space if you haven't already::
 
   cd /global/cfs/cdirs/m4385/users
   mkdir <yourname>
@@ -100,10 +100,30 @@ At this point, do whatever you want to do inside ``snappl``.  Check out a differ
   cd /global/cfs/cdirs/m4385/users/<yoruname>
   git clone https://github.com/Roman-Supernova-PIT/photometry_test_data.git
 
+For what you're doing here, you don't actually need to set up a secrets file, becasue the snappl tests take care of that internally.  However, be aware that you won't be able to run *all* of the snappl tests.  Some of the snappl tests depend on a closed-environment webserver and database server being available.  For that, see `The Test Docker Environment <test-docker-environment>`_ (which, alas, as of this writing doesn't work on NERSC).
 
+Now that you're set up, start the environment with::
 
+  bash /global/cfs/cdirs/m4385/env/interactive_podman.sh
 
-**Running on the queue**: TODO
+That will put you inside the container.  Go to the snappl tests directory with::
+
+  cd /home/snappl/snappl/tests
+
+Try running some snappl tests.  For some fast and basic tests, try::
+
+  pytest -v test_config.py
+
+For something more serious, try::
+
+  pytest -v test_image.py
+
+Try some of the others.  Some will fail because of the missing database and web servers, but lots should succeed.
+
+Running on the queue
+^^^^^^^^^^^^^^^^^^^^
+
+TODO
 
 
 On the Duke Cosmology Cluster
@@ -221,6 +241,8 @@ To use your config file, set the environment variable ``SNPIT_CONFIG`` to point 
 
 
 ----
+
+.. _test-docker-environment:
 
 The Test Docker Environment
 ===========================
