@@ -30,12 +30,14 @@
 #     - REQUIRED : photometry_test_data
 #       If what you're going to test really needs it, check out:
 #         https://github.com/Roman-Supernova-PIT/photometry_test_data.git
+#
 #       Otherwise, just make an empty directory photometry_test_data
 #       underneath base.  (Even if you aren't going to use it,
 #       this docker compose file requires the directory to exist.)
 #
 #     - REQUIRED : snappl
-#         https://githum.com/Roman-Supernova-PIT/snappl
+#         https://github.com/Roman-Supernova-PIT/snappl
+#
 #       You will want to make sure that this is on the latest main.
 #       (Or, if you really know what you're doing, antoher branch.)
 #       It is used to build the docker images used by the tests,
@@ -55,7 +57,8 @@
 #  * Figure out the database docker images.
 #
 #     - Quick solution: if you're in the SN PIT, run
-#          * docker login ghcr.io
+#
+#          docker login ghcr.io
 #
 #       You will need to have set up an API key on github for this to
 #       work.  Google for how you do that, or ask on the PIT Slack.
@@ -118,19 +121,27 @@
 #
 #    Assuming you've set the DB_DOCKER_ARCHIVE, DB_DOCKER_VERSION, and
 #    WHICHENV environment variables (or have decided you can use the
-#    default), try, in this directory,
+#    default), you're ready to go.
 #
-#       * docker compose pull
+#    First, assuming you're in your base directory, cd to this
+#    directory:
+#
+#       cd enviroment/test-docker-environment
+#
+#    Now try pulling the images:
+#
+#       docker compose pull
 #
 #    If that fails, then you may need to build the images yourself:
 #
-#       * docker compose build
+#       docker compose build
 #
-#    NOTE : if WHICHENV is not "cpu", there are some edits you need
-#    to make in this file in order to succesfully build!  Search for
-#    "NOTE" below.
+#    NOTE : if WHICHENV is "cpu-dev" or "cuda-dev", there are some edits
+#    you need to make in this file in order to succesfully build!
+#    Searhc for "shell:" below and read the comments.
 #
 #  * Start the environment.  Under your base directory:
+#
 #      cd environment/test-docker-environment
 #      docker compose up -d webserver shell
 #
@@ -142,7 +153,7 @@
 #
 #   You can get a shell to do things in with
 #
-#     docker compose exec -it shell /bin/bash
+#      docker compose exec -it shell /bin/bash
 #
 #   Inside the container, your base directory is mounted at /home.
 #
@@ -243,9 +254,7 @@ services:
         source: ../../
         target: /home
     working_dir: /home
-    command: |
-      bash -c "ln -s /home/environment/test-docker-environment/default_test_config.yaml /default_test_config.yaml
-               tail -f /etc/issue"
+    command: tail -f /etc/issue
 
 volumes:
   postgres_data:
