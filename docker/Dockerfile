@@ -301,9 +301,16 @@ ENV PATH="/venv/bin:$PATH"
 # Make sure roman_imsim is in the python path.
 ENV PYTHONPATH=/roman_imsim
 
-# Copy the default SNPIT configs
-COPY default_snpit_config.yaml /default_snpit_config.yaml
-COPY snpit_system_config.yaml /snpit_system_config.yaml
+# Config files
+#   snpit_pipeline_config.yaml has default config for all pipeline processes,
+#     but no system info (paths, database)
+#   snpit_test_config.yaml has the databases and paths used by the
+#     environment defined in test-docker-environment
+#   test_config_for_db.yaml has the configuration used for the database
+#     server in the test environment in test-docker-environment
+COPY default_snpit_pipeline_config.yaml /default_snpit_pipeline_config.yaml
+COPY snpit_test_config.yaml /snpit_test_config.yaml
+COPY test-docker-environment/test_config_for_db.yaml /test_config_for_db.yaml
 
 # ======================================================================
 FROM ${IMAGE_TYPE}-build-base AS snpit_dev_env
@@ -318,6 +325,7 @@ ENV PATH="/venv/bin:$PATH"
 # Make sure roman_imsim is in the python path.
 ENV PYTHONPATH=/roman_imsim
 
-# Copy the default SNPIT configs
-COPY default_snpit_config.yaml /default_snpit_config.yaml
-COPY snpit_system_config.yaml /snpit_system_config.yaml
+# Copy the default SNPIT config, plus two used by tests
+COPY default_snpit_pipeline_config.yaml /default_snpit_pipeline_config.yaml
+COPY snpit_test_config.yaml /snpit_test_config.yaml
+COPY test-docker-environment/test_config_for_db.yaml /test_config_for_db.yaml

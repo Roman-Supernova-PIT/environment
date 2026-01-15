@@ -1,8 +1,12 @@
-# system should ONLY include things necessary to move from
-# one system to another system.  Anything that affects the
-# actualy running of your code should not be under system.
+# These values set up the database and paths that are used by
+# the test environment defined in the test-docker-environment
+# subdirectory of the roman snpit environment git repo.
 #
-# The values here are what we need in our tests
+# They will not be right for any production installation.
+
+augments:
+  - default_snpit_pipeline_config.yaml
+
 system:
   # The database sever to connect to
   db:
@@ -48,15 +52,15 @@ system:
   ou24:
     simdex_server: https://roman-desc-simdex.rknop.net
 
-    tds_base: /photometry_test_data/ou2024
-    config_file: /photometry_test_data/ou2024/tds.yaml
+    tds_base: /home/photometry_test_data/ou2024
+    config_file: /home/photometry_test_data/ou2024/tds.yaml
 
-    sn_truth_dir: /photometry_test_data/ou2024/snana_truth
+    sn_truth_dir: /home/photometry_test_data/ou2024/snana_truth
     # sn_truth_dir: /snana_pq_dir
 
-    images: /photometry_test_data/ou2024/images/simple_model
+    images: /home/photometry_test_data/ou2024/images/simple_model
 
-    sims_sed_library: /photometry_test_data/ou2024/sims_sed_library
+    sims_sed_library: /home/photometry_test_data/ou2024/sims_sed_library
     # Comment from Cole & Rob: This is a path to the SEDs that were used to generate the
     # OU24 simulations.  Only a subset of the files are stored in
     # photometry_test_data, so if you want to use it for real, you'll need

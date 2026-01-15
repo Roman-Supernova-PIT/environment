@@ -3,21 +3,19 @@
 # web server running, based on the current main of roman-snpit-db
 #
 # HOW TO USE THIS ENVIRONMENT
+#
 #  * CHECKLIST.  When you've done everything necessary, you will have:
 #     - checked out environment
 #     - checked out photometry_test_data, or made an empty directory
 #     - checked out snappl
 #     - optionally checked out other things
-#     - maybe set DB_DOCKER_ARCHIVE
-#     - pulled database images
-#     - maybe set ENV_DOCKER_ARCHIVE
-#     - set WHICHENV
-#     - pulled the snpit environment
+#     - maybe set DB_DOCKER_ARCHIVE, ENV_DOCKER_ARCHIVE, and WHICHENV
+#     - pulled or built the docker images
 #     - started the test environment with docker compose up
 #
 #    Yes, this sounds like a lot.  A bunch of it only needs to be done
-#    once, and then it will be fast thereafter (you'll only need to
-#    do the last step, except when images change).  Read on for
+#    once, and then it will be fast thereafter (you'll probably only
+#    need to do the last step, except when images change).  Read on for
 #    how to do all this.
 #
 #  * Pick a directory to work, and call it your "base" directory.
@@ -38,6 +36,10 @@
 #
 #     - REQUIRED : snappl
 #         https://githum.com/Roman-Supernova-PIT/snappl
+#       You will want to make sure that this is on the latest main.
+#       (Or, if you really know what you're doing, antoher branch.)
+#       It is used to build the docker images used by the tests,
+#       by the test webserver, by the test database, etc.
 #
 #     - Other repos you want to work with, like phrosty, campari,
 #       sidecar, etc.
@@ -52,12 +54,16 @@
 #
 #  * Figure out the database docker images.
 #
-#     - Quick solution: set env var DB_DOCKER_ARCHIVE to rknop
-#       However, there may be a more efficient solution; read on
-#       if you have time.
+#     - Quick solution: if you're in the SN PIT, run
+#          * docker login ghcr.io
 #
-#     - Set DB_DOCKER_ARCHIVE env var to the repository where they're
-#       found, if necessary.
+#       You will need to have set up an API key on github for this to
+#       work.  Google for how you do that, or ask on the PIT Slack.
+#
+#       If that works, you're done, can skip the rest of this section,
+#       and jump to "Figure out docker image versions" below.
+#
+#     - If not, read on:
 #
 #       The repo where the database docker images are found will be one
 #       of the following.  The default is the first on the list; if you
@@ -72,71 +78,83 @@
 #         * registry.nersc.gov/m4385
 #         * rknop
 #
-#       For the version of the database docker images, you can probably
-#       just use the default, which means you don't need to set the
-#       variable.  However, you might want to know what it is so you can
-#       pull the docker images rather than have to build them.  Search
-#       for the word "image:" below; at the end of the line, you'll
-#       see the default version, which is something like "test20251118a"
-#       (only the date might increment later).  If know what you're
-#       doing and want to use a different version, then you need to
-#       set the env var DB_DOCKER_VERSION.
-#  
-#     - Set DB_DOCKER_VERSION env var to the version of the database docker
-#       images, if necessary.  Usually you can not set this and use the default.
+#  * Figure out docker image versions
 #
-#  * Pull the database docker images.
-#       * docker compose pull postgres webserver
+#    - Quick solution: just use the defaults and don't do anything.
+#      Skip down to "Pull or build the docker images" below.
 #
-#  * Figure out where you are going to get the Roman SNPIT environment
-#    docker image from.  You can choose one of:
-#       * ghcr.io/roman-supernova-pit
-#       * registry.nersc.gov/m4385/rknop
-#       * rknop
-#    You may need to 'docker login' or 'podman-hpc login' to either of
-#    the first two.
+#    - But if you need to think about it:
 #
-#    Set the env var ENV_DOCKER_ARCHIVE to the place you're getting
-#    the environment from if it's not ghcr.io/roman-supernova-pit
+#      There are two environment variables, DB_DOCKER_VERSION and
+#      WHICHENV.
 #
-#  * Figure out which Roman SNPIT environment variant you want.  There
-#    are four:
-#      - cpu
-#      - cpu-dev
-#      - cuda
-#      - cuda-dev
-#    Usually you want to use "cpu".  If you're dealing with phrosty or
-#    sidecar, you probably need "cuda-dev" (which is much, much huger).
+#      DB_DOCKER_VERSION specifies the images you're going to use for
+#      the databse and web servers in the test environment.
+#      You can *probably* just use the defaults.  However, if you're
+#      developing snappl, in particular the webserver part of snappl,
+#      you'll need to use something else.  (Indeed, when you make your
+#      PR for snappl, you should also do a PR for environment editing
+#      the defaults in this file.
 #
-#    Set the env var WHICHENV to the variant you want.
+#      As of this writing, the default for DB_DOCKER_VERSION is
+#      test20260115.  For your own testing, you can make it anything,
+#      but if you're making changes and a PR, follow the same pattern,
+#      just bump the date.
 #
-#  * Pull the Roman SNPIT environment, replacing "docker" with
-#   "podman-hpc" if you're on NERSC:
-#      docker pull ${ENV_DOCKER_ARCHIVE}/roman-snpit-env:${WHICHENV}
+#      If you aren't using the default, set the env var
+#      DB_DOCKER_VERSION to what it needs to be.
+#
+#      WHICHENV specifies which standard SNPIT environment you're using
+#      Possibilities include "cpu", "cpu-dev", "cuda", and "cuda-dev".
+#      You may also, if you know what you're doing, make it something
+#      else.  It defaults to "cpu", which should work for most things,
+#      but if you're testing sidecar, phrosty, or something else that
+#      uses gpus, you'll need to use "cuda" or "cuda-dev".
+#
+#      If you aren't using the default, set the env var WHICHENV to what
+#      it needs to be.
+#
+#  * Pull or build the database docker images.
+#
+#    Assuming you've set the DB_DOCKER_ARCHIVE, DB_DOCKER_VERSION, and
+#    WHICHENV environment variables (or have decided you can use the
+#    default), try, in this directory,
+#
+#       * docker compose pull
+#
+#    If that fails, then you may need to build the images yourself:
+#
+#       * docker compose build
+#
+#    NOTE : if WHICHENV is not "cpu", there are some edits you need
+#    to make in this file in order to succesfully build!  Search for
+#    "NOTE" below.
 #
 #  * Start the environment.  Under your base directory:
 #      cd environment/test-docker-environment
 #      docker compose up -d webserver shell
 #
-#  At this point, if all is well, you should see a bunch of green lines
-#  saying that images are started and running.  If there are any errors,
-#  then you need to diagonose them.  You can use "docker logs" to look
-#  at the output of failed containers (and others) to try to figure out
-#  what happened.
+#   At this point, if all is well, you should see a bunch of green lines
+#   saying that images are started and running.  If there are any errors,
+#   then you need to diagonose them.  You can use "docker logs" to look
+#   at the output of failed containers (and others) to try to figure out
+#   what happened.
 #
-#  You can get a shell to do things in with
+#   You can get a shell to do things in with
 #
-#    docker compose exec -it shell /bin/bash
+#     docker compose exec -it shell /bin/bash
 #
-#  Inside the container, your base directory is mounted at /home.
+#   Inside the container, your base directory is mounted at /home.
 #
-#  Remeber to "pip install -e ." (or "pip install -e .[test]") in
-#  /home/snappl if you're developing snappl, and also in any
-#  directories for other stuff you're working on.
+#   Remeber to "pip install -e ." (or "pip install -e .[test]") in
+#   /home/snappl if you're developing snappl, and also in any
+#   directories for other stuff you're working on.
 #
-#  When you're done, run
+#   When you're done, you can exit the container with "exit" (you'll
+#   know you're out when your command line prompt looks normal again),
+#   and then do:
 #
-#    docker compose down -v
+#     docker compose down -v
 
 
 services:
@@ -146,7 +164,7 @@ services:
         - "8025:8025"
 
   postgres:
-    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-postgres:${DB_DOCKER_VERSION:-test20251209}
+    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-postgres:${DB_DOCKER_VERSION:-test20260115}
     build:
       context: ../../snappl/docker/postgres
       target: postgres
@@ -171,7 +189,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20251209}
+    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20260115}
     build:
       context: ../../snappl/
       dockerfile: docker/webserver/Dockerfile
@@ -182,7 +200,7 @@ services:
       - python
       - -c
       - "import snappl.db.migrations.apply_migrations as a; a.apply_migrations()"
-    
+
   webserver:
     depends_on:
       createdb:
@@ -194,7 +212,7 @@ services:
       interval: 5s
       timeout: 10s
       retries: 5
-    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20251209}
+    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20260115}
     build:
       context: ../../snappl/
       dockerfile: docker/webserver/Dockerfile
@@ -204,7 +222,7 @@ services:
     ports:
       - "8080:8080"
     user: ${USERID:-0}:${GROUPID:-0}
-      
+
 
   shell:
     image: ${ENV_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/roman-snpit-env:${WHICHENV:-cpu}
@@ -224,9 +242,6 @@ services:
       - type: bind
         source: ../../
         target: /home
-      - type: bind
-        source: ../../photometry_test_data
-        target: /photometry_test_data
     working_dir: /home
     command: |
       bash -c "ln -s /home/environment/test-docker-environment/default_test_config.yaml /default_test_config.yaml

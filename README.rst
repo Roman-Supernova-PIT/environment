@@ -33,16 +33,149 @@ We recommend you get your code working in a containerized environment, because t
 Using the Environment
 =====================
 
+.. _environment-on-nersc:
+
+On NERSC
+--------
+
+See above re: the recommendation that you move towards a containerized environment.
+
+Native on NERSC
+^^^^^^^^^^^^^^^
+
+**Note:** If you run this way, you can get things going pretty quickly.  However, with the default setup, you will not be able to ``pip install -e`` your own software, because you're using a shared environment.  (As such, we don't want you changing the environment for other people.)  You can always just run your own stuff, and you can try adding directories to your ``PYTHONPATH`` to get your own libraries in, if you're able to work that way.  It *is* possible to set up your own copy of the native NERSC environment; if there is enough demand, we will document that.  However, we strongly recommend instead that you move towards using a `containerized <containerized-nersc>`_ environment.
+
+Make sure that you have set up the `secrets and temp directories <directory-setup>`_.  For the default config of that environment, the file in the secrets directory with the database password is, as of this writing::
+
+  roman_snpit_ou2024_nov_ou2024nov
+
+If you are going to use a different `config file <config-files>`_, you will of course have a different password file.
+
+You can start up the dev environment (the only one that currently exists) on NERSC with::
+
+  source /global/cfs/cdirs/m4358/env/setup_roman_snpit.sh
+
+This will by default (as of this writing) set the ``SNPIT_CONFIG`` environment varaible to point to the right config file for the nov2025 development database.  You can of course point to any other config file as appropriate.  See config-files_ above for more information about config files.
+
+.. _containerized-nersc:
+
+Containerized
+^^^^^^^^^^^^^
+
+* Make sure you've set up your `secrets and temp directories <directory-setup>`_.
+
+* You are probably developing something, and want to have that thing accessible you inside the container.   Go to the *parent* directory of the directory you want avilable.  (I.e., go to the directory you were in when you ran ``git clone ...``.)  You can check out multiple different archives here, and put other things (like config files) here, and they'll all be avilable inside the container.
+
+* Start the environment with::
+
+  bash /global/cfs/cdirs/m4385/env/interactive-podman.sh
+
+* Inside the environment do ``cd /home``.  Here, you will find the subdirectories and files you want to work with.
+
+* When you're done, just ``exit``.
+
+**Note**: If you're going to run big things, you probably want to get yourself an interactive compute node rather than just running on a login node.  If you're only running fast things, a login node is fine.
+
+**Note 2**: Every time you restart the container, it's a fresh environment.  Any ``pip install -e .`` (which you may have done in the thing you're developing— e.g. ``snappl`` or something else) will have to be redone.  When you exited the old container, all of that went away.
+
+Example: developing and testing snappl
+""""""""""""""""""""""""""""""""""""""
+
+Suppose you're developing and testing snappl, and want to do this on NERSC.
+
+First, make yourself a working directory in the PIT space if you haven't already::
+
+  cd /global/cfs/cdirs/m4385/users
+  mkdir <yourname>
+  cd <yourname>
+
+In this directory, pull the ``snappl`` archive::
+
+  git clone git@github.com:Roman-Supernova-PIT/snappl.git
+
+(You might use ``https://github.com/Roman-Supernova-PIT/snappl.git`` instead, depending on how you're set up to use github.)
+
+At this point, do whatever you want to do inside ``snappl``.  Check out a different branch, edit the code, etc.  For now, let's assume you're not doing anything, you just want to run the tests.  To be abe to run the ``snappl`` tests, you also need the ``photometry_test_data`` archive::
+
+  cd /global/cfs/cdirs/m4385/users/<yoruname>
+  git clone https://github.com/Roman-Supernova-PIT/photometry_test_data.git
+
+
+
+
+**Running on the queue**: TODO
+
+
+On the Duke Cosmology Cluster
+-----------------------------
+
+**Not currently supported, needs to be updated.**
+
+On SMCE
+-------
+
+**Not currently supported, needs to be created.**
+
+
+On your local machine
+---------------------
+
+Native
+^^^^^^
+
+An envioronment that is native for your system is not currently supported.  However, you may be able to get enough to do what you need by just doing::
+
+  pip install roman-spnit-snappl
+
+As of this writing, snappl is updated pretty frequently, so you'll want to regularly do::
+
+  pip install --upgrade roman-snpit-snappl
+
+Then, make sure you get a `config file <config-files>`_ that points to the right database.
+
+
+Containerized
+^^^^^^^^^^^^^
+
+TODO
+
+.. _directory-setup:
+
+Secrets and Temp Directories
+----------------------------
+
+Some of the pipeline code refers to a temporary directory, and if you're going to connect to a database, you need a secrets file with the database password.
+
+Secrets dir
+^^^^^^^^^^^
+
+Make yourself a ``secrets`` directory under your home directory if you haven't already::
+
+    cd
+    mkdir secrets
+    chmod 710 secrets
+    setfacl -Rdm g::x,o::- secrets
+
+(If the ``setfacl`` command doesn't work, don't worry about it.  What this command is trying to do is set up the directory so that any file you create inside it will *not* be world-readable, which is what you want for a secrets directory.  You can always just make sure that's true manually.)
+
+In this directory, you will need to create text files, each with one line that has the password for relevant database.  The names of those text files depend on which config file you're using.  Some of these names are documented below, but in general you can look at the value of ``system.db.passwordfile`` in the config file to figure out what it's supposed to be.
+
+Temp dir
+^^^^^^^^
+
+Make yourself a temp directory somewhere that has a lot of space.  Ideally, this is a directory that's not used for anything else; that way, you know that it's safe at any time to delete anything in here.  (Well, almost any time; if you're right in the middle of running a process that uses this directory, you will probably screw that process up.)
+
+**On NERSC** this temp directory *must* be ``$SCRATCH/snpit_temp`` (unless you want to edit the provided config files).
+
 .. _config-files:
 
 Config Files
 ------------
 
-**If you're on NERSC**: You *may* be able to skip this section.  See environment-on-nersc_.
+To connect to the database, and indeed to do a lot of things with ``snappl`` and some other snpit packages, you need to have a proper config file.  Ideally, the environment you started already points at a default one and you won't have to think about it.  In case you do, read on.
 
-The docker images do *not* have standard config files baked into them.  (Sort of; they actually do, buit it's specifically for running tests.)  The reason for this is that the config file points to a database server, and as we're under development, at different times different people are going to want to point to different database.
+The docker images do *not* have standard config files baked into them.  (Sort of; they actually do, buit it's specifically for running tests.)  The reason for this is that the config file points to a database server, and as we're under development, at different times different people are going to want to point to different database.  As such, whether you're running natively or in a docker image, you're going to have to secure a proper config file for the snpit environment.  Ideally, Rob or somebody will have provided one for you.  The standard procedure for running in a dockerized environment on NERSC (described above) does include a standard config file.
 
-As such, whether you're running natively or in a docker image, you're going to have to secure a proper config file for the snpit environment.  Ideally, Rob or somebody will have provided one for you.  See environment-on-nersc_ below if you're running in NERSC.
 
 Standard Config Files
 ^^^^^^^^^^^^^^^^^^^^^
@@ -54,24 +187,11 @@ For the Nov 2024 database
 
 This is the database that we used for the November 2024 hackathon, some are still using it for development.
 
-For these config files, you must do a few things first to get yourself set up:
+Make sure you've set up the `secrets and temp directories <directory-setup>`_.  The file in your secrets directory in which you should put the password for the database must be named::
 
-* Make yourself a ``secrets`` directory under your home directory if you haven't already::
+  roman_snpit_ou2024_nov_ou2024nov
 
-    cd
-    mkdir secrets
-    chmod 710 secrets
-    setfacl -Rdm g::x,o::- secrets
-
-  (If the ``setfacl`` command doesn't work, don't worry about it.  What this command is trying to do is set up the directory so that any file you create inside it will *not* be world-readable, which is what you want for a secrets directory.  You can always just make sure that's true manually.)
-
-* Next, edit the file ``secrets/roman_snpit_ou2024_nov_ou2024nov`` and make it have one line that has the password you were given for this datbase.  (This password is not here because we do *not* want to commit it to a git archive!)
-
-* Make yourself a temp directory.  This needs to have a decent amount of space.  Ideally, make it a new directory, because if you're not storing anything else here, it's always safe to just delete anything that gets left behind here.
-
-  * **On NERSC**: this directory *must* be ``$SCRATCH/snpit_temp`` (unless you want to edit the config file)
-
-* If you're not on NERSC, make yourself a directory to store files "in" the database.  On NERSC, these are all under ``/pscratch/sd/m/masao/roman_snpit/database_dirs``; when running on NERSC, you don't have to do anything.  If you are running somewhere else, you will need to do two things.  First, any files you will want to read, you will need to copy from NERSC to the equivalent place on your system. Second, if you write any files, you will need to make sure to sync them up to NERSC.  For this reason, you will probably find it easier to just work at NERSC.
+If you're not on NERSC, make yourself a directory to store files "in" the database.  On NERSC, these are all under ``/pscratch/sd/m/masao/roman_snpit/database_dirs``; when running on NERSC, you don't have to do anything.  If you are running somewhere else, you will need to do two things.  First, any files you will want to read, you will need to copy from NERSC to the equivalent place on your system. Second, if you write any files, you will need to make sure to sync them up to NERSC.  For this reason, you will probably find it easier to just work at NERSC.
 
 The config files, found in the same directory as this README file, are:
 
@@ -100,53 +220,6 @@ To figure out what ``/path/to/provided/config/file.yaml`` should be replaced wit
 To use your config file, set the environment variable ``SNPIT_CONFIG`` to point at the new config file that you've created.
 
 
-On your local machine
----------------------
-
-Native
-^^^^^^
-
-An envioronment that is native for your system is not currently supported.  However, you may be able to get enough to do what you need by just doing::
-
-  pip install roman-spnit-snappl
-
-As of this writing, snappl is updated pretty frequently, so you'll want to regularly do::
-
-  pip install --upgrade roman-snpit-snappl
-
-Then, make sure you get a `config file <config-files>`_ that points to the right database.
-
-
-Containerized
-^^^^^^^^^^^^^
-
-TODO
-
-.. _environment-on-nersc:
-
-On NERSC
---------
-
-See above re: the recommendation that you move towards a containerized environment.
-
-Native on NERSC
-^^^^^^^^^^^^^^^
-
-Containerized
-^^^^^^^^^^^^^
-
-TODO
-
-On the Duke Cosmology Cluster
------------------------------
-
-**Not currently supported, needs to be updated.**
-
-On SMCE
--------
-
-**Not currently supported, needs to be created.**
-
 ----
 
 The Test Docker Environment
@@ -174,7 +247,35 @@ TODO
 Maintenance on NERSC
 --------------------
 
-TODO
+The native environment
+^^^^^^^^^^^^^^^^^^^^^^
+
+**Note**: currently only Rob can do this.  Reason: so that people don't accidentally install stuff to the environment, thereby messing it up for everybody else, the directories with the environment are not group-writeable.
+
+The dev environment on NERSC (the only one that currently exists) is defined under ``/global/cfs/cdirs/m4385/env/snpit-env-dev``.  To update the packages in it, first start up the environment with::
+
+  source /global/cfs/cdirs/m4385/env/setup_roman_snpit.sh
+
+Next, go to the checkout of the ``environment`` repo::
+
+  cd /global/cfs/cdirs/m4385/env/environment
+
+Make sure that you have the correct branch checked out, and do a ``git pull -a --no-rebase`` to make sure that branch is up to date.  (Really, make sure you know what you're doing.)  Update the conda environment with::
+
+  conda env update --file sn_pit_dev.yaml
+
+The containers
+^^^^^^^^^^^^^^
+
+Read the `docker subdirectory README <https://github.com/Roman-Supernova-PIT/environment/tree/main/docker>`_ for information on updating the docker files.  Once a new dockerfile is updated and pushed to ``registry.nersc.gov``, then run::
+
+  podman-hpc --squash-dir /global/cfs/cdirs/m4385/podman_images pull registry.nersc.gov/m4385/roman-snpit-env:cpu
+  podman-hpc --squash-dir /global/cfs/cdirs/m4385/podman_images pull registry.nersc.gov/m4385/roman-snpit-env:cpu-dev
+  podman-hpc --squash-dir /global/cfs/cdirs/m4385/podman_images pull registry.nersc.gov/m4385/roman-snpit-env:cuda
+  podman-hpc --squash-dir /global/cfs/cdirs/m4385/podman_images pull registry.nersc.gov/m4385/roman-snpit-env:cuda-dev
+
+That will update the docker image used by ``/global/cfs/cdirs/m4385/env/interactive-podman.sh``.
+
 
 Maintenance on SMCE
 -------------------
