@@ -100,7 +100,7 @@
 #      the defaults in this file.
 #
 #      As of this writing, the default for DB_DOCKER_VERSION is
-#      test20260115.  For your own testing, you can make it anything,
+#      test20260202.  For your own testing, you can make it anything,
 #      but if you're making changes and a PR, follow the same pattern,
 #      just bump the date.
 #
@@ -175,7 +175,7 @@ services:
         - "8025:8025"
 
   postgres:
-    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-postgres:${DB_DOCKER_VERSION:-test20260115}
+    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-postgres:${DB_DOCKER_VERSION:-test20260202}
     build:
       context: ../../snappl/docker/postgres
       target: postgres
@@ -200,7 +200,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20260115}
+    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20260202}
     build:
       context: ../../snappl/
       dockerfile: docker/webserver/Dockerfile
@@ -223,7 +223,7 @@ services:
       interval: 5s
       timeout: 10s
       retries: 5
-    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20260115}
+    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20260202}
     build:
       context: ../../snappl/
       dockerfile: docker/webserver/Dockerfile
