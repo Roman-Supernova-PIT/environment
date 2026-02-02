@@ -9,6 +9,7 @@ podman-hpc run \
     --mount type=bind,source=$HOME/secrets,target=/secrets \
     --mount type=bind,source=$PSCRATCH/snpit_temp,target=/snpit_temp \
     --mount type=bind,source=/dvs_ro/cfs/cdirs/m4385/env,target=/snpit_env \
+    --mount type=bind,source=/pscratch/sd/m/masao/roman_snpit,target=/roman_snpit_masao_scratch \
     --mount type=bind,source=/pscratch/sd/m/masao/roman_snpit/database_dirs,target=/data \
     --mount type=bind,source=/dvs_ro/cfs/cdirs/lsst/shared/external/roman-desc-sims/Roman_data,target=/ou2024 \
     --mount type=bind,source=/dvs_ro/cfs/cdirs/lsst/www/DESC_TD_PUBLIC/Roman+DESC/PQ+HDF5_ROMAN+LSST_LARGE,target=/ou2024_snana \
