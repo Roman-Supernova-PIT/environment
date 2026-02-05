@@ -4,7 +4,7 @@ system:
     username: dbuser
     # LEAVE PASSWORD AS null.  Do NOT edit this field to put in a password!  Just use passwordfile
     password: null
-    passwordfile: /secrets/roman_snpit_db_rknop_env
+    passwordfile: /secrets/roman_snpit_db_rknop_dev
 
   paths:
     spectra1d: /data/spectra1d
