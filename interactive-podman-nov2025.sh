@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/bash
 
 # See comments in nov2025_container_config.yaml for instructions
 
@@ -8,6 +8,7 @@ podman-hpc run \
     --mount type=bind,source=$PWD,target=/home \
     --mount type=bind,source=$HOME/secrets,target=/secrets \
     --mount type=bind,source=$PSCRATCH/snpit_temp,target=/snpit_temp \
+    --mount type=bind,source=$PSCRATCH,target=/scratch \
     --mount type=bind,source=/dvs_ro/cfs/cdirs/m4385/env,target=/snpit_env \
     --mount type=bind,source=/pscratch/sd/m/masao/roman_snpit,target=/roman_snpit_masao_scratch \
     --mount type=bind,source=/pscratch/sd/m/masao/roman_snpit/database_dirs,target=/data \
@@ -24,8 +25,9 @@ podman-hpc run \
     --env OMP_NUM_THREADS=1 \
     --env VECLIB_MAXIMUM_THREADS=1 \
     --env TERM=xterm \
+    --env SNPIT_DEFAULT_CONFIG=/snpit_env/configs/nov2025_container_config.yaml \
     --env SNPIT_CONFIG=/snpit_env/configs/nov2025_container_config.yaml \
     --annotation run.oci.keep_original_groups=1 \
     -it \
-    registry.nersc.gov/m4385/roman-snpit-env:cpu \
+    registry.nersc.gov/m4385/roman-snpit-env:${WHICHROMANENV:-cpu} \
     /bin/bash

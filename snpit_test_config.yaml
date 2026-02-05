@@ -50,7 +50,7 @@ system:
 
   # General OpenUniverse 2024 configurations
   ou24:
-    simdex_server: https://roman-desc-simdex.rknop.net
+    simdex_server: https://roman-desc-simdex.lbl.gov
 
     tds_base: /home/photometry_test_data/ou2024
     config_file: /home/photometry_test_data/ou2024/tds.yaml

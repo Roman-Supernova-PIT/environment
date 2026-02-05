@@ -33,7 +33,7 @@ system:
       A25ePSF_path: /dvs_ro/cfs/cdirs/m4385/calib_data/A25ePSF
 
   ou24:
-    simdex_server: https://roman-desc-simdex.rknop.net
+    simdex_server: https://roman-desc-simdex.lbl.gov
     tds_base: /dvs_ro/cfs/cdirs/lsst/shared/external/roman-desc-sims/Roman_data/RomanTDS
     config_file: /dvs_ro/cfs/cdirs/lsst/shared/external/roman-desc-sims/Roman_data/RomanTDS/tds.yaml
     sn_truth_dir: /dvs_ro/cfs/cdirs/lsst/www/DESC_TD_PUBLIC/Roman+DESC/PQ+HDF5_ROMAN+LSST_LARGE

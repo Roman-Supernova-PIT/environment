@@ -61,7 +61,7 @@ system:
       A25ePSF_path: /a25epsf
 
   ou24:
-    simdex_server: https://roman-desc-simdex.rknop.net
+    simdex_server: https://roman-desc-simdex.lbl.gov
     tds_base: /ou2024/RomanTDS
     config_file: /home/environment/ou2024_tds.yaml
     sn_truth_dir: /ou2024_snana
