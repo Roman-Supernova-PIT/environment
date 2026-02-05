@@ -29,5 +29,5 @@ podman-hpc run \
     --env SNPIT_CONFIG=/snpit_env/configs/rknop_dev_container_config.yaml \
     --annotation run.oci.keep_original_groups=1 \
     -it \
-    registry.nersc.gov/m4385/roman-snpit-env:${WHICHROMANENV:-cpu}-0.1.30 \
+    registry.nersc.gov/m4385/roman-snpit-env:${WHICHROMANENV:-cpu}-0.1.31 \
     /bin/bash
