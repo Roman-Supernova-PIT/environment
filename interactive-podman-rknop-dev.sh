@@ -25,8 +25,8 @@ podman-hpc run \
     --env OMP_NUM_THREADS=1 \
     --env VECLIB_MAXIMUM_THREADS=1 \
     --env TERM=xterm \
-    --env SNPIT_DEFAULT_CONFIG=/snpit_env/configs/nov2025_container_config.yaml \
-    --env SNPIT_CONFIG=/snpit_env/configs/nov2025_container_config.yaml \
+    --env SNPIT_DEFAULT_CONFIG=/snpit_env/configs/rknop_dev_container_config.yaml \
+    --env SNPIT_CONFIG=/snpit_env/configs/rknop_dev_container_config.yaml \
     --annotation run.oci.keep_original_groups=1 \
     -it \
     registry.nersc.gov/m4385/roman-snpit-env:${WHICHROMANENV:-cpu}-0.1.30 \
