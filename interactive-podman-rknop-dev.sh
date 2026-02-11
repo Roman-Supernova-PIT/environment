@@ -4,7 +4,13 @@
 
 export PODMANHPC_ADDITIONAL_STORES=/global/cfs/cdirs/m4385/podman_images
 
-podman-hpc run \
+if [ "$WHICHROMANENV" = "cuda" ] || [ "$WHICHROMANENV" == "cuda-dev" ]; then
+    PODMAN_HPC_RUN_GPU="--gpu"
+else
+    PODMAN_HPC_RUN_GPU=""
+fi
+
+podman-hpc run ${PODMAN_HPC_RUN_GPU} \
     --mount type=bind,source=$PWD,target=/home \
     --mount type=bind,source=$HOME/secrets,target=/secrets \
     --mount type=bind,source=$PSCRATCH/snpit_temp,target=/snpit_temp \
