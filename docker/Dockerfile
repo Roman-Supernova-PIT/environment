@@ -44,8 +44,8 @@ ARG IMAGE_TYPE=cpu
 # cuda libraries).
 
 # We have to stay on bookworm until NERSC is on Cuda 13
-# FROM debian:trixie-20260112 AS cpu-base
-FROM debian:bookworm-20260202 AS cpu-base
+FROM debian:trixie-20260112 AS cpu-base
+# FROM debian:bookworm-20260202 AS cpu-base
 
 LABEL maintainer="Rob Knop <raknop@lbl.gov>"
 
@@ -58,6 +58,7 @@ ENV TZ=UTC
 #   need, including enough cuda packages for runtime.  Clean up all apt
 #   cache afterwards for space reasons.
 
+# For debian12 : libhdf5-103
 # For debian13 : libhdf5-310
 
 RUN apt-get update \
@@ -70,7 +71,7 @@ RUN apt-get update \
          hdf5-tools \
          less \
          libfftw3-bin \
-         libhdf5-103 \
+         libhdf5-310 \
          locales \
          postgresql-client \
          procps \
@@ -141,16 +142,16 @@ ENV NVIDIA_REQUIRE_CUDA="cuda>=8.0"
 
 RUN apt-get update \
     && apt-get -y install \
-         cuda-cudart-13-1 \
-         cuda-cudart-dev-13-1 \
-         cuda-nvrtc-13-1 \
-         libcublas-13-1 \
-         libcufft-13-1 \
-         libcurand-13-1 \
-         libcusolver-13-1 \
-         libcusparse-13-1 \
+         cuda-cudart-12-9 \
+         cuda-cudart-dev-12-9 \
+         cuda-nvrtc-12-9 \
+         libcublas-12-9 \
+         libcufft-12-9 \
+         libcurand-12-9 \
+         libcusolver-12-9 \
+         libcusparse-12-9 \
          libnvidia-ml1 \
-         libnvjitlink-13-1 \
+         libnvjitlink-12-9 \
          nvidia-driver-cuda \
     && apt-get -y autoremove \
     && apt-get clean \
