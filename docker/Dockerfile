@@ -17,26 +17,26 @@
 
 ARG IMAGE_TYPE=cpu
 
-# As of this writing (2026-10-14, corresponding to version 0.X.X of the
+# As of this writing (2026-02-18, corresponding to version 0.1.36 of the
 # environent), here are the sizes of the various build stages:
 #
 # IMAGE_TYPE=cpu :
 #   cpu-base          0.88GB
 #   cpu-build-base    1.43GB
-#   pip-install-cpu   3.17GB
-#   compilations      3.17GB
-#   snpit_env         2.59GB   (all those pip packages bloat a lot even without the build deps)
-#   snpit_dev_env     3.14GB
+#   pip-install-cpu   3.19GB
+#   compilations      3.19GB
+#   snpit_env         2.62GB   (all those pip packages bloat a lot even without the build deps)
+#   snpit_dev_env     3.16GB
 #
 # IMAGE_TYPE=cuda
 #   cpu-base            0.88GB
-#   cuda-base           4.52GB   (!!!) (inorite?)
-#   cuda-build-base    10.0 GB   (!!!!!)
-#   pip-install-cpu    11.8 GB
-#   pip-install-cuda   12.2 GB
-#   compilations       12.2 GB
-#   snpit_env           6.66GB
-#   snpit_dev_env      12.2 GB
+#   cuda-base           4.59GB   (!!!) (inorite?)
+#   cuda-build-base    11.3 GB   (!!!!!)
+#   pip-install-cpu    13.0 GB
+#   pip-install-cuda   13.5 GB
+#   compilations       13.5 GB
+#   snpit_env           6.76GB
+#   snpit_dev_env      13.4 GB
 
 
 # ======================================================================
