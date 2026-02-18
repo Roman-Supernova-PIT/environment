@@ -43,7 +43,9 @@ ARG IMAGE_TYPE=cpu
 # This is the base target for CPU images (i.e. ones that don't include
 # cuda libraries).
 
-FROM debian:trixie-20260112 AS cpu-base
+# We have to stay on bookworm until NERSC is on Cuda 13
+# FROM debian:trixie-20260112 AS cpu-base
+FROM debian:bookworm-20260202 AS cpu-base
 
 LABEL maintainer="Rob Knop <raknop@lbl.gov>"
 
@@ -56,6 +58,8 @@ ENV TZ=UTC
 #   need, including enough cuda packages for runtime.  Clean up all apt
 #   cache afterwards for space reasons.
 
+# For debian13 : libhdf5-310
+
 RUN apt-get update \
     && apt-get -y upgrade \
     && apt-get -y install \
@@ -66,7 +70,7 @@ RUN apt-get update \
          hdf5-tools \
          less \
          libfftw3-bin \
-         libhdf5-310 \
+         libhdf5-103 \
          locales \
          postgresql-client \
          procps \
@@ -109,12 +113,17 @@ ENV LESS=-XLRi
 # of the CPU base, so we don't have to repeat all the stuff that's done
 # there.
 
+# When we go to debian 13 and cuda 13, uncomment the key signature
+#   below.  The cuda-debian12-x86_64.list file has [trusted=yes] in it,
+#   because debian 13 doesn't like the key that is availabe for cuda 12
+#   (which is only in cuda-debian12).
+
 FROM cpu-base AS cuda-base
 
 # Add the nvidia cuda apt archive
 RUN cat /etc/apt/sources.list | perl -pe 's/main$/main non-free contrib/' > /etc/apt/sources.list.new \
    && mv /etc/apt/sources.list.new /etc/apt/sources.list
-COPY docker/cuda-archive-keyring.gpg /usr/share/keyrings/cuda-archive-keyring.gpg
+# COPY docker/cuda-archive-keyring.gpg /usr/share/keyrings/cuda-archive-keyring.gpg
 COPY docker/nvidia-container-toolkit-keyring.gpg /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
 COPY docker/cuda-debian12-x86_64.list /etc/apt/sources.list.d/cuda-debian12-x86_64.list
 COPY docker/nvidia-container.list /etc/apt/source.list.d/nvidia-container.list
@@ -132,17 +141,16 @@ ENV NVIDIA_REQUIRE_CUDA="cuda>=8.0"
 
 RUN apt-get update \
     && apt-get -y install \
-         cuda-cudart-12-4 \
-         cuda-cudart-dev-12-4 \
-         cuda-nvrtc-12-4 \
-         libcublas-12-4 \
-         libcudnn9-cuda-12 \
-         libcufft-12-4 \
-         libcurand-12-4 \
-         libcusolver-12-4 \
-         libcusparse-12-4 \
+         cuda-cudart-13-1 \
+         cuda-cudart-dev-13-1 \
+         cuda-nvrtc-13-1 \
+         libcublas-13-1 \
+         libcufft-13-1 \
+         libcurand-13-1 \
+         libcusolver-13-1 \
+         libcusparse-13-1 \
          libnvidia-ml1 \
-         libnvjitlink-12-4 \
+         libnvjitlink-13-1 \
          nvidia-driver-cuda \
     && apt-get -y autoremove \
     && apt-get clean \
@@ -201,22 +209,21 @@ RUN apt-get update && \
        autoconf \
        autotools-dev \
        cmake \
-       cuda-command-line-tools-12-4 \
-       cuda-minimal-build-12-4 \
+       cuda-command-line-tools-12-9 \
+       cuda-minimal-build-12-9 \
        cython3 \
        g++ \
        gdb \
-       gfortran \
+       gfortran-12 \
        libbz2-dev \
-       libcublas-dev-12-4 \
-       libcudnn9-dev-cuda-12 \
-       libcufft-dev-12-4 \
-       libcurand-dev-12-4 \
-       libcusolver-dev-12-4 \
-       libcusparse-dev-12-4 \
+       libcublas-dev-12-9 \
+       libcufft-dev-12-9 \
+       libcurand-dev-12-9 \
+       libcusolver-dev-12-9 \
+       libcusparse-dev-12-9 \
        libtool \
-       nsight-systems-2025.3.2 \
-       nsight-compute-2025.3.0 \
+       nsight-systems-2025.5.2 \
+       nsight-compute-2025.4.1 \
        pkg-config \
        python3-pip \
        python3-venv \
