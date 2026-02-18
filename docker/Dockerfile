@@ -143,7 +143,6 @@ ENV NVIDIA_REQUIRE_CUDA="cuda>=8.0"
 RUN apt-get update \
     && apt-get -y install \
          cuda-cudart-12-9 \
-         cuda-cudart-dev-12-9 \
          cuda-nvrtc-12-9 \
          libcublas-12-9 \
          libcufft-12-9 \
@@ -211,6 +210,7 @@ RUN apt-get update && \
        autotools-dev \
        cmake \
        cuda-command-line-tools-12-9 \
+       cuda-cudart-dev-12-9 \
        cuda-minimal-build-12-9 \
        cython3 \
        g++ \
