@@ -2,7 +2,7 @@
 
 # See comments in nov2025_container_config.yaml for instructions
 
-export PODMANHPC_ADDITIONAL_STORES=/global/cfs/cdirs/m4385/podman_images
+export PODMANHPC_ADDITIONAL_STORES=/dvs_ro/cfs/cdirs/m4385/podman_images
 
 if [ "$WHICHROMANENV" = "cuda" ] || [ "$WHICHROMANENV" == "cuda-dev" ]; then
     PODMAN_HPC_RUN_GPU="--gpu"
