@@ -106,6 +106,15 @@ RUN ln -s /usr/bin/source-extractor /usr/bin/sextractor
 # Try to make PyPi really think fftw3 is installed
 RUN ln -s /usr/lib/x86_64-linux-gnu/libfftw3.so.3 /usr/lib/libfftw3.so
 
+# We'll be running in a docker image, and pip install -e does things with git,
+#   so we need git not to yell at us about unsafe directories if we are
+#   running as root inside the container but bind-mount user-owned
+#   directories.  The gitconfig will do that by declaring all directories "safe".
+# (A better solution would be always to run with USERID and GROUPID in the
+#   test environment docker compose file, but do this here to minimze how much
+#   junk has to be done to just run.)
+COPY docker/gitconfig /root/.gitconfig
+
 # Some basic configs for sanity
 ENV LESS=-XLRi
 
@@ -140,21 +149,32 @@ ENV NVIDIA_REQUIRE_CUDA="cuda>=8.0"
 # cudart-dev should only be in the build image, at least one file from
 # it is needed by pycuda
 
-RUN apt-get update \
-    && apt-get -y install \
-         cuda-cudart-12-9 \
-         cuda-nvrtc-12-9 \
-         libcublas-12-9 \
-         libcufft-12-9 \
-         libcurand-12-9 \
-         libcusolver-12-9 \
-         libcusparse-12-9 \
-         libnvidia-ml1 \
-         libnvjitlink-12-9 \
-         nvidia-driver-cuda \
-    && apt-get -y autoremove \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# RUN apt-get update \
+#     && apt-get -y install \
+#          cuda-cudart-12-9 \
+#          cuda-nvrtc-12-9 \
+#          libcublas-12-9 \
+#          libcufft-12-9 \
+#          libcurand-12-9 \
+#          libcusolver-12-9 \
+#          libcusparse-12-9 \
+#          libnvjitlink-12-9 \
+#          libnvidia-ml1=550.163.01-1 \
+#          libcudadebugger1=550.163.01-1 \
+#          libnvcuvid1=550.163.01-1 \
+#          libcuda1=550.163.01-1 \
+#          libnvidia-fbc1=550.163.01-1 \
+#          libnvoptix1=550.163.01-1 \
+#          libnvidia-encode1=550.163.01-1 \
+#          libnvidia-opticalflow1=550.163.01-1 \
+#          libnvidia-ptxjitcompiler1=550.163.01-1 \
+#          libnvidia-cfg1=550.163.01-1 \
+#          nvidia-kernel-support=550.163.01-1 \
+#          nvidia-opencl-icd=550.163.01-1 \
+#          nvidia-driver-cuda=550.163.01-1 \
+#     && apt-get -y autoremove \
+#     && apt-get clean \
+#     && rm -rf /var/lib/apt/lists/*
 
 # Make sure that the cuda stuff is in the path
 ENV PATH=/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
