@@ -23,6 +23,7 @@ podman-hpc run ${PODMAN_HPC_RUN_GPU} \
     --mount type=bind,source=/dvs_ro/cfs/cdirs/lsst/www/DESC_TD_PUBLIC/Roman+DESC/ROMAN+LSST_LARGE_SNIa-normal,target=/ou2024_snana_lc_dir \
     --mount type=bind,source=/dvs_ro/cfs/cdirs/lsst/www/DESC_TD_PUBLIC/Roman+DESC/sims_sed_library,target=/ou2024_sims_sed_library \
     --mount type=bind,source=/dvs_ro/cfs/cdirs/m4385/calib_data/A25ePSF,target=/a25epsf \
+    --mount type=bind,source=/global/cfs/cdirs/m4385/romanisim_sims,target=/romanimsim_sims \
     --env LD_LIBRARY_PATH=/usr/lib64:/usr/lib/x86_64-linux-gnu:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs \
     --env PYTHONPATH=/roman_imsim \
     --env OPENBLAS_NUM_THREADS=1 \
