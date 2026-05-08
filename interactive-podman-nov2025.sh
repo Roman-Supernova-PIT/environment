@@ -2,7 +2,8 @@
 
 # See comments in nov2025_container_config.yaml for instructions
 
-export PODMANHPC_ADDITIONAL_STORES=/dvs_ro/cfs/cdirs/m4385/podman_images
+# export PODMANHPC_ADDITIONAL_STORES=/dvs_ro/cfs/cdirs/m4385/podman_images
+export PODMANHPC_ADDITIONAL_STORES=/pscratch/sd/m/masao/roman_snpit/podman_images
 
 if [ "$WHICHROMANENV" = "cuda" ] || [ "$WHICHROMANENV" == "cuda-dev" ]; then
     PODMAN_HPC_RUN_GPU="--gpu"
@@ -35,5 +36,5 @@ podman-hpc run ${PODMAN_HPC_RUN_GPU} \
     --env SNPIT_CONFIG=/snpit_env/configs/nov2025_container_config.yaml \
     --annotation run.oci.keep_original_groups=1 \
     -it \
-    registry.nersc.gov/m4385/roman-snpit-env:${WHICHROMANENV:-cpu}-0.1.36 \
+    registry.nersc.gov/m4385/roman-snpit-env:${WHICHROMANENV:-cpu}-0.1.39 \
     /bin/bash

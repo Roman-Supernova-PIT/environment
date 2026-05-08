@@ -149,32 +149,33 @@ ENV NVIDIA_REQUIRE_CUDA="cuda>=8.0"
 # cudart-dev should only be in the build image, at least one file from
 # it is needed by pycuda
 
-# RUN apt-get update \
-#     && apt-get -y install \
-#          cuda-cudart-12-9 \
-#          cuda-nvrtc-12-9 \
-#          libcublas-12-9 \
-#          libcufft-12-9 \
-#          libcurand-12-9 \
-#          libcusolver-12-9 \
-#          libcusparse-12-9 \
-#          libnvjitlink-12-9 \
-#          libnvidia-ml1=550.163.01-1 \
-#          libcudadebugger1=550.163.01-1 \
-#          libnvcuvid1=550.163.01-1 \
-#          libcuda1=550.163.01-1 \
-#          libnvidia-fbc1=550.163.01-1 \
-#          libnvoptix1=550.163.01-1 \
-#          libnvidia-encode1=550.163.01-1 \
-#          libnvidia-opticalflow1=550.163.01-1 \
-#          libnvidia-ptxjitcompiler1=550.163.01-1 \
-#          libnvidia-cfg1=550.163.01-1 \
-#          nvidia-kernel-support=550.163.01-1 \
-#          nvidia-opencl-icd=550.163.01-1 \
-#          nvidia-driver-cuda=550.163.01-1 \
-#     && apt-get -y autoremove \
-#     && apt-get clean \
-#     && rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+    && apt-get -y install nvidia-driver-pinning-580.105.08 \
+    && apt-get -y install \
+         cuda-cudart-12-4 \
+         cuda-nvrtc-12-4 \
+         libcublas-12-4 \
+         libcufft-12-4 \
+         libcurand-12-4 \
+         libcusolver-12-4 \
+         libcusparse-12-4 \
+         libnvjitlink-12-4 \
+         libnvidia-ml1 \
+         libcudadebugger1 \
+         libnvcuvid1 \
+         libcuda1 \
+         libnvidia-fbc1 \
+         libnvoptix1 \
+         libnvidia-encode1 \
+         libnvidia-opticalflow1 \
+         libnvidia-ptxjitcompiler1 \
+         libnvidia-cfg1 \
+         nvidia-kernel-support \
+         nvidia-opencl-icd \
+         nvidia-driver-cuda \
+    && apt-get -y autoremove \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Make sure that the cuda stuff is in the path
 ENV PATH=/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -229,19 +230,19 @@ RUN apt-get update && \
        autoconf \
        autotools-dev \
        cmake \
-       cuda-command-line-tools-12-9 \
-       cuda-cudart-dev-12-9 \
-       cuda-minimal-build-12-9 \
+       cuda-command-line-tools-12-4 \
+       cuda-cudart-dev-12-4 \
+       cuda-minimal-build-12-4 \
        cython3 \
        g++ \
        gdb \
        gfortran-12 \
        libbz2-dev \
-       libcublas-dev-12-9 \
-       libcufft-dev-12-9 \
-       libcurand-dev-12-9 \
-       libcusolver-dev-12-9 \
-       libcusparse-dev-12-9 \
+       libcublas-dev-12-4 \
+       libcufft-dev-12-4 \
+       libcurand-dev-12-4 \
+       libcusolver-dev-12-4 \
+       libcusparse-dev-12-4 \
        libtool \
        nsight-systems-2025.5.2 \
        nsight-compute-2025.4.1 \
