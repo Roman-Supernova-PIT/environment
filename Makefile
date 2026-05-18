@@ -7,14 +7,18 @@
 VER=unknown_version
 
 docker-images:
-	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cpu" --target snpit_env \
-		-t registry.nersc.gov/m4385/roman-snpit-env:cpu-$(VER) -f docker/Dockerfile .
-	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cpu" --target snpit_dev_env \
-		-t registry.nersc.gov/m4385/roman-snpit-env:cpu-dev-$(VER) -f docker/Dockerfile .
-	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cuda" --target snpit_env \
-		-t registry.nersc.gov/m4385/roman-snpit-env:cuda-$(VER) -f docker/Dockerfile .
-	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cuda" --target snpit_dev_env \
-		-t registry.nersc.gov/m4385/roman-snpit-env:cuda-dev-$(VER) -f docker/Dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cpu" --build-arg "VER=$(VER)" \
+	        --target snpit_env -t registry.nersc.gov/m4385/roman-snpit-env:cpu-$(VER) \
+		-f docker/Dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cpu" --build-arg "VER=$(VER)" \
+                 --target snpit_dev_env -t registry.nersc.gov/m4385/roman-snpit-env:cpu-dev-$(VER) \
+		-f docker/Dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cuda" --build-arg "VER=$(VER)" \
+		--target snpit_env -t registry.nersc.gov/m4385/roman-snpit-env:cuda-$(VER) \
+		-f docker/Dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg "IMAGE_TYPE=cuda" --build-arg "VER=$(VER)" \
+		--target snpit_dev_env -t registry.nersc.gov/m4385/roman-snpit-env:cuda-dev-$(VER) \
+		-f docker/Dockerfile .
 	docker tag registry.nersc.gov/m4385/roman-snpit-env:cpu-$(VER) \
 		registry.nersc.gov/m4385/roman-snpit-env:cpu
 	docker tag registry.nersc.gov/m4385/roman-snpit-env:cpu-dev-$(VER) \

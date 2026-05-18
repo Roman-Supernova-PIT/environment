@@ -345,6 +345,9 @@ COPY default_snpit_pipeline_config.yaml /default_snpit_pipeline_config.yaml
 COPY snpit_test_config.yaml /snpit_test_config.yaml
 COPY test-docker-environment/test_config_for_db.yaml /test_config_for_db.yaml
 
+ARG VER=0.1.41
+RUN echo ${VER} > /etc/roman_snpit_env_version
+
 # ======================================================================
 FROM ${IMAGE_TYPE}-build-base AS snpit_dev_env
 
@@ -366,3 +369,6 @@ RUN ln -s /home/photometry_test_data /photometry_test_data
 COPY default_snpit_pipeline_config.yaml /default_snpit_pipeline_config.yaml
 COPY snpit_test_config.yaml /snpit_test_config.yaml
 COPY test-docker-environment/test_config_for_db.yaml /test_config_for_db.yaml
+
+ARG VER=0.1.41
+RUN echo ${VER} > /etc/roman_snpit_env_version
