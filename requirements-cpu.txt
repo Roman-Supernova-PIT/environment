@@ -21,8 +21,8 @@ nvtx==0.2.11
 
 # roman-sci platform packages and preqrequisites
 pandeia.engine==2025.3
-romancal==0.22.0
-romanisim==0.13.0
+romancal>=1.0.0,<2.0.0
+romanisim>=0.14.0,<1.0.0
 s3fs==2026.2.0
 stips==2.3
 stsynphot==1.5.1
@@ -31,8 +31,10 @@ stpsf==2.2.0
 xarray==2025.3.1
 
 # snpit packages
-# (Preqreqs of these will pull in other standard things like numpy, scipy, roman-datamodels.)
-roman-snpit-snappl==0.42.0
+# (Preqreqs of these will pull in other standard things like numpy,
+# scipy, roman-datamodels.)
+###### TEMPORARILY COMMENTED OUT BECAUSE OF CHICKEN AND EGG
+###### roman-snpit-snappl==0.42.0
 
 # The next few are GUI/interactive things, so perhaps don't belong
 # in the Dockerfile.  For now, they've been moved to be explicitly
