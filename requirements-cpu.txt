@@ -33,8 +33,7 @@ xarray==2025.3.1
 # snpit packages
 # (Preqreqs of these will pull in other standard things like numpy,
 # scipy, roman-datamodels.)
-###### TEMPORARILY COMMENTED OUT BECAUSE OF CHICKEN AND EGG
-###### roman-snpit-snappl==0.42.0
+roman-snpit-snappl==0.43.0
 
 # The next few are GUI/interactive things, so perhaps don't belong
 # in the Dockerfile.  For now, they've been moved to be explicitly
