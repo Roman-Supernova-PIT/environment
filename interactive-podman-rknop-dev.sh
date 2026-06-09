@@ -37,4 +37,4 @@ podman-hpc run ${PODMAN_HPC_RUN_GPU} \
     --annotation run.oci.keep_original_groups=1 \
     -it \
     registry.nersc.gov/m4385/roman-snpit-env:${WHICHROMANENV:-cpu}-0.1.41 \
-    /bin/bash ${1}
+    /bin/bash ${@}
