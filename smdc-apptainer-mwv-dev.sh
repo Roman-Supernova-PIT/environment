@@ -17,6 +17,8 @@ apptainer exec \
     --bind "/dev/shm:/snpit_temp" \
     --bind "/data/snpit/sidecar_dia_out:/sidecar_dia_out:rw" \
     --bind "/data/snpit/database_dirs_rknop_dev/images:/data/images:ro" \
+    --bind "/mnt/roman-science-east-2/snpit/scratch:/scratch:rw" \
+    --bind "/mnt/roman-science-east-2/snpit/snpit_temp:/snpit_temp:rw" \
     --pwd /home \
     --env SNPIT_DEFAULT_CONFIG=/home/environment/smdc_dev_config.yaml \
     --env SNPIT_CONFIG=/home/environment/smdc_dev_config.yaml \
