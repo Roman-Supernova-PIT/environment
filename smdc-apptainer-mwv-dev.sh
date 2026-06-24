@@ -11,14 +11,13 @@ image=/data/snpit/roman-snpit-env-cpu-0.1.41.sif
 apptainer exec \
     --overlay pit_overlay.img \
     --cleanenv \
-    --bind "${PWD}:/home" \
-    --bind "${HOME}/secrets:/secrets:ro" \
-    --bind "/data/snpit:/data_snpit" \
-    --bind "/dev/shm:/snpit_temp" \
-    --bind "/data/snpit/sidecar_dia_out:/sidecar_dia_out:rw" \
-    --bind "/data/snpit/database_dirs_rknop_dev/images:/data/images:ro" \
-    --bind "/mnt/roman-science-east-2/snpit/scratch:/scratch:rw" \
-    --bind "/mnt/roman-science-east-2/snpit/snpit_temp:/snpit_temp:rw" \
+    --mount type=bind,source=${PWD},target=/home \
+    --mount type=bind,source=${HOME}/secrets,target=/secrets,readonly \
+    --mount type=bind,source=/data/snpit,target=/data_snpit \
+    --mount type=bind,source=/dev/shm,target=/snpit_temp \
+    --mount type=bind,source=/data/snpit/sidecar_dia_out,target=/sidecar_dia_out \
+    --mount type=bind,source=/data/snpit/database_dirs_rknop_dev/images,target=/data/images,readonly \
+    --mount type=bind,source=/mnt/roman-science-east-2/snpit/scratch,target=/scratch \
     --pwd /home \
     --env SNPIT_DEFAULT_CONFIG=/home/environment/smdc_dev_config.yaml \
     --env SNPIT_CONFIG=/home/environment/smdc_dev_config.yaml \
