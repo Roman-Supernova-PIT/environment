@@ -1,7 +1,5 @@
 #!/usr/bin/bash
 
-# See comments in nov2025_container_config.yaml for instructions
-
 export PODMANHPC_ADDITIONAL_STORES=/pscratch/sd/m/masao/roman_snpit/podman_images
 
 if [ "$WHICHROMANENV" = "cuda" ] || [ "$WHICHROMANENV" == "cuda-dev" ]; then
