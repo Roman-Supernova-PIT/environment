@@ -12,7 +12,9 @@ apptainer exec \
     --overlay pit_overlay.img \
     --cleanenv \
     --bind "${PWD}:/home" \
-    --bind "${HOME}/secrets:/secrets:ro" \
+    --bind "${HOME}/snpit/secrets:/secrets:ro" \
+    --bind "/data/snpit/phrosty_dia_out:/dia_out_dir" \
+    --bind "/data/snpit/phrosty_lc_out:/lc_out_dir" \
     --bind "/data/snpit:/data_snpit" \
     --bind "/dev/shm:/snpit_temp" \
     --bind "/data/snpit/sidecar_dia_out:/sidecar_dia_out:rw" \
