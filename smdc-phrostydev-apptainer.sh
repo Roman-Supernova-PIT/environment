@@ -20,6 +20,8 @@ apptainer exec \
     --bind "/data/snpit/sidecar_dia_out:/sidecar_dia_out:rw" \
     --bind "/data/snpit/database_dirs_rknop_dev/images:/data/images:ro" \
     --bind "/mnt/roman-science-east-2/snpit/scratch:/scratch" \
+    --bind "/home/rkessler:/rick:ro" \
+    --bind "/mnt/roman-science-east-2/snpit/snana+romanisim+romancal:/ricksims:ro" \
     --pwd /home \
     --env SNPIT_DEFAULT_CONFIG=/home/environment/smdc_dev_config.yaml \
     --env SNPIT_CONFIG=/home/environment/smdc_dev_config.yaml \
