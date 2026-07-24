@@ -1,4 +1,4 @@
-# 2026-07-18, Michael Wood-Vasey, following up on suggestion from Ben Rose
+# 2026-07-24, Michael Wood-Vasey, following up on suggestion from Ben Rose
 #
 # Install a development environment suitable for Roman SNPIT tools on SMDC
 # Currently targeted at photometry packages: sidecar, phrosty, campari
@@ -50,16 +50,30 @@ pip install --upgrade pip
 # First time this will take ~10 minutes.
 pip install roman-snpit-snappl
 
+# You have to separately install roman_imsim because it is not in PyPi
+# and thus we can't make it a dependency of snappl
+# because PyPi wouldn't accept dependencies to non-published packages
+pip install git+https://github.com/matroxel/roman_imsim.git@21ea15a
+
+# Some of the package specify a towncrier dependency, some don't
+# Since you are likely setting up a development environment here go ahead and
+# install things that will be needed or useful in development
+# Used in the dev workflow
+pip install ruff
+pip install towncrier
+
 # Then if you want to use a particular package sidecar, phrosty, campari
 # you can either pip install it from PyPi, if available
 # or "pip install -e ." from a local checkout
-#
+
 # Yes, the separate pip install roman-snpit-snappl above isn't necessary
 # because the dependencies of sidecar, phrosty, campari
 # should pull it in anyway, but in my (MWV) brain it makes
-# sense to do these as two steps.
-# Because this next lines are something one will likely
-# be redoing often.
+# sense to do these as two steps, particularly given
+# the additional manual roman_imsim install that's needed.
+
+# And these next lines are something one will likely be redoing often.
+# depending on what specific package you're developing or running.
 cd campari
 pip install -e .
 
