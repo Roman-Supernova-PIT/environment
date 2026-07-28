@@ -64,6 +64,7 @@ pip install cupy
 # Since you are likely setting up a development environment here go ahead and
 # install things that will be needed or useful in development
 # Used in the dev workflow
+pip install pytest
 pip install ruff
 pip install towncrier
 
