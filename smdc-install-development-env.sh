@@ -77,9 +77,6 @@ pip install towncrier
 # should pull it in anyway, but in my (MWV) brain it makes
 # sense to do these as two steps, particularly given
 # the additional manual roman_imsim install that's needed.
-
-# And these next lines are something one will likely be redoing often.
-# depending on what specific package you're developing or running.
-cd campari
-pip install -e .
+# And making sure that you can install snappl is a key first step to debug
+# before proceeding on to something else.
 
