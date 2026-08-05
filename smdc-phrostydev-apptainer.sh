@@ -13,13 +13,13 @@ apptainer exec \
     --cleanenv \
     --bind "${PWD}:/home" \
     --bind "${HOME}/snpit/secrets:/secrets:ro" \
-    --bind "/data/snpit/phrosty_dia_out:/dia_out_dir" \
-    --bind "/data/snpit/phrosty_lc_out:/lc_out_dir" \
+    --bind "/mnt/roman-science-east-2/snpit/scratch/phrosty_dia_out:/dia_out_dir" \
+    --bind "/mnt/roman-science-east-2/snpit/scratch/phrosty_lc_out:/lc_out_dir" \
+    --bind "/mnt/roman-science-east-2/snpit/scratch/phrostyscratch:/snpit_temp" \
+    --bind "/mnt/roman-science-east-2/snpit/scratch/phrostyscratch:/scratch" \
+    --bind "/mnt/roman-science-east-2/snpit/scratch/sidecar_dia_out:/sidecar_dia_out:rw" \
     --bind "/data/snpit:/data_snpit" \
-    --bind "/dev/shm:/snpit_temp" \
-    --bind "/data/snpit/sidecar_dia_out:/sidecar_dia_out:rw" \
     --bind "/data/snpit/database_dirs_rknop_dev/images:/data/images:ro" \
-    --bind "/mnt/roman-science-east-2/snpit/scratch:/scratch" \
     --bind "/home/rkessler:/rick:ro" \
     --bind "/mnt/roman-science-east-2/snpit/snana+romanisim+romancal:/ricksims:ro" \
     --pwd /home \
