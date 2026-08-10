@@ -15,7 +15,7 @@ sg snpit -c "mkdir -p $PWD/crds_cache"
 if [ x"$DEV_STORAGE" = "x" ]; then
     DEV_STORAGE=/mnt/roman-science-internal/snpit/users/${LOGNAME}/dev_storage
 fi
-sg snpit -c "mkdir $DEV_STORAGE"
+sg snpit -c "mkdir -p $DEV_STORAGE"
 
 
 sg snpit -c "
@@ -41,7 +41,7 @@ apptainer run \
     --bind $HOME/secrets:/secrets \
     --bind ${SNPIT_SCRATCH:-/dev/shm}:/snpit_temp \
     --bind $DEV_STORAGE:/dev_storage \
-    --bind /data/snpit/env_for_apptainer:/snpit_env \
+    --bind /data/snpit/env/environment_checkout_for_apptainer:/snpit_env \
     --bind /mnt/roman-science-internal/snpit/database_dirs/ricksims_2026-08:/data \
     --bind /mnt/roman-science-east-2/snpit/snana+romanisim+romancal:/ricksims \
     --bind /home/rkessler/romanisim/input_catalogs:/ricktruth \
