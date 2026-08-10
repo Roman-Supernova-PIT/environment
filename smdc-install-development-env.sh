@@ -58,7 +58,9 @@ pip install git+https://github.com/matroxel/roman_imsim.git@21ea15a
 # If you want cupy, you have to explicitly install it
 # because it's not a dependency of our photometry codes, 
 # which can be run under either numpy or cupy
-pip install cupy
+#
+## This is commented out, because you need to be on a GPU machine to install cupy
+# pip install cupy
 
 # Some of the package specify a towncrier dependency, some don't
 # Since you are likely setting up a development environment here go ahead and
