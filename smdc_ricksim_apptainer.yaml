@@ -4,7 +4,7 @@ system:
     username: dbuser
     # LEAVE PASSWORD AS null.  Do NOT edit this field to put in a password!  Just use passwordfile
     password: null
-    passwordfile: ${HOME}/secrets/roman_snpit_db_ricksim_smdc
+    passwordfile: /secrets/roman_snpit_db_ricksim_smdc
 
   paths:
     spectra1d: /data/spectra1d
@@ -13,14 +13,16 @@ system:
     images: /data/images
 
     temp_dir: /snpit_temp
+    dev_storage: /dev_storage
 
     snappl:
-      A25ePSF_path: /a25epsf
+      A25ePSF_path: /dev/null
 
+  # ...gotta figure out where these are and bind mount them in singrun_smdc_ricksim.sh
   ou24:
     simdex_server: https://roman-desc-simdex.lbl.gov
-    tds_base: /ou2024
+    tds_base: /dev/null
     config_file: /snpit_env/environment/ou2024_tds.yaml
-    sn_truth_dir: /ou2024_snana
-    images: /ou2024/images/simple_model
-    sims_sed_library: /ou2024_seds
+    sn_truth_dir: /dev/null
+    images: /dev/null
+    sims_sed_library: /dev/null
