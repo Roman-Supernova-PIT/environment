@@ -4,8 +4,7 @@ system:
     username: dbuser
     # LEAVE PASSWORD AS null.  Do NOT edit this field to put in a password!  Just use passwordfile
     password: null
-    # This needs to be generalized and I'm not sure how yet (MWV, 2026-07-30)
-    passwordfile: /home/wmwoodvasey/secrets/roman_snpit_db_rknop_dev
+    passwordfile: ${HOME}/secrets/roman_snpit_db_rknop_dev
 
 # These paths are not yet set up on SDMC
   paths:
