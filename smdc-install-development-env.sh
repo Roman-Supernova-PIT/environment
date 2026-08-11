@@ -67,16 +67,3 @@ pip install git+https://github.com/matroxel/roman_imsim.git@21ea15a
 pip install pytest
 pip install ruff
 pip install towncrier
-
-# Then if you want to use a particular package sidecar, phrosty, campari
-# you can either pip install it from PyPi, if available
-# or "pip install -e ." from a local checkout
-
-# Yes, the separate pip install roman-snpit-snappl above isn't necessary
-# because the dependencies of sidecar, phrosty, campari
-# should pull it in anyway, but in my (MWV) brain it makes
-# sense to do these as two steps, particularly given
-# the additional manual roman_imsim install that's needed.
-# And making sure that you can install snappl is a key first step to debug
-# before proceeding on to something else.
-
