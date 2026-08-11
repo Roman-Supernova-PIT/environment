@@ -1,5 +1,4 @@
-# MWV.  I have my installation in a subdirectory ~/Roman/pipeline
-SNPIT_DIR=${HOME}/Roman/pipeline
+SNPIT_DIR=${HOME}/snpit/packages
 
 export SNPIT_DEFAULT_CONFIG=${SNPIT_DIR}/environment/smdc_native_config.yaml
 export SNPIT_CONFIG=${SNPIT_DEFAULT_CONFIG}
