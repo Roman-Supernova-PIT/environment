@@ -82,11 +82,17 @@ services:
       args:
         # NOTE : this needs to be changed to cuda if WHICENV is cuda or cuda-dev!
         IMAGE_TYPE: cpu
+    environment:
+      CRDS_PATH: /crds_cache
+      CRDS_SERVER_URL: https://roman-crds.stsci.edu
     volumes:
       - type: bind
         source: secrets
         target: /secrets
         read_only: true
+      - type: volume
+        source: crds_cache
+        target: /crds_cache
       - type: bind
         source: ../../
         target: /home
@@ -95,4 +101,4 @@ services:
 
 volumes:
   postgres_data:
-
+  crds_cache:
