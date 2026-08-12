@@ -1,7 +1,8 @@
 #!/usr/bin/bash
 
-echo "This environment is not up to date.  If you are using it, please let Rob know!"
-exit 1
+# ...people are still using it...
+# echo "This environment is not up to date.  If you are using it, please let Rob know!"
+# exit 1
 
 # See comments in nov2025_container_config.yaml for instructions
 
@@ -39,5 +40,5 @@ podman-hpc run ${PODMAN_HPC_RUN_GPU} \
     --env SNPIT_CONFIG=/snpit_env/configs/nov2025_container_config.yaml \
     --annotation run.oci.keep_original_groups=1 \
     -it \
-    registry.nersc.gov/m4385/roman-snpit-env:${WHICHROMANENV:-cpu}-0.1.39 \
+    registry.nersc.gov/m4385/roman-snpit-env:${WHICHROMANENV:-cpu}-0.1.46 \
     /bin/bash ${@}
