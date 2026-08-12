@@ -5,3 +5,4 @@
 #
 # You will run this command whenever you want to activate the shared environment:
 source /data/snpit/snpit-photometry/bin/activate
+source /data/snpit/env/environment_checkout_for_native/smdc-native-shared.sh
