@@ -1,10 +1,15 @@
 SNPIT_DIR=${HOME}/snpit/packages
 
+if [ x"$DEV_STORAGE" = "x" ]; then
+    export DEV_STORAGE=/mnt/roman-science-internal/snpit/users/${LOGNAME}/dev_storage
+fi
+sg snpit -c "mkdir -p $DEV_STORAGE"
+
 # Activate Python venv
 source ${SNPIT_DIR}/snpit-photometry/bin/activate
 
 # Set YAML configuration
-export SNPIT_DEFAULT_CONFIG=${SNPIT_DIR}/environment/smdc_native_config.yaml
+export SNPIT_DEFAULT_CONFIG=${SNPIT_DIR}/env/configs/smdc_native_config.yaml
 export SNPIT_CONFIG=${SNPIT_DEFAULT_CONFIG}
 
 # Set locations that CRDS wants
