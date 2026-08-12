@@ -83,6 +83,9 @@ services:
         # NOTE : this needs to be changed to cuda if WHICENV is cuda or cuda-dev!
         IMAGE_TYPE: cpu
     volumes:
+      - type: volume
+        source: dev_storage
+        target: /dev_storage
       - type: bind
         source: secrets
         target: /secrets
@@ -95,4 +98,4 @@ services:
 
 volumes:
   postgres_data:
-
+  dev_storage:
