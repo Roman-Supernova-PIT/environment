@@ -1,3 +1,4 @@
+#!/bin/bash
 # 2026-08-10, Lauren Aldoroty
 #
 # Activate a shared environment suitable for Roman SNPIT tools on SMDC
