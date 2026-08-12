@@ -1,8 +1,9 @@
 #!/usr/bin/bash
 
 if [ "$WHICHROMANENV" = "cuda" ] || [ "$WHICHROMANENV" == "cuda-dev" ]; then
-    echo "GPU not supported with singularity on SMDC"
-    exit 1
+    gpu_argument="--nv"
+else
+    gpu_argument=""
 fi
 
 umask 002
@@ -19,7 +20,7 @@ sg snpit -c "mkdir -p $DEV_STORAGE"
 
 
 sg snpit -c "
-apptainer run \
+apptainer run ${gpu_argument} \
     --overlay $overlayname \
     --cleanenv \
     --env LD_LIBRARY_PATH=/usr/lib64:/usr/lib/x86_64-linux-gnu:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs \
@@ -44,6 +45,7 @@ apptainer run \
     --bind /data/snpit/env:/snpit_env \
     --bind /mnt/roman-science-internal/snpit/database_dirs/ricksims_2026-08:/data \
     --bind /mnt/roman-science-east-2/snpit/snana+romanisim+romancal:/ricksims \
+    --bind /mnt/roman-science-internal/snpit/photometry_test_data:/photometry_test_data \
     --bind /home/rkessler/romanisim/input_catalogs:/ricktruth \
     /data/snpit/roman-snpit-env-${WHICHROMANENV:-cpu}-0.1.46.sif \
     /bin/bash ${@}

@@ -3,11 +3,11 @@ dust_extinction==1.5
 fastparquet==2024.11.0
 fastremap==1.15.2
 ipykernel==6.29.5
-pyarrow==20.0.0
+pyarrow==23.0.1
 pyfftw==0.15.0           #needed for sfft, and pip+arm does not work
 pytest-doctestplus==1.4.0
 pytest-timestamper==0.0.10
-pytest==8.3.5
+pytest==9.1.1
 remote-pdb==2.1.0
 scikit-image==0.25.2
 sep==1.4.1

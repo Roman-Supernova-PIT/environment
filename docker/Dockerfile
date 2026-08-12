@@ -345,6 +345,10 @@ COPY default_snpit_pipeline_config.yaml /default_snpit_pipeline_config.yaml
 COPY snpit_test_config.yaml /snpit_test_config.yaml
 COPY test-docker-environment/test_config_for_db.yaml /test_config_for_db.yaml
 
+ENV CRDS_SERVER_URL=https://roman-crds.stsci.edu
+# This next one isn't obvious, users may want to customize at runtime
+ENV CRDS_PATH=/tmp
+
 ARG VER=0.1.41
 RUN echo ${VER} > /etc/roman_snpit_env_version
 
@@ -369,6 +373,10 @@ RUN ln -s /home/photometry_test_data /photometry_test_data
 COPY default_snpit_pipeline_config.yaml /default_snpit_pipeline_config.yaml
 COPY snpit_test_config.yaml /snpit_test_config.yaml
 COPY test-docker-environment/test_config_for_db.yaml /test_config_for_db.yaml
+
+ENV CRDS_SERVER_URL=https://roman-crds.stsci.edu
+# This next one isn't obvious, users may want to customize at runtime
+ENV CRDS_PATH=/tmp
 
 ARG VER=0.1.41
 RUN echo ${VER} > /etc/roman_snpit_env_version
