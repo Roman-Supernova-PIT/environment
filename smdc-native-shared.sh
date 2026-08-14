@@ -7,3 +7,5 @@ export CRDS_SERVER_URL=https://roman-crds.stsci.edu
 export CRDS_PATH=${HOME}/crds_cache
 
 export SNPIT_PHOTOMETRY_TEST_DATA_DIR=${SNPIT_DIR}/photometry_test_data
+
+source /data/snpit/snpit-photometry/bin/activate
