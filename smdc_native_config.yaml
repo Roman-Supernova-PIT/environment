@@ -24,7 +24,7 @@ system:
   ou24:
     simdex_server: https://roman-desc-simdex.lbl.gov
     tds_base: /dev/null
-    config_file: /data/snpit/env/environment_checkout_for_apptainer/ou2024_tds.yaml
+    config_file: /data/snpit/env/configs/ou2024_tds.yaml
     sn_truth_dir: /dev/null
     images: /dev/null
     sims_sed_library: /dev/null
