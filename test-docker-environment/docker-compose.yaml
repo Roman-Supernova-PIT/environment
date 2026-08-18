@@ -100,6 +100,7 @@ services:
         source: ../../
         target: /home
     working_dir: /home
+    USER: ${USERID:-0}:${GROUPID:-0}
     command: tail -f /etc/issue
 
 volumes:
