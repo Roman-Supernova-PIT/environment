@@ -1,19 +1,20 @@
 system:
   db:
-    url: https://romansnpit-rknop-dev.lbl.gov
+    url: https://romansnpit-ricksim-smdc.lbl.gov
     username: dbuser
     # LEAVE PASSWORD AS null.  Do NOT edit this field to put in a password!  Just use passwordfile
     password: null
-    passwordfile: ${HOME}/secrets/roman_snpit_db_rknop_dev
+    passwordfile: ${HOME}/secrets/roman_snpit_db_ricksim_smdc
 
-# These paths are not yet set up on SDMC
   paths:
-    spectra1d: /data/snpit/spectra1d
-    lightcurves: /data/snpit/lightcurves
-    segmaps: /data/snpit/segmaps
-    images: /data/snpit/images
+    # These paths are not yet set up on SDMC
+    spectra1d: /mnt/roman-science-internal/snpit/database_dirs/ricksims_2026-08/spectra1d
+    lightcurves: /mnt/roman-science-internal/snpit/database_dirs/ricksims_2026-08/lightcurves
+    segmaps: /mnt/roman-science-internal/snpit/database_dirs/ricksims_2026-08/segmaps
+    images: /mnt/roman-science-internal/snpit/database_dirs/ricksims_2026-08/images
 
-    temp_dir: /dev/shm
+    temp_dir: /mnt/roman-science-internal/snpit/users/${LOGNAME}/temp_dir
+    dev_storage: ${DEV_STORAGE}
 
     snappl:
       A25ePSF_path: /data/snpit/a25epsf
@@ -22,8 +23,8 @@ system:
 # The sn_truth_dir and sims_sed_library are not set up yet on SMDC
   ou24:
     simdex_server: https://roman-desc-simdex.lbl.gov
-    tds_base: /data/snpit/ou2024
-    config_file: /data/snpit/environment/ou2024_tds.yaml
-    sn_truth_dir: /data/snpit/ou2024_snana
-    images: /data/snpit/ou2024/images/simple_model
-    sims_sed_library: /data/snpit/ou2024_sims_sed_library
+    tds_base: /dev/null
+    config_file: /data/snpit/env/configs/ou2024_tds.yaml
+    sn_truth_dir: /dev/null
+    images: /dev/null
+    sims_sed_library: /dev/null
