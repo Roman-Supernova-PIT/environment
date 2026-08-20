@@ -40,5 +40,5 @@ podman-hpc run ${PODMAN_HPC_RUN_GPU} \
     --env SNPIT_CONFIG=/snpit_env/configs/nov2025_container_config.yaml \
     --annotation run.oci.keep_original_groups=1 \
     -it \
-    registry.nersc.gov/m4385/roman-snpit-env:${WHICHROMANENV:-cpu}-0.1.46 \
+    registry.nersc.gov/m4385/roman-snpit-env:${WHICHROMANENV:-cpu}-0.1.47 \
     /bin/bash ${@}

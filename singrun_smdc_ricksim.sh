@@ -47,7 +47,7 @@ apptainer run ${gpu_argument} \
     --bind /mnt/roman-science-east-2/snpit/snana+romanisim+romancal:/ricksims \
     --bind /mnt/roman-science-internal/snpit/photometry_test_data:/photometry_test_data \
     --bind /home/rkessler/romanisim/input_catalogs:/ricktruth \
-    /data/snpit/roman-snpit-env-${WHICHROMANENV:-cpu}-0.1.46.sif \
+    /data/snpit/roman-snpit-env-${WHICHROMANENV:-cpu}-0.1.47.sif \
     /bin/bash ${@}
 "
 
