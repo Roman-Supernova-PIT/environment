@@ -1,10 +1,10 @@
 system:
   db:
-    url: no_database
-    username: no_database
+    url: https://romansnpit-ricksim-smdc.lbl.gov
+    username: dbuser
     # LEAVE PASSWORD AS null.  Do NOT edit this field to put in a password!  Just use passwordfile
     password: null
-    passwordfile: /dev/null
+    passwordfile: ${HOME}/secrets/roman_snpit_db_ricksim_smdc
 
   paths:
     # These paths are not yet set up on SDMC
