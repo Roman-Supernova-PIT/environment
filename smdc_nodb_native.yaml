@@ -1,13 +1,11 @@
 system:
   db:
-    url: https://romansnpit-ricksim-smdc.lbl.gov
-    username: dbuser
-    # LEAVE PASSWORD AS null.  Do NOT edit this field to put in a password!  Just use passwordfile
+    url: no_database
+    username: no_database
     password: null
-    passwordfile: ${HOME}/secrets/roman_snpit_db_ricksim_smdc
+    passwordfile: /dev/null
 
   paths:
-    # These paths are not yet set up on SDMC
     spectra1d: /mnt/roman-science-internal/snpit/database_dirs/ricksims_2026-08/spectra1d
     lightcurves: /mnt/roman-science-internal/snpit/database_dirs/ricksims_2026-08/lightcurves
     segmaps: /mnt/roman-science-internal/snpit/database_dirs/ricksims_2026-08/segmaps
