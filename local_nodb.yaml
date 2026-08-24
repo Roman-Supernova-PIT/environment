@@ -1,0 +1,28 @@
+system:
+  db:
+    url: no_database
+    username: no_database
+    password: null
+    passwordfile: /dev/null
+
+  paths:
+    spectra1d: /dev/null
+    lightcurves: /dev/null
+    segmaps: /dev/null
+    images: /dev/null
+
+    temp_dir: ${PWD}/temp_dir
+    dev_storage: ${PWD}/dev_storage
+
+    snappl:
+      A25ePSF_path: ${PWD}/a25epsf
+
+# /data/snpit/ou2024 is a mount point that a _user_ uses mount-s3 to mount the S3 bucket 
+# The sn_truth_dir and sims_sed_library are not set up yet on SMDC
+  ou24:
+    simdex_server: https://roman-desc-simdex.lbl.gov
+    tds_base: /dev/null
+    config_file: /data/snpit/env/configs/ou2024_tds.yaml
+    sn_truth_dir: /dev/null
+    images: /dev/null
+    sims_sed_library: /dev/null
