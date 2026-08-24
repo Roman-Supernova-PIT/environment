@@ -97,8 +97,11 @@ services:
         source: crds_cache
         target: /crds_cache
       - type: bind
-        source: ../../
+        source: ../../../
         target: /home
+      - type: bind
+        source: ../../../packages
+        target: /packages
     working_dir: /home
     user: ${USERID:-0}:${GROUPID:-0}
     command: tail -f /etc/issue

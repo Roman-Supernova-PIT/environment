@@ -14,14 +14,12 @@ if [ x"$DEV_STORAGE" = "x" ]; then
 fi
 sg snpit -c "mkdir -p $DEV_STORAGE"
 
-SNPIT_DIR=/data/snpit
-
-export SNPIT_DEFAULT_CONFIG=${SNPIT_DIR}/env/configs/smdc_native_config.yaml
+export SNPIT_DEFAULT_CONFIG=/data/snpit/env/configs/smdc_ricksim_native.yaml
 export SNPIT_CONFIG=${SNPIT_DEFAULT_CONFIG}
 
 export CRDS_SERVER_URL=https://roman-crds.stsci.edu
 export CRDS_PATH=${HOME}/crds_cache
 
-export SNPIT_PHOTOMETRY_TEST_DATA_DIR=${SNPIT_DIR}/photometry_test_data
+export SNPIT_PHOTOMETRY_TEST_DATA_DIR=/data/snpit/photometry_test_data
 
 source /data/snpit/snpit-photometry/bin/activate
