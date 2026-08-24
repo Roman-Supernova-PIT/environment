@@ -135,7 +135,7 @@ else
 
     echo "Linking to the base environment..."
 
-    # Go into the base enviornment
+    # Go into the base environment
     source $activate
 
     # Now use the .pth file business to link the base envirnment's site-packages into the new environment
