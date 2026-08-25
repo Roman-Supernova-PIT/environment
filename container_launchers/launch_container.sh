@@ -33,28 +33,33 @@ envvars["VECLIB_MAXIMUM_THREADS"]=1
 envvars["XTERM"]=1
 envvars["SNPIT_DEFAULT_CONFIG"]=no_config_set
 envvars["SNPIT_CONFIG"]=no_config_set
+envvars["CRDS_SERVER_URL"]=https://roman-crds.stsci.edu
+envvars["CRDS_PATH"]=/home/crds_cache
 
 declare -A bindmounts
 bindmounts["/home"]=$PWD
 bindmounts["/secrets"]=$HOME/secrets
-bindmounts["/temp_dir"]=${SNPIT_SCRATCH:$PWD/temp_dir}
+bindmounts["/temp_dir"]=${SNPIT_SCRATCH:-$PWD/temp_dir}
 bindmounts["/dev_storage"]=${DEV_STORAGE:-$PWD/dev_storage}
 bindmounts["/packages"]=$PWD/packages
 bindmounts["/data"]=$PWD/data
 bindmounts["/photometry_test_data"]=$PWD/packages/photometry_test_data
 
-if [[ host_system == 'nersc' ]]; then
+if [[ $host_system == 'nersc' ]]; then
     bindmounts["/temp_dir"]=${SNPIT_SCRATCH:-$PSCRATCH/snpit_temp}
     bindmounts["/dev_storage"]=${DEV_STORAGE:-$PSCRATCH/snpit_devstorage}
     bindmounts["/scratch"]=$PSCRATCH
+    bindmounts["/roman_snpit_masao_scratch"]=/p/pscratch/sd/m/masao/roman_snpit
+    bindmounts["/configs"]=/dvs_ro/cfs/cdirs/m4385/env/configs
     bindmounts["/ou2024"]=/dvs_ro/cfs/cdirs/lsst/shared/external/roman-desc-sims/Roman_data
     bindmounts["/ou2024_snana_lc_dir"]=/dvs_ro/cfs/cdirs/lsst/www/DESC_TD_PUBLIC/Roman+DESC/ROMAN+LSST_LARGE_SNIa-normal
     bindmounts["/ou2024/sims_sed_library"]=/dvs_ro/cfs/cdirs/lsst/www/DESC_TD_PUBLIC/Roman+DESC/sims_sed_library
     bindmounts["/a25epsf"]=/dvs_ro/cfs/cdirs/m4385/calib_data/A25ePSF
-elif [[ host_system == 'smdc' ]]; then
+elif [[ $host_system == 'smdc' ]]; then
     bindmounts["/temp_dir"]=${SNPIT_SCRATCH:-/dev/shm/snpit_temp}
     bindmounts["/dev_storage"]=${DEV_STORAGE:-/mnt/roman-science-internal/snpit/users/${LOGNAME}/dev_storage}
     bindmounts["/photometry_test_data"]=/mnt/roman-science-internal/snpit/photometry_test_data
+    bindmounts["/configs"]=/data/snpit/env/configs
 fi
 
 testing=0
@@ -76,7 +81,7 @@ while [[ $# -gt 0 ]]; do
             echo
             echo "Usage: launch_container.sh [-w environment] [-v imageversion] [-e var=val] [-e var=val...] [-b target=source] [-b target=source...] [-c config] [-d defaultconfig] [-s shellscript] [-r ...]"
             echo "  -w ENV or --whichenv ENV : one of cpu, cpu-dev, cuda, or cuda-dev.  Defaults to cpu"
-            echo "  -v VER, --version VER, or --image-version VER : the image version to run, default {$default_currentenvver}"
+            echo "  -v VER, --version VER, or --image-version VER : the image version to run, default ${default_currentenvver}"
             echo "  -e VAR=VAL or --env VAR=VAL : set enviroment variable VAR to value VAL inside the container"
             echo "  -b TARGET=SOURCE or --bind TARGET=SOURCE or --bindmount TARGET=SOURCE: "
             echo "        Directory SOURCE on the host system is available at TARGET inside the container.  TARGET "
@@ -89,14 +94,14 @@ while [[ $# -gt 0 ]]; do
             echo "  -d CONFIG or --default-config CONFIG : the SNPIT_DEFAULT_CONFIG file to use."
             echo "        Also sets SNPIT_CONFIG unless you also give -c/--config."
             echo "  -s SCRIPT or --shellscript SCRIPT : a bash script to run inside the container."
-            echo "  -r ... or --run ... : bash commands to run inside the container.  Everything after -r or "
-            echo "        --run is intereted as stuff to run in bash, and will not be parsed by this script. "
+            echo "  -r 'COMMAND' or 'COMMAND': bash commands to run inside the container.  You can give a full "
+            echo "         command string here with arguments, and even chain multiple commands with && or ;. "
+            echo "         However, make sure to wrap everything in single quotes, otherwise just the first word "
+            echo "         after -r is all that will be run.  Remember that all thse commands are run "
+            echo "         *inside the container*."
             echo
             echo "Note that if you give -e SNPIT_CONFIG=val, it may or may not override what you gave with -c; "
-            echo "  the one that shows up latter in your command line wins.  Just don't do this to avoid confusion."
-            echo
-            echo "WARNING : do not have any single or double quotes (' or "'"'" or `) anywhere in your command line, "
-            echo "  or things are likely to break horribly."
+            echo "  the one that shows up later in your command line wins.  Just don't do this to avoid confusion."
             exit 0
             ;;
         -w|--whichenv)
@@ -109,7 +114,7 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         -v|--version|--image-version)
-            if [[ $# -lt 2]];then
+            if [[ $# -lt 2 ]]; then
                 echo "Command line ended with -v or --image-version, need argument"
                 exit 1
             fi
@@ -124,8 +129,8 @@ while [[ $# -gt 0 ]]; do
             fi
             varname=`echo $2 | perl -pe 's/=.+$//;'`
             varval=`echo $2 | perl -pe 's/^[^=]+=//;'`
-            if [[ x"varname" == "x" || x"varval" == "x" ]]; then
-                echo "Failed to parse --env {$2}"
+            if [[ x"$varname" == "x" || x"$varval" == "x" ]]; then
+                echo "Failed to parse --env $2"
                 exit 1
             fi
             envvars[$varname]=$varval
@@ -137,10 +142,10 @@ while [[ $# -gt 0 ]]; do
                 echo "Command line ended with -b or --bind, need argument"
                 exit 1
             fi
-            target=`echo $2 | perl -pe 's/:.+$//;'`
-            source=`echo $2 | perl -pe 's/^[^:]+://;'`
-            if [[ x"target" == "x" || x"source" == "x" ]]; then
-                echo "Failed to parse --bind {$2}"
+            target=`echo $2 | perl -pe 's/=.+$//;'`
+            source=`echo $2 | perl -pe 's/^[^=]+=//;'`
+            if [[ x"$target" == "x" || x"$source" == "x" ]]; then
+                echo "Failed to parse --bind $2"
                 exit 1
             fi
             bindmounts[$target]=$source
@@ -193,11 +198,25 @@ while [[ $# -gt 0 ]]; do
         -r|--run)
             # This is the last argument parsed; EVERYTHING after -r or --run is interpreted as stuff
             #   to run underneath a bash -c
+            if [[ $# -lt 2 ]]; then
+                echo "Command line ended with -r or --run, need argument"
+                exit 1
+            fi
+            runcommand=$2
             shift
-            while [[ $# -gt 0 ]]; do
-                runcommand="${runcommand} $1"
-                shift
-            done
+            shift
+            ;;
+        --require-system)
+            if [[ $# -lt 2 ]]; then
+                echo "Command line ended with -r or --run, need argument"
+                exit 1
+            fi
+            if [[ $2 != $host_system ]]; then
+                echo "This script is supposed to run on $2, but you're on $host_system"
+                exit 1
+            fi
+            shift
+            shift
             ;;
     esac
 done
@@ -228,6 +247,72 @@ elif [[ ! ( ( $whichenv = "cpu" ) || ( $whichenv = "cpu-dev" ) ) ]]; then
 fi
 
 
+# Create expected directories
+if [[ $testing == 0 ]]; then
+    echo "Checking for existence of some standard directories we will bind-mount to"
+    if [[ ! -d ${bindmounts["/temp_dir"]} ]]; then
+        echo "Creating temp dir ${bindmounts[/temp_dir]}"
+        mkdir -p ${bindmounts["/temp_dir"]}
+    fi
+    if [[ ! -d ${bindmounts["/dev_storage"]} ]]; then
+        echo "Creating dev storage dir ${bindmounts[/dev_storage]}"
+        mkdir -p ${bindmounts["/dev_storage"]}
+    fi
+    if [[ ! -d ${bindmounts["/data"]} ]]; then
+        echo "Creating data dir ${bindmounts[/data]}"
+        mkdir -p ${bindmounts["/data"]}
+    fi
+    if [[ ! -d ${PWD}/crds_cache ]]; then
+        echo "Creating CRDS cache ${PWD}/crds_cache"
+        mkdir -p ${PWD}/crds_cache
+    fi
+fi
+
+# If SNPIT_CONFIG and/or SNPIT_DEFAULT_CONFIG was not set, then pull down the default
+if [[ $testing == 0 ]]; then
+    if [[ ( ${envvars[SNPIT_CONFIG]} == "no_config_set" ) ||
+              ( ${envvars[SNPIT_DEFAULT_CONFIG]} == "no_config_set" ) ]]; then
+        if [[ ! -f $PWD/container_nodb.yaml ]]; then
+            echo "Pulling down the nodb container config."
+            curl -L https://raw.githubusercontent.com/Roman-Supernova-PIT/environment/refs/heads/main/container_nodb.yaml -O
+        fi
+        if [[ ${envvars[SNPIT_CONFIG]} == "no_config_set" ]]; then
+            envvars[SNPIT_CONFIG]=/home/container_nodb.yaml
+        fi
+        if [[ ${envvars[SNPIT_DEFAULT_CONFIG]} == "no_config_set" ]]; then
+            envvars[SNPIT_DEFAULT_CONFIG]=/home/container_nodb.yaml
+        fi
+    fi
+fi
+
+# Build the bind mount string
+bindmountstring=""
+for i in ${!bindmounts[@]}; do
+    if [[ ! -d ${bindmounts[$i]} ]]; then
+        if [[ -f ${bindmounts[$i]} ]]; then
+            echo "${bindmounts[$i]} is a file, not a directory, but you specified it as the bind-mount "
+            echo "   for $i.  Error.  Dying."
+            exit 1
+        fi
+        echo "WARNING : ${bindmounts[$i]} does not exist.  Not mounting $i inside the container. "
+        echo "  This might cause problems.  Make the diretory, or specify a different host directory "
+        echo "  to mount with --bind $i=<host directory>"
+    else
+        if (( ${#bindmountstring} > 0 )); then
+            bindmountstring="${bindmountstring} "
+        fi
+        if [[ ( $containersystem == "docker" ) || ( $containersystem == "podman" ) ]]; then
+            bindmountstring="${bindmountstring}--mount type=bind,source=${bindmounts[$i]},target=$i"
+        elif [[ $containersystem == "apptainer" ]]; then
+            bindmountstring="${bindmountstring}--bind ${bindmounts[$i]}:$i"
+        else
+            echo "This should never happen.  Error.  Dying."
+            exit 1
+        fi
+    fi
+done
+
+
 # Build the env string
 envstring=""
 for i in ${!envvars[@]}; do
@@ -235,7 +320,7 @@ for i in ${!envvars[@]}; do
         envstring="${envstring} "
     fi
     if [[ ( $containersystem == "docker" ) || ( $containersystem == "podman" ) ||
-          ( $constainersystem == "apptainer" ) ]]; then
+          ( $containersystem == "apptainer" ) ]]; then
         envstring="${envstring}--env ${i}=${envvars[$i]}"
     else
         echo "This should never happen. Error.  Dying."
@@ -243,35 +328,18 @@ for i in ${!envvars[@]}; do
     fi
 done
 
-# Build the bind mount string
-bindmountstring=""
-for i in ${!bindmounts[@]}; do
-    if (( ${#bindmountstring} > 0 )); then
-        bindmountstring="${bindmountstring} "
-    fi
-    if [[ ( $containersystem == "docker" ) || ( $containersystem == "podman" ) ]]; then
-        bindmountstring="${bindmountstring}--mount type=bind,source=${bindmounts[$i]},target=$i"
-    elif [[ $containersystem == "apptainer" ]]; then
-        bindmountstring="${bindmountstring}--bind ${bindmounts[$i]}:$i"
-    else
-        echo "This should never happen.  Error.  Dying."
-        exit 1
-    fi
-done
-
-
 # Build the container launching command line
 
 containerrun=""
 if [[ ( $containersystem == "docker" ) || ( $containersystem == "podman" ) ]]; then
     if [[ $host_system == 'nersc' ]]; then
-        containerrun="podman-hpc run "
+        containerrun="podman-hpc run --rm "
     else
-        containerrun="docker run "
+        containerrun="docker run --rm "
     fi
 
     # Cuda
-    if [[ $omgcuda == 1 ]];then
+    if [[ $omgcuda == 1 ]]; then
         if [[ $containersystem == 'podman' ]]; then
             containerrun="${containerrun} --gpu "
         else
@@ -282,21 +350,29 @@ if [[ ( $containersystem == "docker" ) || ( $containersystem == "podman" ) ]]; t
 
     # TODO: figure out if there's a docker equivalent
     if [[ $containersystem == "podman" ]]; then
-        $containerrun="${containerrun} --annontation run.oci.keep_original_groups=1"
+        containerrun="${containerrun} --annotation run.oci.keep_original_groups=1"
     fi
 
     if (( ( ${#runcommand} == 0 ) && ( ${#shellscript} == 0 ) )); then
-        $containerrun="${containerrun} -it"
+        containerrun="${containerrun} -it"
     fi
 
-    $containerrun="${containerrun} ${imageregistry}/roman-snpit-env:${whichenv}-${currentenvver} /bin/bash"
+    containerrun="${containerrun} ${imageregistry}/roman-snpit-env:${whichenv}-${currentenvver} /bin/bash"
 
 elif [[ $containersystem == "apptainer" ]]; then
-    $containerrun="apptainer run "
+    containerrun="apptainer run "
 
     # Set the overlay
     if [[ $host_system == 'smdc' ]]; then
-        overlayname=/mnt/roman-science-internal/snpit/apptainer_overlays/${LOGNAME}/$RANDOM.img
+        overlaydir=/mnt/roman-science-internal/snpit/apptainer_overlays/${LOGNAME}
+        overlayname=$overlaydir/$RANDOM.img
+        if [[ testing == 0 ]]; then
+           if [[ ! -d $overlaydir ]]; then
+               echo "Creating directory ${overlaydir}"
+               mkdir -p $overlaydir
+           fi
+        fi
+        containerrun="${containerrun} --overlay ${overlayname}"
     else
         echo "This should never happen.  Error.  Dying."
         exit 1;
@@ -304,33 +380,38 @@ elif [[ $containersystem == "apptainer" ]]; then
     
     #Cuda
     if [[ $omgcuda == 1 ]]; then
-        $containerrun="${containerrun} --nv"
+        containerrun="${containerrun} --nv"
     fi
 
-    $containerrun="${containerrun} --cleanenv ${envstring} ${bindmountstring} --cwd /home"
-    $containerrun="${containerrun} ${sifdir}/roman-snpit-env-${whicnenv}-${currentenvver}.sif /bin/bash"
+    containerrun="${containerrun} --cleanenv ${envstring} ${bindmountstring} --cwd /home"
+    containerrun="${containerrun} ${sifdir}/roman-snpit-env-${whichenv}-${currentenvver}.sif /bin/bash"
 
 fi
 
 # shellscript and runcommand
 if (( ${#shellscript} > 0 )); then
-    $containerrun="${containerrun} ${shellscript}"
+    containerrun="${containerrun} ${shellscript}"
 elif (( ${#runcommand} > 0 )); then
-    $containerrun="${containerrun} -c '${runcommand}'"
+    containerrun="${containerrun} -c '${runcommand}'"
 fi
 
 # Testing output
 if [[ $testing == 1 ]]; then
-    echo "Container run command would be is:\n${containerrun}\n"
+    echo -e "Container run command would be:\n${containerrun}\n"
     exit 0
 fi
 
 # ...ok, here we go
 
 if [[ $host_system == 'smdc' ]]; then
+    sg snpit -c "apptainer overlay create --sparse --size 1024 $overlayname"
     sg snpit -c "${containerrun}"
+    rm $overlayname
+
 elif [[ $host_system == 'nersc' ]]; then
+    export PODMANHPC_ADDITIONAL_STORES=/pscratch/sd/m/masao/roman_snpit/podman_images
     /bin/bash -c "${containerrun}"
+
 elif [[ $host_system == "local docker host" ]]; then
     /bin/bash -c "${containerrun}"
 else
