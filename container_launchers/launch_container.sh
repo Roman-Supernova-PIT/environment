@@ -1,6 +1,5 @@
 #!/bin/bash
 
-default_currentenvver=0.1.47
 default_imageregistry=registry.nersc.gov/m4385
 default_sifdir=/data/snpit
 
@@ -49,11 +48,11 @@ if [[ $host_system == 'nersc' ]]; then
     bindmounts["/temp_dir"]=${SNPIT_SCRATCH:-$PSCRATCH/snpit_temp}
     bindmounts["/dev_storage"]=${DEV_STORAGE:-$PSCRATCH/snpit_devstorage}
     bindmounts["/scratch"]=$PSCRATCH
-    bindmounts["/roman_snpit_masao_scratch"]=/p/pscratch/sd/m/masao/roman_snpit
+    bindmounts["/roman_snpit_masao_scratch"]=/pscratch/sd/m/masao/roman_snpit
     bindmounts["/configs"]=/dvs_ro/cfs/cdirs/m4385/env/configs
     bindmounts["/ou2024"]=/dvs_ro/cfs/cdirs/lsst/shared/external/roman-desc-sims/Roman_data
     bindmounts["/ou2024_snana_lc_dir"]=/dvs_ro/cfs/cdirs/lsst/www/DESC_TD_PUBLIC/Roman+DESC/ROMAN+LSST_LARGE_SNIa-normal
-    bindmounts["/ou2024/sims_sed_library"]=/dvs_ro/cfs/cdirs/lsst/www/DESC_TD_PUBLIC/Roman+DESC/sims_sed_library
+    bindmounts["/ou2024_sims_sed_library"]=/dvs_ro/cfs/cdirs/lsst/www/DESC_TD_PUBLIC/Roman+DESC/sims_sed_library
     bindmounts["/a25epsf"]=/dvs_ro/cfs/cdirs/m4385/calib_data/A25ePSF
 elif [[ $host_system == 'smdc' ]]; then
     bindmounts["/temp_dir"]=${SNPIT_SCRATCH:-/dev/shm/snpit_temp}
@@ -81,14 +80,19 @@ while [[ $# -gt 0 ]]; do
             echo
             echo "Usage: launch_container.sh [-w environment] [-v imageversion] [-e var=val] [-e var=val...] [-b target=source] [-b target=source...] [-c config] [-d defaultconfig] [-s shellscript] [-r ...]"
             echo "  -w ENV or --whichenv ENV : one of cpu, cpu-dev, cuda, or cuda-dev.  Defaults to cpu"
-            echo "  -v VER, --version VER, or --image-version VER : the image version to run, default ${default_currentenvver}"
+            echo "  -v VER, --version VER, or --image-version VER : the image version to run.  Defaults to an "
+            echo "        image without an explicit version number in its name; which version that actually is "
+            echo "        will depend on when the image was pulled.  Will be a three decimal separated numbers,"
+            echo "        such as 0.1.47.  Use this if you know you want a earlier version of the docker image; "
+            echo "        otherwise, the default is probably what you want."
             echo "  -e VAR=VAL or --env VAR=VAL : set enviroment variable VAR to value VAL inside the container"
             echo "  -b TARGET=SOURCE or --bind TARGET=SOURCE or --bindmount TARGET=SOURCE: "
             echo "        Directory SOURCE on the host system is available at TARGET inside the container.  TARGET "
             echo "        must be an absolute path."
             echo "  -i LOCATION or --image-location LOCATION : the directory or docker regsitry to find the image. "
             echo "        defaults to ${default_imageregistry} for podman or docker, and to ${default_sifdir} "
-            echo "        for apptainer."
+            echo "        for apptainer.  If you're trying to run locally and are having problems logging in "
+            echo "        to the NERSC container registry, try -i docker.io/rknop"
             echo "  -c CONFIG or --config CONFIG : the SNPIT_CONFIG file to use.  Also sets "
             echo "        and SNPIT_DEFAULT_CONFIG unless you also give -d/--default-config."
             echo "  -d CONFIG or --default-config CONFIG : the SNPIT_DEFAULT_CONFIG file to use."
@@ -222,8 +226,8 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Fill in defaults
-if (( ${#currentenvver} == 0 )); then
-    currentenvver=$default_currentenvver
+if (( ${#currentenvver} > 0 )); then
+    $currentenvvver="-${currentenvver}"
 fi
 if (( ${#imageregistry} == 0 )); then
     imageregistry=$default_imageregistry
@@ -357,7 +361,7 @@ if [[ ( $containersystem == "docker" ) || ( $containersystem == "podman" ) ]]; t
         containerrun="${containerrun} -it"
     fi
 
-    containerrun="${containerrun} ${imageregistry}/roman-snpit-env:${whichenv}-${currentenvver} /bin/bash"
+    containerrun="${containerrun} ${imageregistry}/roman-snpit-env:${whichenv}${currentenvver} /bin/bash"
 
 elif [[ $containersystem == "apptainer" ]]; then
     containerrun="apptainer run "
@@ -384,7 +388,7 @@ elif [[ $containersystem == "apptainer" ]]; then
     fi
 
     containerrun="${containerrun} --cleanenv ${envstring} ${bindmountstring} --cwd /home"
-    containerrun="${containerrun} ${sifdir}/roman-snpit-env-${whichenv}-${currentenvver}.sif /bin/bash"
+    containerrun="${containerrun} ${sifdir}/roman-snpit-env-${whichenv}${currentenvver}.sif /bin/bash"
 
 fi
 
@@ -397,8 +401,14 @@ fi
 
 # Testing output
 if [[ $testing == 1 ]]; then
+    echo
     echo -e "Container run command would be:\n${containerrun}\n"
+    echo
     exit 0
+else
+    echo
+    echo -e "Container run command:\n${containerrun}\n"
+    echo
 fi
 
 # ...ok, here we go
