@@ -309,9 +309,9 @@ for i in ${!bindmounts[@]}; do
             echo "   host location for $i.  Error.  Dying."
             exit 1
         fi
-        echo "WARNING : ${bindmounts[$i]} does not exist.  Not mounting $i inside the container. "
-        echo "  This might cause problems.  Make the diretory, or specify a different host directory "
-        echo "  to mount with --bind $i=<host directory>"
+        echo "WARNING : ${bindmounts[$i]} does not exist."
+        echo "  Not mounting $i inside the container; this could cause problems, e.g., for snappl tests."
+        echo "  Make the diretory, or specify a different host directory to mount with --bind $i=<host directory>"
     else
         if (( ${#bindmountstring} > 0 )); then
             bindmountstring="${bindmountstring} "
