@@ -102,6 +102,9 @@ services:
       - type: bind
         source: ../../../packages
         target: /packages
+      - type: bind
+        source: ../../../packages/photometry_test_data
+        target: /photometry_test_data
     working_dir: /home
     user: ${USERID:-0}:${GROUPID:-0}
     command: tail -f /etc/issue
