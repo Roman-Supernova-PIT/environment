@@ -9,7 +9,7 @@ containersystem=unknown
 if [[ `hostname -f | perl -pe '$_=substr $_,-11'` == '.nersc.gov' ]]; then
     host_system='nersc'
     containersystem='podman'
-elif [[ `hostname -f | perl -ne 'exit(/\.us-east-|\.roman-pcluster/ ? 0 : 1)'` || ]]; then
+elif hostname -f | perl -ne 'exit(/\.us-east-|\.roman-pcluster/ ? 0 : 1)'; then
     host_system='smdc'
     containersystem='apptainer'
 elif [[ ! x`which docker` == "x" ]]; then
@@ -17,6 +17,7 @@ elif [[ ! x`which docker` == "x" ]]; then
     containersystem='docker'
 else
     echo "I cannot figure out which system you're on; tried nersc, SMDC, and a local machine running docker."
+    echo "Your FQDN is " `hostname -f`
     exit 1
 fi
 echo "Host system is ${host_system}"
