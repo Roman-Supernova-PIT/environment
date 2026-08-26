@@ -173,7 +173,7 @@ while [[ $# -gt 0 ]]; do
                 exit 1
             fi
             envvars["SNPIT_CONFIG"]=$2
-            if [[ ! -v envvars["SNPIT_DEFAULT_CONFIG"] ]]; then
+            if [[ ${envvars["SNPIT_DEFAULT_CONFIG"]} == "no_config_set" ]]; then
                 envvars["SNPIT_DEFAULT_CONFIG"]=$2
             fi
             shift
@@ -185,7 +185,7 @@ while [[ $# -gt 0 ]]; do
                 exit 1
             fi
             envvars["SNPIT_DEFAULT_CONFIG"]=$2
-            if [[ ! -v envvars["SNPIT_CONFIG"] ]]; then
+            if [[ ${envvars["SNPIT_CONFIG"]} == "no_config_set" ]]; then
                 envvars["SNPIT_CONFIG"]=$2
             fi
             shift
