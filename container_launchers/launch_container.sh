@@ -9,7 +9,7 @@ containersystem=unknown
 if [[ `hostname -f | perl -pe '$_=substr $_,-11'` == '.nersc.gov' ]]; then
     host_system='nersc'
     containersystem='podman'
-elif [[ `hostname -f | perl -ne 'exit(/\.(us-east-)/ ? 0 : 1)'` ]]; then
+elif [[ `hostname -f | perl -ne 'exit(/\.us-east-|\.roman-pcluster/ ? 0 : 1)'` || ]]; then
     host_system='smdc'
     containersystem='apptainer'
 elif [[ ! x`which docker` == "x" ]]; then
