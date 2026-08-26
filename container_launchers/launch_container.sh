@@ -50,7 +50,7 @@ if [[ $host_system == 'nersc' ]]; then
     bindmounts["/dev_storage"]=${DEV_STORAGE:-$PSCRATCH/snpit_devstorage}
     bindmounts["/scratch"]=$PSCRATCH
     bindmounts["/roman_snpit_masao_scratch"]=/pscratch/sd/m/masao/roman_snpit
-    bindmounts["/configs"]=/dvs_ro/cfs/cdirs/m4385/env/configs
+    bindmounts["/snpit_env_base"]=/dvs_ro/cfs/cdirs/m4385/env
     bindmounts["/ou2024"]=/dvs_ro/cfs/cdirs/lsst/shared/external/roman-desc-sims/Roman_data
     bindmounts["/ou2024_snana_lc_dir"]=/dvs_ro/cfs/cdirs/lsst/www/DESC_TD_PUBLIC/Roman+DESC/ROMAN+LSST_LARGE_SNIa-normal
     bindmounts["/ou2024_sims_sed_library"]=/dvs_ro/cfs/cdirs/lsst/www/DESC_TD_PUBLIC/Roman+DESC/sims_sed_library
@@ -59,7 +59,7 @@ elif [[ $host_system == 'smdc' ]]; then
     bindmounts["/temp_dir"]=${SNPIT_SCRATCH:-/dev/shm/snpit_temp}
     bindmounts["/dev_storage"]=${DEV_STORAGE:-/mnt/roman-science-internal/snpit/users/${LOGNAME}/dev_storage}
     bindmounts["/photometry_test_data"]=/mnt/roman-science-internal/snpit/photometry_test_data
-    bindmounts["/configs"]=/data/snpit/env/configs
+    bindmounts["/snpit_env_base"]=/data/snpit/env
 fi
 
 testing=0
