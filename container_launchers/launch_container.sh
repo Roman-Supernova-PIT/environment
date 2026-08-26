@@ -222,13 +222,25 @@ while [[ $# -gt 0 ]]; do
             shift
             shift
             ;;
+        *)
+            echo "Error, unknown argument {$1}"
+            exit 1
+            ;;
     esac
 done
 
-# Fill in defaults
+# Our convention is that our images have versions like cpu or
+# cpu-0.1.48.  This is mixed between --whichenv and --image-version in
+# the arguments.  The image version, if given, will be something like
+# 0.1.48; if it's not "", add the dash here so we can build our
+# full image version later from just ${whichenv}{$currentenvver},
+# and not worry about making sure there's no dash if $currentenvver
+# is empty.
 if (( ${#currentenvver} > 0 )); then
     $currentenvvver="-${currentenvver}"
 fi
+
+# Fill in defaults
 if (( ${#imageregistry} == 0 )); then
     imageregistry=$default_imageregistry
 fi
@@ -253,7 +265,7 @@ fi
 
 # Create expected directories
 if [[ $testing == 0 ]]; then
-    echo "Checking for existence of some standard directories we will bind-mount to"
+    echo "Checking for existence of some standard directories we will bind-mount to, creating them if missing"
     if [[ ! -d ${bindmounts["/temp_dir"]} ]]; then
         echo "Creating temp dir ${bindmounts[/temp_dir]}"
         mkdir -p ${bindmounts["/temp_dir"]}
@@ -272,20 +284,19 @@ if [[ $testing == 0 ]]; then
     fi
 fi
 
-# If SNPIT_CONFIG and/or SNPIT_DEFAULT_CONFIG was not set, then pull down the default
-if [[ $testing == 0 ]]; then
-    if [[ ( ${envvars[SNPIT_CONFIG]} == "no_config_set" ) ||
-              ( ${envvars[SNPIT_DEFAULT_CONFIG]} == "no_config_set" ) ]]; then
-        if [[ ! -f $PWD/container_nodb.yaml ]]; then
-            echo "Pulling down the nodb container config."
-            curl -L https://raw.githubusercontent.com/Roman-Supernova-PIT/environment/refs/heads/main/container_nodb.yaml -O
-        fi
-        if [[ ${envvars[SNPIT_CONFIG]} == "no_config_set" ]]; then
-            envvars[SNPIT_CONFIG]=/home/container_nodb.yaml
-        fi
-        if [[ ${envvars[SNPIT_DEFAULT_CONFIG]} == "no_config_set" ]]; then
-            envvars[SNPIT_DEFAULT_CONFIG]=/home/container_nodb.yaml
-        fi
+# If SNPIT_CONFIG and/or SNPIT_DEFAULT_CONFIG was not set, then set a no database default;
+#   pull it down if it doesn't exist.
+if [[ ( ${envvars[SNPIT_CONFIG]} == "no_config_set" ) ||
+          ( ${envvars[SNPIT_DEFAULT_CONFIG]} == "no_config_set" ) ]]; then
+    if [[ ( $testing == 0 ) && ( ! -f $PWD/container_nodb.yaml ) ]]; then
+        echo "Pulling down the nodb container config."
+        curl -L https://raw.githubusercontent.com/Roman-Supernova-PIT/environment/refs/heads/main/configs/container_nodb.yaml -O
+    fi
+    if [[ ${envvars[SNPIT_CONFIG]} == "no_config_set" ]]; then
+        envvars[SNPIT_CONFIG]=/home/container_nodb.yaml
+    fi
+    if [[ ${envvars[SNPIT_DEFAULT_CONFIG]} == "no_config_set" ]]; then
+        envvars[SNPIT_DEFAULT_CONFIG]=/home/container_nodb.yaml
     fi
 fi
 
@@ -295,7 +306,7 @@ for i in ${!bindmounts[@]}; do
     if [[ ! -d ${bindmounts[$i]} ]]; then
         if [[ -f ${bindmounts[$i]} ]]; then
             echo "${bindmounts[$i]} is a file, not a directory, but you specified it as the bind-mount "
-            echo "   for $i.  Error.  Dying."
+            echo "   host location for $i.  Error.  Dying."
             exit 1
         fi
         echo "WARNING : ${bindmounts[$i]} does not exist.  Not mounting $i inside the container. "
@@ -352,7 +363,8 @@ if [[ ( $containersystem == "docker" ) || ( $containersystem == "podman" ) ]]; t
     fi
     containerrun="${containerrun} ${bindmountstring} ${envstring} -w /home"
 
-    # TODO: figure out if there's a docker equivalent
+    # TODO: figure out if there's a docker equivalent to this podman group thingy
+    # (Also figure out if that's standard podman, or a NERSC-specific thing....)
     if [[ $containersystem == "podman" ]]; then
         containerrun="${containerrun} --annotation run.oci.keep_original_groups=1"
     fi
@@ -407,23 +419,24 @@ if [[ $testing == 1 ]]; then
     exit 0
 else
     echo
-    echo -e "Container run command:\n${containerrun}\n"
+    echo -e "Starting container with command:\n${containerrun}\n"
     echo
 fi
 
 # ...ok, here we go
 
-if [[ $host_system == 'smdc' ]]; then
+if [[ $host_system == "smdc" ]]; then
     sg snpit -c "apptainer overlay create --sparse --size 1024 $overlayname"
     sg snpit -c "${containerrun}"
     rm $overlayname
 
-elif [[ $host_system == 'nersc' ]]; then
+elif [[ $host_system == "nersc" ]]; then
     export PODMANHPC_ADDITIONAL_STORES=/pscratch/sd/m/masao/roman_snpit/podman_images
     /bin/bash -c "${containerrun}"
 
 elif [[ $host_system == "local docker host" ]]; then
     /bin/bash -c "${containerrun}"
+
 else
     echo "Unknown host system ${host_system}; you should never see this error, it should have died before."
     exit 1
