@@ -1,6 +1,6 @@
-# THis is a config file for using ou2024 without a database
+# This is a config file for using ou2024 without a database
 # I'm not sure it's actually used, and we should probably delete it?
-# cf: ou2024_container_config.yaml
+# cf: ou2024_container_config.yaml, which is what I think people really use.
 
 system:
   # General OpenUniverse 2024 configurations

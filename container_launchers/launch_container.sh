@@ -110,7 +110,7 @@ while [[ $# -gt 0 ]]; do
             ;;
         -w|--whichenv)
             if [[ $# -lt 2 ]]; then
-                echo "Caommand line ended with -w or --whichenv, need argument"
+                echo "Command line ended with -w or --whichenv, need argument"
                 exit 1
             fi
             whichenv=$2
@@ -212,7 +212,7 @@ while [[ $# -gt 0 ]]; do
             ;;
         --require-system)
             if [[ $# -lt 2 ]]; then
-                echo "Command line ended with -r or --run, need argument"
+                echo "Command line ended with --require-system, need argument"
                 exit 1
             fi
             if [[ $2 != $host_system ]]; then
@@ -237,7 +237,7 @@ done
 # and not worry about making sure there's no dash if $currentenvver
 # is empty.
 if (( ${#currentenvver} > 0 )); then
-    $currentenvvver="-${currentenvver}"
+    currentenvver="-${currentenvver}"
 fi
 
 # Fill in defaults
@@ -267,15 +267,15 @@ fi
 if [[ $testing == 0 ]]; then
     echo "Checking for existence of some standard directories we will bind-mount to, creating them if missing"
     if [[ ! -d ${bindmounts["/temp_dir"]} ]]; then
-        echo "Creating temp dir ${bindmounts[/temp_dir]}"
+        echo "Creating temp dir ${bindmounts["/temp_dir"]}"
         mkdir -p ${bindmounts["/temp_dir"]}
     fi
     if [[ ! -d ${bindmounts["/dev_storage"]} ]]; then
-        echo "Creating dev storage dir ${bindmounts[/dev_storage]}"
+        echo "Creating dev storage dir ${bindmounts["/dev_storage"]}"
         mkdir -p ${bindmounts["/dev_storage"]}
     fi
     if [[ ! -d ${bindmounts["/data"]} ]]; then
-        echo "Creating data dir ${bindmounts[/data]}"
+        echo "Creating data dir ${bindmounts["/data"]}"
         mkdir -p ${bindmounts["/data"]}
     fi
     if [[ ! -d ${PWD}/crds_cache ]]; then
@@ -311,7 +311,7 @@ for i in ${!bindmounts[@]}; do
         fi
         echo "WARNING : ${bindmounts[$i]} does not exist."
         echo "  Not mounting $i inside the container; this could cause problems, e.g., for snappl tests."
-        echo "  Make the diretory, or specify a different host directory to mount with --bind $i=<host directory>"
+        echo "  Make the directory, or specify a different host directory to mount with --bind $i=<host directory>"
     else
         if (( ${#bindmountstring} > 0 )); then
             bindmountstring="${bindmountstring} "
@@ -382,7 +382,7 @@ elif [[ $containersystem == "apptainer" ]]; then
     if [[ $host_system == 'smdc' ]]; then
         overlaydir=/mnt/roman-science-internal/snpit/apptainer_overlays/${LOGNAME}
         overlayname=$overlaydir/$RANDOM.img
-        if [[ testing == 0 ]]; then
+        if [[ $testing == 0 ]]; then
            if [[ ! -d $overlaydir ]]; then
                echo "Creating directory ${overlaydir}"
                mkdir -p $overlaydir
