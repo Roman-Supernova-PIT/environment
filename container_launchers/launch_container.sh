@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -Eeuo pipefail
+
 default_imageregistry=registry.nersc.gov/m4385
 default_sifdir=/data/snpit
 
@@ -16,7 +18,7 @@ elif [[ ! x`which docker` == "x" ]]; then
     host_system='local docker host'
     containersystem='docker'
 else
-    echo "I cannot figure out which system you're on; tried nersc, SMDC, and a local machine running docker."
+    echo "I cannot figure out which system you're on; tried NERSC, SMDC, and a local machine running docker."
     echo "Your FQDN is " `hostname -f`
     exit 1
 fi
@@ -291,7 +293,7 @@ if [[ ( ${envvars[SNPIT_CONFIG]} == "no_config_set" ) ||
           ( ${envvars[SNPIT_DEFAULT_CONFIG]} == "no_config_set" ) ]]; then
     if [[ ( $testing == 0 ) && ( ! -f $PWD/container_nodb.yaml ) ]]; then
         echo "Pulling down the nodb container config."
-        curl -L https://raw.githubusercontent.com/Roman-Supernova-PIT/environment/refs/heads/main/configs/container_nodb.yaml -O
+        curl -f -L https://raw.githubusercontent.com/Roman-Supernova-PIT/environment/refs/heads/main/configs/container_nodb.yaml -O
     fi
     if [[ ${envvars[SNPIT_CONFIG]} == "no_config_set" ]]; then
         envvars[SNPIT_CONFIG]=/home/container_nodb.yaml
@@ -389,7 +391,7 @@ elif [[ $containersystem == "apptainer" ]]; then
                mkdir -p $overlaydir
            fi
         fi
-        containerrun="${containerrun} --overlay ${overlayname}"
+        containerrun="${containerrun} --overlay '${overlayname}'"
     else
         echo "This should never happen.  Error.  Dying."
         exit 1;
@@ -407,7 +409,7 @@ fi
 
 # shellscript and runcommand
 if (( ${#shellscript} > 0 )); then
-    containerrun="${containerrun} ${shellscript}"
+    containerrun="${containerrun} '${shellscript}'"
 elif (( ${#runcommand} > 0 )); then
     containerrun="${containerrun} -c '${runcommand}'"
 fi
