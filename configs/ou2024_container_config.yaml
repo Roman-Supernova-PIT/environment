@@ -13,6 +13,7 @@ system:
     images: /data/images
 
     temp_dir: /snpit_temp
+    dev_storage: /dev_storage
 
     snappl:
       A25ePSF_path: /a25epsf

@@ -1,10 +1,15 @@
+# See the snappl environment documentation for setting things up and
+#running the environment:
+#
+#   https://roman-supernova-pit.github.io/snappl/environment.html
+
 system:
   db:
-    url: https://romansnpit-rknop-dev.lbl.gov
-    username: dbuser
+    url: https://c3-sn.lbl.gov/roman_snpit_nov2025
+    username: ou2024nov
     # LEAVE PASSWORD AS null.  Do NOT edit this field to put in a password!  Just use passwordfile
     password: null
-    passwordfile: /secrets/roman_snpit_db_rknop_dev
+    passwordfile: /secrets/roman_snpit_ou2024_nov_ou2024nov
 
   paths:
     spectra1d: /data/spectra1d
@@ -13,6 +18,7 @@ system:
     images: /data/images
 
     temp_dir: /snpit_temp
+    dev_storage: /dev_storage
 
     snappl:
       A25ePSF_path: /a25epsf

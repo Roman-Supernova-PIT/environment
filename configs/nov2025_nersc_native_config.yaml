@@ -23,6 +23,7 @@ system:
   paths:
     data_dir: /pscratch/sd/m/masao/roman_snpit/database_dirs
     temp_dir: ${SCRATCH}/snpit_temp
+    dev_storage: ${SCRATCH}/dev_storage
 
     spectra1d: ${system.paths.data_dir}/spectra1d
     lightcurves: ${system.paths.data_dir}/lightcurves

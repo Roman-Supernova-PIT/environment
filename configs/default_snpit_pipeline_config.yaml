@@ -1,3 +1,7 @@
+# THIS FILE IS OUT OF DATE AND SHOULD PROBABLY BE REMOVED?
+# It's referenced in the dockerfile, so leave it here for now.
+# Further thought required.
+
 # This is the default SNPIT config for pipeline settings.  Ideally,
 #  everything in all pipelines should have values here, but it's
 #  currently not up to date.

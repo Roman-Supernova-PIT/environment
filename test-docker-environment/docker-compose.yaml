@@ -12,7 +12,7 @@ services:
         - "8025:8025"
 
   postgres:
-    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-postgres:${DB_DOCKER_VERSION:-test20260824a}
+    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-postgres:${DB_DOCKER_VERSION:-test20260826a}
     build:
       context: ../../snappl/docker/postgres
       target: postgres
@@ -37,7 +37,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20260824a}
+    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20260826a}
     build:
       context: ../../snappl/
       dockerfile: docker/webserver/Dockerfile
@@ -60,7 +60,7 @@ services:
       interval: 5s
       timeout: 10s
       retries: 5
-    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20260824a}
+    image: ${DB_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/snpit-db-webserver-test:${DB_DOCKER_VERSION:-test20260826a}
     build:
       context: ../../snappl/
       dockerfile: docker/webserver/Dockerfile
@@ -73,7 +73,7 @@ services:
 
 
   shell:
-    image: ${ENV_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/roman-snpit-env:${WHICHENV:-cpu}-${DB_DOCKER_VERSION:-test20260824a}
+    image: ${ENV_DOCKER_ARCHIVE:-ghcr.io/roman-supernova-pit}/roman-snpit-env:${WHICHENV:-cpu}-${DB_DOCKER_VERSION:-test20260826a}
     build:
       context: ../
       dockerfile: docker/Dockerfile
@@ -102,6 +102,9 @@ services:
       - type: bind
         source: ../../../packages
         target: /packages
+      - type: bind
+        source: ../../../packages/photometry_test_data
+        target: /photometry_test_data
     working_dir: /home
     user: ${USERID:-0}:${GROUPID:-0}
     command: tail -f /etc/issue
