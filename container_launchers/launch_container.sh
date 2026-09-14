@@ -429,8 +429,8 @@ fi
 # ...ok, here we go
 
 if [[ $host_system == "smdc" ]]; then
-    sg snpit -c "apptainer overlay create --sparse --size 1024 $overlayname"
-    sg snpit -c "${containerrun}"
+    sg supernovae -c "apptainer overlay create --sparse --size 1024 $overlayname"
+    sg supernovae -c "${containerrun}"
     rm $overlayname
 
 elif [[ $host_system == "nersc" ]]; then
