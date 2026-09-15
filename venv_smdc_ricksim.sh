@@ -12,7 +12,7 @@ mkdir -p /mnt/roman-science-internal/snpit/${LOGNAME}/temp_dir
 if [ x"$DEV_STORAGE" = "x" ]; then
     export DEV_STORAGE=/mnt/roman-science-internal/snpit/users/${LOGNAME}/dev_storage
 fi
-sg snpit -c "mkdir -p $DEV_STORAGE"
+sg supernovae -c "mkdir -p $DEV_STORAGE"
 
 export SNPIT_DEFAULT_CONFIG=/data/snpit/env/configs/smdc_ricksim_native.yaml
 export SNPIT_CONFIG=${SNPIT_DEFAULT_CONFIG}
