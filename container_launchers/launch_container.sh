@@ -3,7 +3,9 @@
 set -Eeuo pipefail
 
 default_imageregistry=registry.nersc.gov/m4385
-default_sifdir=/mnt/roman-science-east-2/snpit
+default_sifdir=/mnt/roman-science/supernova/apptainer_images
+
+smdc_east_1_overlay_dir=/mnt/roman-science/supernova/apptainer_overlays
 
 host_system=unknown
 containersystem=unknown
@@ -62,9 +64,9 @@ if [[ $host_system == 'nersc' ]]; then
     bindmounts["/a25epsf"]=/dvs_ro/cfs/cdirs/m4385/calib_data/A25ePSF
 elif [[ $host_system == 'smdc-east-1' ]]; then
     bindmounts["/temp_dir"]=${SNPIT_SCRATCH:-/dev/shm/snpit_temp}
-    bindmounts["/dev_storage"]=${DEV_STORAGE:-/mnt/roman-science-internal/snpit/users/${LOGNAME}/dev_storage}
-    bindmounts["/photometry_test_data"]=/mnt/roman-science-east-2/snpit/photometry_test_data
-    bindmounts["/snpit_env_base"]=/data/snpit/env
+    bindmounts["/dev_storage"]=${DEV_STORAGE:-/mnt/roman-science/supernova/users/${LOGNAME}/dev_storage}
+    bindmounts["/photometry_test_data"]=/mnt/roman-science/supernova/photometry_test_data
+    bindmounts["/snpit_env_base"]=/mnt/roman-science/supernova/env
     bindmounts["/rrn-ops"]=/mnt/smdc-rom-com-ops/rrn-ops
 elif [[ $host_system == 'smdc-east-2' ]]; then
     bindmounts["/temp_dir"]=${SNPIT_SCRATCH:-/dev/shm/snpit_temp}
@@ -78,7 +80,7 @@ omgcuda=0
 whichenv=cpu
 runcommand=""
 shellscript=""
-currentenvver="0.1.49"
+currentenvver=""
 imageregistry=""
 sifdir=""
 
@@ -392,7 +394,7 @@ elif [[ $containersystem == "apptainer" ]]; then
 
     # Set the overlay
     if [[ ${host_system:0:4} == 'smdc' ]]; then
-        overlaydir=/mnt/roman-science-internal/snpit/apptainer_overlays/${LOGNAME}
+        overlaydir=${smdc_east_1_overlay_dir}/${LOGNAME}
         overlayname=$overlaydir/$RANDOM.img
         if [[ $testing == 0 ]]; then
            if [[ ! -d $overlaydir ]]; then
