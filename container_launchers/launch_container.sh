@@ -3,7 +3,7 @@
 set -Eeuo pipefail
 
 default_imageregistry=registry.nersc.gov/m4385
-default_sifdir=/data/snpit
+default_sifdir=/mnt/roman-science-east-2/snpit
 
 host_system=unknown
 containersystem=unknown
@@ -11,8 +11,11 @@ containersystem=unknown
 if [[ `hostname -f | perl -pe '$_=substr $_,-11'` == '.nersc.gov' ]]; then
     host_system='nersc'
     containersystem='podman'
-elif hostname -f | perl -ne 'exit(/\.us-east-|\.roman-pcluster/ ? 0 : 1)'; then
-    host_system='smdc'
+elif hostname -f | perl -ne 'exit(/\.us-east-1|\.roman-pcluster-east-1|\.ec2\.internal/ ? 0 : 1)'; then
+    host_system='smdc-east-1'
+    containersystem='apptainer'
+elif hostname -f | perl -ne 'exit(/\.us-east-2|\.roman-pcluster-east-2/ ? 0 : 1)'; then
+    host_system='smdc-east-2'
     containersystem='apptainer'
 elif [[ ! x`which docker` == "x" ]]; then
     host_system='local docker host'
@@ -57,7 +60,13 @@ if [[ $host_system == 'nersc' ]]; then
     bindmounts["/ou2024_snana_lc_dir"]=/dvs_ro/cfs/cdirs/lsst/www/DESC_TD_PUBLIC/Roman+DESC/ROMAN+LSST_LARGE_SNIa-normal
     bindmounts["/ou2024_sims_sed_library"]=/dvs_ro/cfs/cdirs/lsst/www/DESC_TD_PUBLIC/Roman+DESC/sims_sed_library
     bindmounts["/a25epsf"]=/dvs_ro/cfs/cdirs/m4385/calib_data/A25ePSF
-elif [[ $host_system == 'smdc' ]]; then
+elif [[ $host_system == 'smdc-east-1' ]]; then
+    bindmounts["/temp_dir"]=${SNPIT_SCRATCH:-/dev/shm/snpit_temp}
+    bindmounts["/dev_storage"]=${DEV_STORAGE:-/mnt/roman-science-internal/snpit/users/${LOGNAME}/dev_storage}
+    bindmounts["/photometry_test_data"]=/mnt/roman-science-east-2/snpit/photometry_test_data
+    bindmounts["/snpit_env_base"]=/data/snpit/env
+    bindmounts["/rrn-ops"]=/mnt/smdc-rom-com-ops/rrn-ops
+elif [[ $host_system == 'smdc-east-2' ]]; then
     bindmounts["/temp_dir"]=${SNPIT_SCRATCH:-/dev/shm/snpit_temp}
     bindmounts["/dev_storage"]=${DEV_STORAGE:-/mnt/roman-science-internal/snpit/users/${LOGNAME}/dev_storage}
     bindmounts["/photometry_test_data"]=/mnt/roman-science-internal/snpit/photometry_test_data
@@ -69,7 +78,7 @@ omgcuda=0
 whichenv=cpu
 runcommand=""
 shellscript=""
-currentenvver=""
+currentenvver="0.1.49"
 imageregistry=""
 sifdir=""
 
@@ -260,7 +269,7 @@ fi
 if [[ ( $whichenv = "gpu" ) || ( $whichenv = "gpu-dev" ) ]]; then
     omgcuda=1
     envvars["LD_LIBRARY_PATH"]="${envvars[LD_LIBRARY_PATH]}:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs"
-elif [[ ! ( ( $whichenv = "cpu" ) || ( $whichenv = "cpu-dev" ) ) ]]; then
+elif [[ ! ( ( $whichenv = "cpu" ) || ( $whichenv = "cpu-dev" ) || ( $whichenv = "cuda" ) || ( $whichenv = "cuda-dev" ) ) ]]; then
     echo "Unknown environment ${whichenv}, must be one of cpu, cpu-dev, cuda, or cuda-dev"
     exit 1
 fi
@@ -382,7 +391,7 @@ elif [[ $containersystem == "apptainer" ]]; then
     containerrun="apptainer run "
 
     # Set the overlay
-    if [[ $host_system == 'smdc' ]]; then
+    if [[ ${host_system:0:4} == 'smdc' ]]; then
         overlaydir=/mnt/roman-science-internal/snpit/apptainer_overlays/${LOGNAME}
         overlayname=$overlaydir/$RANDOM.img
         if [[ $testing == 0 ]]; then
@@ -428,7 +437,7 @@ fi
 
 # ...ok, here we go
 
-if [[ $host_system == "smdc" ]]; then
+if [[ ${host_system:0:4} == "smdc" ]]; then
     sg supernovae -c "apptainer overlay create --sparse --size 1024 $overlayname"
     sg supernovae -c "${containerrun}"
     rm $overlayname

@@ -35,7 +35,8 @@ elif (( $# == 1 )); then
     fi
 fi
 
-baselauncher=/data/snpit/env/${BASE_LAUNCHER:-venv_smdc_ricksim.sh}
+# baselauncher=${HOME}/snpit/packages/environment/${BASE_LAUNCHER:-venv_smdc_ricksim.sh}
+baselauncher=${HOME}/snpit/packages/environment/${BASE_LAUNCHER:-venv_smdc_ricksim.sh}
 rundir=${RUNDIR:-${HOME}/snpit}
 envname=${ENVNAME:-snpit-env}
 dev_storage=${DEV_STORAGE:-/mnt/roman-science-internal/snpit/users/${LOGNAME}/dev_storage}
@@ -57,7 +58,7 @@ fi
 
 if [ x"${SNPIT_DEFAULT_CONFIG}" == "x" ]; then
     if [ x"${BASE_LAUNCHER}" == "x" ] ; then
-        default_config=/data/snpit/env/configs/smdc_nodb_native.yaml
+        default_config=${HOME}/snpit/packages/environment/configs/smdc_nodb_native.yaml
     else
         default_config=`cat $baselauncher | perl -ne 'BEGIN { $lnch=-1 } if ( /^export\s+SNPIT_DEFAULT_CONFIG=([^\s]+)\s*$/ ) { $lnch=$1; } END { if ( $lnch==-1 ) { exit 1; } else { print($lnch); } }'`
         if [ $? != 0 ]; then
@@ -102,7 +103,7 @@ if (( $independent == 1 )); then
 
     # First time this will take ~10 minute as it installs all the dependencies of roman-snpit-snappl]
     echo "Installing roman snpit requirmeents (slow!)..."
-    pip install -r /data/snpit/env/environment_checkout_for_native/requirements-cpu.txt
+    pip install -r ${HOME}/snpit/packages/environment/environment_checkout_for_native/requirements-cpu.txt
 
     # You have to separately install roman_imsim because it is not in PyPi
     # and thus we can't make it a dependency of snappl
