@@ -76,6 +76,8 @@ RUN apt-get update \
          postgresql-client \
          procps \
          python3 \
+         python3-pip \
+         python3-venv \
          rlwrap \
          scamp \
          socat \
@@ -205,8 +207,6 @@ RUN apt-get update && \
        libbz2-dev \
        libtool \
        pkg-config \
-       python3-pip \
-       python3-venv \
        valgrind \
     && apt-get -y autoremove \
     && apt-get clean
